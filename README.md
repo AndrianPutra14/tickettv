@@ -1,16 +1,19 @@
-# project1
+# tickettv
 
-A new Flutter project.
+A Flutter project for Ticket TV application.
 
 ## Getting Started
 
 This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+- https://docs.flutter.dev/get-started/codelab
+- https://docs.flutter.dev/cookbook# tickettv
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+A Flutter project for Ticket TV application.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+- https://docs.flutter.dev/get-started/codelab
+- https://docs.flutter.dev/cookbook
