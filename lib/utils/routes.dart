@@ -14,5 +14,6 @@ class AppRoutes {
         onboarding: (context) => const OnboardingScreen(),
         welcome: (context) => const WelcomeScreen(),
         home: (context) => const HomePage(),
+        // halo diendiwniew
       };
 }
