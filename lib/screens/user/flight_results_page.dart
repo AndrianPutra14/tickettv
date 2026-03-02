@@ -1,4 +1,8 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:project1/screens/user/widgets/flight_models.dart';
+
+import 'widgets/filter_sheet.dart';
+import 'widgets/flight_card.dart';
 
 const _red = Color(0xFFC42D27);
 const _bgPage = Color(0xFFF5EDED);
@@ -23,29 +27,29 @@ class _Flight {
 // ─── Demo data ────────────────────────────────────────────────────────────────
 final _flights = <_Flight>[
   _Flight('IU919', '06:00', 'PKU', '07:45', 'CGK', '1j 45m', [
-    const _Fare('ECO', 'B 9', 1243.5, sel: true),
-    const _Fare('ECO', 'S 9', 1311.2),
-    const _Fare('ECO', 'W 9', 1377.8),
-    const _Fare('ECO', 'G 9', 1444.4),
-    const _Fare('ECO', 'A 9', 1512.1),
+    _Fare('ECO', 'B 9', 1243.5, sel: true),
+    _Fare('ECO', 'S 9', 1311.2),
+    _Fare('ECO', 'W 9', 1377.8),
+    _Fare('ECO', 'G 9', 1444.4),
+    _Fare('ECO', 'A 9', 1512.1),
   ]),
   _Flight('IU919', '06:00', 'PKU', '07:45', 'CGK', '1j 45m', [
-    const _Fare('ECO', 'S 9', 1311.2, sel: true),
-    const _Fare('ECO', 'S 9', 1311.2),
-    const _Fare('ECO', 'W 9', 1377.8),
-    const _Fare('ECO', 'G 9', 1444.4),
-    const _Fare('ECO', 'A 9', 1512.1),
+    _Fare('ECO', 'S 9', 1311.2, sel: true),
+    _Fare('ECO', 'S 9', 1311.2),
+    _Fare('ECO', 'W 9', 1377.8),
+    _Fare('ECO', 'G 9', 1444.4),
+    _Fare('ECO', 'A 9', 1512.1),
   ]),
   _Flight('IU919', '06:00', 'PKU', '07:45', 'CGK', '1j 45m', [
-    const _Fare('ECO', 'S 9', 1311.2, sel: true),
-    const _Fare('ECO', 'W 9', 1377.8),
-    const _Fare('ECO', 'G 9', 1444.4),
-    const _Fare('ECO', 'A 9', 1512.1),
+    _Fare('ECO', 'S 9', 1311.2, sel: true),
+    _Fare('ECO', 'W 9', 1377.8),
+    _Fare('ECO', 'G 9', 1444.4),
+    _Fare('ECO', 'A 9', 1512.1),
   ]),
   _Flight('IU919', '06:00', 'PKU', '07:45', 'CGK', '1j 45m', [
-    const _Fare('ECO', 'S 9', 1311.2, sel: true),
-    const _Fare('ECO', 'W 9', 1377.8),
-    const _Fare('ECO', 'G 9', 1444.4),
+    _Fare('ECO', 'S 9', 1311.2, sel: true),
+    _Fare('ECO', 'W 9', 1377.8),
+    _Fare('ECO', 'G 9', 1444.4),
   ]),
 ];
 
@@ -56,7 +60,7 @@ const _dates = [
   ('Sab', '31 Jan 2026'),
 ];
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 class FlightResultsPage extends StatefulWidget {
   final String from, to, paxLabel;
   const FlightResultsPage({
@@ -73,10 +77,19 @@ class FlightResultsPage extends StatefulWidget {
 class _FlightResultsPageState extends State<FlightResultsPage> {
   int _di = 0;
 
+  void _openFilter() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const FilterSheet(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _bgPage,
+      backgroundColor: kBgPage,
       body: SafeArea(
         child: Column(
           children: [
@@ -140,21 +153,21 @@ class _FlightResultsPageState extends State<FlightResultsPage> {
                 const SizedBox(height: 2),
                 Text(widget.paxLabel,
                     style: const TextStyle(
-                        fontSize: 12, color: Color(0xFF999999))),
+                        fontSize: 15, color: Color(0xFF999999))),
               ],
             ),
           ),
           const SizedBox(width: 8),
           ElevatedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.tune_rounded, size: 14, color: Colors.white),
+            onPressed: _openFilter,
+            icon: const Icon(Icons.tune_rounded, size: 15, color: Colors.white),
             label: const Text('Filter',
                 style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.white)),
             style: ElevatedButton.styleFrom(
-              backgroundColor: _red,
+              backgroundColor: kRed,
               elevation: 0,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               shape: RoundedRectangleBorder(
@@ -183,29 +196,25 @@ class _FlightResultsPageState extends State<FlightResultsPage> {
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
-                          color: active ? _red : Colors.transparent,
+                          color: active ? kRed : Colors.transparent,
                           width: 2.5,
                         ),
                       ),
                     ),
                     child: Column(
                       children: [
-                        Text(
-                          _dates[i].$1,
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: active ? _red : const Color(0xFF888888),
-                          ),
-                        ),
+                        Text(_dates[i].$1,
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color:
+                                    active ? kRed : const Color(0xFF888888))),
                         const SizedBox(height: 1),
-                        Text(
-                          _dates[i].$2,
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: active ? _red : const Color(0xFF888888),
-                          ),
-                        ),
+                        Text(_dates[i].$2,
+                            style: TextStyle(
+                                fontSize: 12,
+                                color:
+                                    active ? kRed : const Color(0xFF888888))),
                       ],
                     ),
                   ),
@@ -222,7 +231,7 @@ class _FlightResultsPageState extends State<FlightResultsPage> {
 // ─── Flight Card ──────────────────────────────────────────────────────────────
 class _FlightCard extends StatelessWidget {
   final _Flight flight;
-  const _FlightCard({required this.flight});
+  const _FlightCard({super.key, required this.flight});
 
   @override
   Widget build(BuildContext context) {
@@ -336,10 +345,11 @@ class _FlightCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 3),
                       // Airplane → dashes → pin (all RED)
-                      const Row(
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(Icons.flight_rounded, size: 16, color: _red),
+                          const Icon(Icons.flight_rounded,
+                              size: 16, color: _red),
                           Expanded(
                             child: SizedBox(
                               height: 10,
@@ -348,7 +358,7 @@ class _FlightCard extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Icon(Icons.location_on_rounded,
+                          const Icon(Icons.location_on_rounded,
                               size: 16, color: _red),
                         ],
                       ),
