@@ -588,7 +588,7 @@ class _PremiumCard extends StatelessWidget {
                   subtitle,
                   style: const TextStyle(
                     color: Colors.white70,
-                    fontSize: 14,
+                    fontSize: 13.5,
                     height: 1.5,
                   ),
                 ),
