@@ -23,29 +23,29 @@ class _Flight {
 // ─── Demo data ────────────────────────────────────────────────────────────────
 final _flights = <_Flight>[
   _Flight('IU919', '06:00', 'PKU', '07:45', 'CGK', '1j 45m', [
-    _Fare('ECO', 'B 9', 1243.5, sel: true),
-    _Fare('ECO', 'S 9', 1311.2),
-    _Fare('ECO', 'W 9', 1377.8),
-    _Fare('ECO', 'G 9', 1444.4),
-    _Fare('ECO', 'A 9', 1512.1),
+    const _Fare('ECO', 'B 9', 1243.5, sel: true),
+    const _Fare('ECO', 'S 9', 1311.2),
+    const _Fare('ECO', 'W 9', 1377.8),
+    const _Fare('ECO', 'G 9', 1444.4),
+    const _Fare('ECO', 'A 9', 1512.1),
   ]),
   _Flight('IU919', '06:00', 'PKU', '07:45', 'CGK', '1j 45m', [
-    _Fare('ECO', 'S 9', 1311.2, sel: true),
-    _Fare('ECO', 'S 9', 1311.2),
-    _Fare('ECO', 'W 9', 1377.8),
-    _Fare('ECO', 'G 9', 1444.4),
-    _Fare('ECO', 'A 9', 1512.1),
+    const _Fare('ECO', 'S 9', 1311.2, sel: true),
+    const _Fare('ECO', 'S 9', 1311.2),
+    const _Fare('ECO', 'W 9', 1377.8),
+    const _Fare('ECO', 'G 9', 1444.4),
+    const _Fare('ECO', 'A 9', 1512.1),
   ]),
   _Flight('IU919', '06:00', 'PKU', '07:45', 'CGK', '1j 45m', [
-    _Fare('ECO', 'S 9', 1311.2, sel: true),
-    _Fare('ECO', 'W 9', 1377.8),
-    _Fare('ECO', 'G 9', 1444.4),
-    _Fare('ECO', 'A 9', 1512.1),
+    const _Fare('ECO', 'S 9', 1311.2, sel: true),
+    const _Fare('ECO', 'W 9', 1377.8),
+    const _Fare('ECO', 'G 9', 1444.4),
+    const _Fare('ECO', 'A 9', 1512.1),
   ]),
   _Flight('IU919', '06:00', 'PKU', '07:45', 'CGK', '1j 45m', [
-    _Fare('ECO', 'S 9', 1311.2, sel: true),
-    _Fare('ECO', 'W 9', 1377.8),
-    _Fare('ECO', 'G 9', 1444.4),
+    const _Fare('ECO', 'S 9', 1311.2, sel: true),
+    const _Fare('ECO', 'W 9', 1377.8),
+    const _Fare('ECO', 'G 9', 1444.4),
   ]),
 ];
 
@@ -156,8 +156,7 @@ class _FlightResultsPageState extends State<FlightResultsPage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: _red,
               elevation: 0,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)),
             ),
@@ -223,7 +222,7 @@ class _FlightResultsPageState extends State<FlightResultsPage> {
 // ─── Flight Card ──────────────────────────────────────────────────────────────
 class _FlightCard extends StatelessWidget {
   final _Flight flight;
-  const _FlightCard({super.key, required this.flight});
+  const _FlightCard({required this.flight});
 
   @override
   Widget build(BuildContext context) {
@@ -337,11 +336,10 @@ class _FlightCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 3),
                       // Airplane → dashes → pin (all RED)
-                      Row(
+                      const Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Icon(Icons.flight_rounded,
-                              size: 16, color: _red),
+                          Icon(Icons.flight_rounded, size: 16, color: _red),
                           Expanded(
                             child: SizedBox(
                               height: 10,
@@ -350,7 +348,7 @@ class _FlightCard extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const Icon(Icons.location_on_rounded,
+                          Icon(Icons.location_on_rounded,
                               size: 16, color: _red),
                         ],
                       ),

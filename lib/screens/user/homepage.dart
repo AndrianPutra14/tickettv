@@ -5,7 +5,7 @@ import 'flight_results_page.dart';
 const Color primaryRed = Color(0xFFC42D27);
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -131,6 +131,250 @@ class _NavIcon extends StatelessWidget {
   }
 }
 
+// ─── Location Search Modal ────────────────────────────────────────────────────
+
+Future<String?> _showLocationSearch({
+  required BuildContext context,
+  required String title,
+  required List<String> recentSelections,
+}) {
+  return showModalBottomSheet<String>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    barrierColor: Colors.black.withOpacity(0.7),
+    builder: (_) => _LocationSearchSheet(
+      title: title,
+      recentSelections: recentSelections,
+    ),
+  );
+}
+
+class _LocationSearchSheet extends StatefulWidget {
+  final String title;
+  final List<String> recentSelections;
+
+  const _LocationSearchSheet({
+    required this.title,
+    required this.recentSelections,
+  });
+
+  @override
+  State<_LocationSearchSheet> createState() => _LocationSearchSheetState();
+}
+
+class _LocationSearchSheetState extends State<_LocationSearchSheet> {
+  final _ctrl = TextEditingController();
+  late List<String> _recent;
+
+  final List<String> _popular = [
+    'Jakarta',
+    'Denpasar',
+    'Surabaya',
+    'Kulonprogo',
+    'Semarang',
+    'Bandung',
+    'Medan',
+    'Palembang',
+    'Padang',
+  ];
+
+  List<String> _filtered = [];
+  bool _isSearching = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _recent = List<String>.from(widget.recentSelections);
+    _ctrl.addListener(() {
+      final q = _ctrl.text.trim().toLowerCase();
+      setState(() {
+        _isSearching = q.isNotEmpty;
+        _filtered = q.isEmpty
+            ? []
+            : _popular.where((c) => c.toLowerCase().contains(q)).toList();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  void _select(String city) => Navigator.pop(context, city);
+  void _removeRecent(String city) => setState(() => _recent.remove(city));
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.85,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (_, scroll) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Header ──
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+              child: Row(
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: primaryRed,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          widget.title == 'Kedatangan'
+                              ? Icons.flight_land_rounded
+                              : Icons.flight_takeoff_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          widget.title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      width: 34,
+                      height: 34,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.close, size: 18),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ── Body ──
+            Expanded(
+              child: ListView(
+                controller: scroll,
+                padding: const EdgeInsets.all(16),
+                children: [
+                  // Search field
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xFFE0E0E0)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: TextField(
+                      controller: _ctrl,
+                      autofocus: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Kata Kunci',
+                        labelStyle: TextStyle(color: primaryRed, fontSize: 13),
+                        hintText: 'Masukkan nama kota atau bandara',
+                        hintStyle:
+                            TextStyle(color: Color(0xFFAAAAAA), fontSize: 14),
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  if (_isSearching) ...[
+                    _sectionTitle('Hasil Pencarian'),
+                    const SizedBox(height: 10),
+                    _chipWrap(_filtered, showDelete: false),
+                  ] else ...[
+                    if (_recent.isNotEmpty) ...[
+                      _sectionTitle('Terakhir dipilih'),
+                      const SizedBox(height: 10),
+                      _chipWrap(_recent, showDelete: true),
+                      const SizedBox(height: 20),
+                    ],
+                    _sectionTitle('Destinasi Populer'),
+                    const SizedBox(height: 10),
+                    _chipWrap(_popular, showDelete: false),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _sectionTitle(String text) => Text(
+        text,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+          color: Color(0xFF1A1A1A),
+        ),
+      );
+
+  Widget _chipWrap(List<String> cities, {required bool showDelete}) {
+    if (cities.isEmpty) {
+      return Text('Tidak ada hasil.',
+          style: TextStyle(color: Colors.grey.shade500));
+    }
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: cities.map((city) {
+        return GestureDetector(
+          onTap: () => _select(city),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              border: Border.all(color: const Color(0xFFE0E0E0)),
+              borderRadius: BorderRadius.circular(24),
+              color: Colors.white,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(city,
+                    style: const TextStyle(
+                        fontSize: 13, color: Color(0xFF1A1A1A))),
+                if (showDelete) ...[
+                  const SizedBox(width: 6),
+                  GestureDetector(
+                    onTap: () => _removeRecent(city),
+                    child: const Icon(Icons.close, size: 14, color: Colors.red),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
 // ─── Home Tab ────────────────────────────────────────────────────────────────
 
 class _HomeTab extends StatefulWidget {
@@ -147,6 +391,9 @@ class _HomeTabState extends State<_HomeTab> {
   int _dewasa = 1;
   int _anak = 0;
   int _bayi = 0;
+
+  List<String> _recentFrom = ['Jakarta'];
+  List<String> _recentTo = ['Denpasar'];
 
   void _swapLocations() {
     setState(() {
@@ -192,6 +439,38 @@ class _HomeTabState extends State<_HomeTab> {
     );
   }
 
+  Future<void> _openKeberangkatan() async {
+    final result = await _showLocationSearch(
+      context: context,
+      title: 'Keberangkatan',
+      recentSelections: _recentFrom,
+    );
+    if (result != null) {
+      setState(() {
+        if (!_recentFrom.contains(result)) {
+          _recentFrom = [result, ..._recentFrom];
+        }
+        _from = result;
+      });
+    }
+  }
+
+  Future<void> _openKedatangan() async {
+    final result = await _showLocationSearch(
+      context: context,
+      title: 'Kedatangan',
+      recentSelections: _recentTo,
+    );
+    if (result != null) {
+      setState(() {
+        if (!_recentTo.contains(result)) {
+          _recentTo = [result, ..._recentTo];
+        }
+        _to = result;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final topPad = MediaQuery.of(context).padding.top;
@@ -214,14 +493,13 @@ class _HomeTabState extends State<_HomeTab> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Greeting row
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
+                    const Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             'Hi, Teman Ezytix!',
                             style: TextStyle(
@@ -259,7 +537,6 @@ class _HomeTabState extends State<_HomeTab> {
                   ],
                 ),
                 const SizedBox(height: 24),
-                // Pesawat tab
                 const Text(
                   'Pesawat',
                   style: TextStyle(
@@ -272,7 +549,7 @@ class _HomeTabState extends State<_HomeTab> {
             ),
           ),
 
-          // ── Search Card (overlapping header) ────────────────────────────
+          // ── Search Card ─────────────────────────────────────────────────
           Transform.translate(
             offset: const Offset(0, -24),
             child: Padding(
@@ -293,7 +570,11 @@ class _HomeTabState extends State<_HomeTab> {
                 child: Column(
                   children: [
                     // Keberangkatan
-                    _LocationField(label: 'Keberangkatan', value: _from),
+                    GestureDetector(
+                      onTap: _openKeberangkatan,
+                      child:
+                          _LocationField(label: 'Keberangkatan', value: _from),
+                    ),
                     const SizedBox(height: 6),
 
                     // Swap button
@@ -318,7 +599,10 @@ class _HomeTabState extends State<_HomeTab> {
                     const SizedBox(height: 6),
 
                     // Kedatangan
-                    _LocationField(label: 'Kedatangan', value: _to),
+                    GestureDetector(
+                      onTap: _openKedatangan,
+                      child: _LocationField(label: 'Kedatangan', value: _to),
+                    ),
                     const SizedBox(height: 12),
 
                     // Date Pergi + toggle row
@@ -334,14 +618,12 @@ class _HomeTabState extends State<_HomeTab> {
                           const Icon(Icons.calendar_today_rounded,
                               color: Color(0xFFAAAAAA), size: 18),
                           const SizedBox(width: 10),
-                          Column(
+                          const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                'Pergi',
-                                style: TextStyle(
-                                    fontSize: 11, color: Color(0xFFAAAAAA)),
-                              ),
+                            children: [
+                              Text('Pergi',
+                                  style: TextStyle(
+                                      fontSize: 11, color: Color(0xFFAAAAAA))),
                               SizedBox(height: 2),
                               Text(
                                 'Sen, 26 Jan 2026',
@@ -354,11 +636,9 @@ class _HomeTabState extends State<_HomeTab> {
                             ],
                           ),
                           const Spacer(),
-                          const Text(
-                            'Pulang- pergi?',
-                            style: TextStyle(
-                                fontSize: 11, color: Color(0xFFAAAAAA)),
-                          ),
+                          const Text('Pulang- pergi?',
+                              style: TextStyle(
+                                  fontSize: 11, color: Color(0xFFAAAAAA))),
                           const SizedBox(width: 4),
                           Transform.scale(
                             scale: 0.8,
@@ -366,7 +646,7 @@ class _HomeTabState extends State<_HomeTab> {
                               value: _roundTrip,
                               onChanged: (val) =>
                                   setState(() => _roundTrip = val),
-                              activeColor: primaryRed,
+                              activeThumbColor: primaryRed,
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
                             ),
@@ -375,7 +655,6 @@ class _HomeTabState extends State<_HomeTab> {
                       ),
                     ),
 
-                    // Date Pulang (muncul saat roundTrip aktif)
                     AnimatedSize(
                       duration: const Duration(milliseconds: 250),
                       curve: Curves.easeInOut,
@@ -392,8 +671,8 @@ class _HomeTabState extends State<_HomeTab> {
                                   ),
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 14, vertical: 10),
-                                  child: Row(
-                                    children: const [
+                                  child: const Row(
+                                    children: [
                                       Icon(Icons.calendar_today_rounded,
                                           color: Color(0xFFAAAAAA), size: 18),
                                       SizedBox(width: 10),
@@ -401,12 +680,10 @@ class _HomeTabState extends State<_HomeTab> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            'Pulang',
-                                            style: TextStyle(
-                                                fontSize: 11,
-                                                color: Color(0xFFAAAAAA)),
-                                          ),
+                                          Text('Pulang',
+                                              style: TextStyle(
+                                                  fontSize: 11,
+                                                  color: Color(0xFFAAAAAA))),
                                           SizedBox(height: 2),
                                           Text(
                                             'Kam, 29 Jan 2026',
@@ -427,7 +704,6 @@ class _HomeTabState extends State<_HomeTab> {
                     ),
                     const SizedBox(height: 14),
 
-                    // Penumpang
                     _DropdownRow(
                       icon: Icons.person_outline,
                       label: _passengerLabel,
@@ -438,7 +714,6 @@ class _HomeTabState extends State<_HomeTab> {
                       child: Divider(height: 1, color: Color(0xFFF0F0F0)),
                     ),
 
-                    // Class
                     _DropdownRow(
                       icon: Icons.tune_rounded,
                       label: 'All Class, Semua Maskapai',
@@ -446,7 +721,6 @@ class _HomeTabState extends State<_HomeTab> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Cari penerbangan
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -456,8 +730,8 @@ class _HomeTabState extends State<_HomeTab> {
                             context,
                             MaterialPageRoute(
                               builder: (_) => FlightResultsPage(
-                                from: 'Jakarta (CGK)',
-                                to: 'Surabaya (SUB)',
+                                from: _from,
+                                to: _to,
                                 paxLabel: 'All Class . $_passengerLabel',
                               ),
                             ),
@@ -487,6 +761,7 @@ class _HomeTabState extends State<_HomeTab> {
             ),
           ),
           const SizedBox(height: 30),
+
           // ── Premium Scroll Section ──────────────────────────────────────
           Transform.translate(
             offset: const Offset(0, -20),
@@ -496,7 +771,6 @@ class _HomeTabState extends State<_HomeTab> {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 children: [
-                  // Card 1 – Premium
                   _PremiumCard(
                     gradient: const LinearGradient(
                       colors: [Color(0xFFB71C1C), Color(0xFFE53935)],
@@ -511,7 +785,6 @@ class _HomeTabState extends State<_HomeTab> {
                     onTap: () {},
                   ),
                   const SizedBox(width: 14),
-                  // Card 2 – Promo
                   _PremiumCard(
                     gradient: const LinearGradient(
                       colors: [Color(0xFF1565C0), Color(0xFF42A5F5)],
@@ -569,7 +842,6 @@ class _PremiumCard extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // Teks + tombol (kiri)
           Padding(
             padding: const EdgeInsets.only(right: 140),
             child: Column(
@@ -600,8 +872,8 @@ class _PremiumCard extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
@@ -617,8 +889,6 @@ class _PremiumCard extends StatelessWidget {
               ],
             ),
           ),
-
-          // Gambar (kanan bawah)
           Positioned(
             right: 20,
             bottom: -40,
@@ -635,7 +905,6 @@ class _PremiumCard extends StatelessWidget {
 }
 
 // ─── Reusable Widgets ─────────────────────────────────────────────────────────
-
 
 class _LocationField extends StatelessWidget {
   final String label;
@@ -655,8 +924,7 @@ class _LocationField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label,
-              style:
-                  const TextStyle(fontSize: 11, color: Color(0xFFAAAAAA))),
+              style: const TextStyle(fontSize: 11, color: Color(0xFFAAAAAA))),
           const SizedBox(height: 4),
           Text(
             value,
@@ -749,13 +1017,11 @@ class _PassengerSheetState extends State<_PassengerSheet> {
   Widget build(BuildContext context) {
     final sw = MediaQuery.of(context).size.width;
     final bottomPad = MediaQuery.of(context).padding.bottom;
-    // Handle bar floating 22px di atas white sheet
     const floatingH = 22.0;
 
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        // ── White sheet mulai dari y=22 ──
         Padding(
           padding: const EdgeInsets.only(top: floatingH),
           child: ClipRRect(
@@ -770,153 +1036,142 @@ class _PassengerSheetState extends State<_PassengerSheet> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 8),
-
-            // ── Header: image ellips merah (kiri) + image ellips cream X (kanan) ──
-            SizedBox(
-              height: 54,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  // Ellipseblue.png — geser kiri agar sisi kiri oval terpotong
-                  // ClipRRect akan clip di x=0, sehingga terlihat D-shape (curved kanan)
-                  Positioned(
-                    left: -(sw * 0.18),
-                    top: 0,
-                    bottom: 0,
-                    child: Image.asset(
-                      'assets/images/Ellipseblue.png',
-                      width: sw * 0.76,
-                      fit: BoxFit.fill,
+                  SizedBox(
+                    height: 54,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned(
+                          left: -(sw * 0.18),
+                          top: 0,
+                          bottom: 0,
+                          child: Image.asset(
+                            'assets/images/Ellipseblue.png',
+                            width: sw * 0.76,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        const Positioned(
+                          left: 12,
+                          top: 0,
+                          bottom: 0,
+                          child: Center(
+                            child: Text(
+                              'Atur Penumpang',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 12,
+                          top: 7,
+                          child: GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/images/Ellipseyell.png',
+                                  width: 60,
+                                  height: 40,
+                                  fit: BoxFit.fill,
+                                ),
+                                const Text(
+                                  'X',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF1A1A1A),
+                                    height: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  // Teks "Atur Penumpang" — posisi dalam area merah yang terlihat
-                  const Positioned(
-                    left: 12,
-                    top: 0,
-                    bottom: 0,
-                    child: Center(
-                      child: Text(
-                        'Atur Penumpang',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _PassengerRow(
+                      label: 'Dewasa',
+                      sublabel: '(12 tahun ke atas)',
+                      count: _dewasa,
+                      onMinus: () =>
+                          _change(_dewasa, -1, (v) => _dewasa = v, min: 1),
+                      onPlus: () => _change(_dewasa, 1, (v) => _dewasa = v),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    child: Divider(
+                        height: 1, thickness: 0.8, color: Color(0xFFE8E8E8)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _PassengerRow(
+                      label: 'Anak',
+                      sublabel: '(2 - 11 tahun)',
+                      count: _anak,
+                      onMinus: () => _change(_anak, -1, (v) => _anak = v),
+                      onPlus: () => _change(_anak, 1, (v) => _anak = v),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    child: Divider(
+                        height: 1, thickness: 0.8, color: Color(0xFFE8E8E8)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _PassengerRow(
+                      label: 'Bayi',
+                      sublabel: '(di bawah 2 tahun)',
+                      count: _bayi,
+                      onMinus: () => _change(_bayi, -1, (v) => _bayi = v),
+                      onPlus: () => _change(_bayi, 1, (v) => _bayi = v),
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: SizedBox(
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          widget.onConfirm(_dewasa, _anak, _bayi);
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFC42D27),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          'Cari Penerbangan',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  // Ellipseyell.png — tombol X sudut kanan
-                  Positioned(
-                    right: 12,
-                    top: 7,
-                    child: GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/images/Ellipseyell.png',
-                            width: 80,
-                            height: 40,
-                            fit: BoxFit.fill,
-                          ),
-                          const Text(
-                            'X',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF1A1A1A),
-                              height: 1,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  SizedBox(height: 24 + bottomPad),
                 ],
               ),
             ),
-
-            // ── Rows ──
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: _PassengerRow(
-                label: 'Dewasa',
-                sublabel: '(12 tahun ke atas)',
-                count: _dewasa,
-                onMinus: () => _change(_dewasa, -1, (v) => _dewasa = v, min: 1),
-                onPlus: () => _change(_dewasa, 1, (v) => _dewasa = v),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Divider(
-                  height: 1, thickness: 0.8, color: Color(0xFFE8E8E8)),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: _PassengerRow(
-                label: 'Anak',
-                sublabel: '(2 - 11 tahun)',
-                count: _anak,
-                onMinus: () => _change(_anak, -1, (v) => _anak = v),
-                onPlus: () => _change(_anak, 1, (v) => _anak = v),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Divider(
-                  height: 1, thickness: 0.8, color: Color(0xFFE8E8E8)),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: _PassengerRow(
-                label: 'Bayi',
-                sublabel: '(di bawah 2 tahun)',
-                count: _bayi,
-                onMinus: () => _change(_bayi, -1, (v) => _bayi = v),
-                onPlus: () => _change(_bayi, 1, (v) => _bayi = v),
-              ),
-            ),
-            const SizedBox(height: 28),
-
-            // ── Cari Penerbangan ──
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: SizedBox(
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    widget.onConfirm(_dewasa, _anak, _bayi);
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFC42D27),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Cari Penerbangan',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 24 + bottomPad),
-                ],              // Column children
-              ),                // Column
-            ),                  // Container
-          ),                    // ClipRRect
-        ),                      // Padding
-
-        // ── FLOATING: Handle bar di atas white sheet ──
+          ),
+        ),
         const Positioned(
           top: 8,
           left: 0,
@@ -934,11 +1189,10 @@ class _PassengerSheetState extends State<_PassengerSheet> {
             ),
           ),
         ),
-      ],    // Stack children
-    );      // return Stack
+      ],
+    );
   }
 }
-
 
 class _PassengerRow extends StatelessWidget {
   final String label;
@@ -959,7 +1213,6 @@ class _PassengerRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // Label — satu string (figma: color:0xFF3D3C3C, size:14, w400)
         Expanded(
           child: Text(
             '$label $sublabel',
@@ -971,8 +1224,6 @@ class _PassengerRow extends StatelessWidget {
             ),
           ),
         ),
-
-        // ⊖ Minus (figma: w=25, h=25, OvalBorder abu-abu)
         GestureDetector(
           onTap: onMinus,
           child: Container(
@@ -980,17 +1231,12 @@ class _PassengerRow extends StatelessWidget {
             height: 25,
             decoration: const ShapeDecoration(
               shape: OvalBorder(
-                side: BorderSide(
-                  width: 1.5,
-                  color: Color(0xFFB8B8B9),
-                ),
+                side: BorderSide(width: 1.5, color: Color(0xFFB8B8B9)),
               ),
             ),
             child: const Icon(Icons.remove, size: 14, color: Color(0xFFB8B8B9)),
           ),
         ),
-
-        // Count (figma: w=12, size:14, w600, color:0xFF3D3C3C)
         const SizedBox(width: 6),
         SizedBox(
           width: 20,
@@ -1006,8 +1252,6 @@ class _PassengerRow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 6),
-
-        // ⊕ Plus (figma: w=25, h=25, OvalBorder merah)
         GestureDetector(
           onTap: onPlus,
           child: Container(
@@ -1015,10 +1259,7 @@ class _PassengerRow extends StatelessWidget {
             height: 25,
             decoration: const ShapeDecoration(
               shape: OvalBorder(
-                side: BorderSide(
-                  width: 1.5,
-                  color: Color(0xFFC42D27),
-                ),
+                side: BorderSide(width: 1.5, color: Color(0xFFC42D27)),
               ),
             ),
             child: const Icon(Icons.add, size: 14, color: Color(0xFFC42D27)),
@@ -1030,7 +1271,6 @@ class _PassengerRow extends StatelessWidget {
 }
 
 // ─── Other Tabs ──────────────────────────────────────────────────────────────
-
 
 class _MyBookingTab extends StatelessWidget {
   const _MyBookingTab();
@@ -1113,7 +1353,6 @@ class _FilterSheetState extends State<_FilterSheet> {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        // ── White sheet ──
         Padding(
           padding: const EdgeInsets.only(top: floatingH),
           child: ClipRRect(
@@ -1130,8 +1369,6 @@ class _FilterSheetState extends State<_FilterSheet> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 8),
-
-                  // ── Header ──
                   SizedBox(
                     height: 54,
                     child: Stack(
@@ -1200,13 +1437,11 @@ class _FilterSheetState extends State<_FilterSheet> {
                       ],
                     ),
                   ),
-
-                  // ── Chip label ──
                   const SizedBox(height: 12),
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 16),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       color: const Color(0xFFFDE8E8),
                       borderRadius: BorderRadius.circular(20),
@@ -1216,8 +1451,6 @@ class _FilterSheetState extends State<_FilterSheet> {
                       style: TextStyle(fontSize: 13, color: Color(0xFF1A1A1A)),
                     ),
                   ),
-
-                  // ── Scrollable content ──
                   Flexible(
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1225,8 +1458,6 @@ class _FilterSheetState extends State<_FilterSheet> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 16),
-
-                          // Kelas Kabin header
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -1251,14 +1482,14 @@ class _FilterSheetState extends State<_FilterSheet> {
                                     }
                                   });
                                 },
-                                child: Row(
+                                child: const Row(
                                   children: [
                                     Text('Semua Kelas',
                                         style: TextStyle(
                                             fontSize: 13,
                                             fontWeight: FontWeight.w600,
                                             color: primaryRed)),
-                                    const SizedBox(width: 4),
+                                    SizedBox(width: 4),
                                     Icon(Icons.bookmark_rounded,
                                         color: primaryRed, size: 16),
                                   ],
@@ -1267,8 +1498,6 @@ class _FilterSheetState extends State<_FilterSheet> {
                             ],
                           ),
                           const SizedBox(height: 10),
-
-                          // Kelas row 1
                           Row(
                             children: [
                               _KelasButton(
@@ -1291,8 +1520,6 @@ class _FilterSheetState extends State<_FilterSheet> {
                             ],
                           ),
                           const SizedBox(height: 8),
-
-                          // Kelas row 2
                           Row(
                             children: [
                               _KelasButton(
@@ -1307,19 +1534,14 @@ class _FilterSheetState extends State<_FilterSheet> {
                             ],
                           ),
                           const SizedBox(height: 20),
-
-                          // Maskapai
                           const Text('Maskapai',
                               style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
                                   color: Color(0xFF1A1A1A))),
                           const SizedBox(height: 10),
-
-                          // Search
                           TextField(
-                            onChanged: (v) =>
-                                setState(() => _searchQuery = v),
+                            onChanged: (v) => setState(() => _searchQuery = v),
                             decoration: InputDecoration(
                               hintText: 'Kata Kunci',
                               hintStyle: const TextStyle(
@@ -1328,19 +1550,16 @@ class _FilterSheetState extends State<_FilterSheet> {
                                   horizontal: 14, vertical: 10),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
-                                borderSide: const BorderSide(
-                                    color: Color(0xFFDDDDDD)),
+                                borderSide:
+                                    const BorderSide(color: Color(0xFFDDDDDD)),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
-                                borderSide:
-                                    const BorderSide(color: primaryRed),
+                                borderSide: const BorderSide(color: primaryRed),
                               ),
                             ),
                           ),
                           const SizedBox(height: 10),
-
-                          // Pilih Semua / Hapus Semua
                           Row(
                             children: [
                               Expanded(
@@ -1351,8 +1570,7 @@ class _FilterSheetState extends State<_FilterSheet> {
                                         _selectedAirlines
                                             .addAll(_filteredAirlines)),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          const Color(0xFF2E7D32),
+                                      backgroundColor: const Color(0xFF2E7D32),
                                       elevation: 0,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
@@ -1392,8 +1610,6 @@ class _FilterSheetState extends State<_FilterSheet> {
                             ],
                           ),
                           const SizedBox(height: 4),
-
-                          // Airlines list
                           ListView.separated(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
@@ -1437,8 +1653,7 @@ class _FilterSheetState extends State<_FilterSheet> {
                                         ),
                                         child: selected
                                             ? const Icon(Icons.check,
-                                                size: 14,
-                                                color: Colors.white)
+                                                size: 14, color: Colors.white)
                                             : null,
                                       ),
                                     ],
@@ -1452,11 +1667,8 @@ class _FilterSheetState extends State<_FilterSheet> {
                       ),
                     ),
                   ),
-
-                  // ── OK Button ──
                   Padding(
-                    padding:
-                        EdgeInsets.fromLTRB(16, 8, 16, 16 + bottomPad),
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 16 + bottomPad),
                     child: SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -1481,8 +1693,6 @@ class _FilterSheetState extends State<_FilterSheet> {
             ),
           ),
         ),
-
-        // ── FLOATING: Handle bar ──
         const Positioned(
           top: 8,
           left: 0,
@@ -1505,7 +1715,6 @@ class _FilterSheetState extends State<_FilterSheet> {
   }
 }
 
-// ── Kelas Kabin toggle button ──
 class _KelasButton extends StatelessWidget {
   final String label;
   final bool selected;

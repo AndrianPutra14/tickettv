@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project1/screens/onboarding.dart';
 import 'package:project1/utils/routes.dart';
 
 void main() {
