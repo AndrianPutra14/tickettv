@@ -21,7 +21,6 @@ class FareDetailSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // â”€â”€ Header FARE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 20),
@@ -45,7 +44,6 @@ class FareDetailSheet extends StatelessWidget {
               ],
             ),
           ),
-
           Flexible(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
@@ -130,26 +128,71 @@ class FareDetailSheet extends StatelessWidget {
                         const Divider(height: 1, color: Color(0xFFC1C1C1)),
                         // Baris data
                         Padding(
-                          padding: const EdgeInsets.only(top: 1, ),
+                          padding: const EdgeInsets.only(
+                            top: 1,
+                          ),
                           child: Stack(
                             children: [
                               Column(
                                 children: [
                                   Row(
                                     children: [
-                                      const Expanded(child: Text('UI', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
-                                      Expanded(child: Text(flight.no, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
-                                      Expanded(child: Text(flight.depAp, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
-                                      Expanded(child: Text(flight.dep, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
+                                      const Expanded(
+                                          child: Text('UI',
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight:
+                                                      FontWeight.w600))),
+                                      Expanded(
+                                          child: Text(flight.no,
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight:
+                                                      FontWeight.w600))),
+                                      Expanded(
+                                          child: Text(flight.depAp,
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight:
+                                                      FontWeight.w600))),
+                                      Expanded(
+                                          child: Text(flight.dep,
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight:
+                                                      FontWeight.w600))),
                                     ],
                                   ),
                                   const SizedBox(height: 2),
                                   Row(
                                     children: [
-                                      const Expanded(child: Text('0 Stop', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
-                                      Expanded(child: Text(fare.cls + '-' + fare.code.replaceAll(' ', ''), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
-                                      Expanded(child: Text(flight.arrAp, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
-                                      Expanded(child: Text(flight.arr, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
+                                      const Expanded(
+                                          child: Text('0 Stop',
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight:
+                                                      FontWeight.w600))),
+                                      Expanded(
+                                          child: Text(
+                                              fare.cls +
+                                                  '-' +
+                                                  fare.code.replaceAll(' ', ''),
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight:
+                                                      FontWeight.w600))),
+                                      Expanded(
+                                          child: Text(flight.arrAp,
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight:
+                                                      FontWeight.w600))),
+                                      Expanded(
+                                          child: Text(flight.arr,
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight:
+                                                      FontWeight.w600))),
                                     ],
                                   ),
                                 ],
@@ -166,7 +209,8 @@ class FareDetailSheet extends StatelessWidget {
                                       color: const Color(0xFF4CAF50),
                                       borderRadius: BorderRadius.circular(3),
                                     ),
-                                    child: const Icon(Icons.check, color: Colors.white, size: 14),
+                                    child: const Icon(Icons.check,
+                                        color: Colors.white, size: 14),
                                   ),
                                 ),
                               ),
@@ -182,8 +226,8 @@ class FareDetailSheet extends StatelessWidget {
                   // Grey card header — sama level dengan grey card tanggal,
                   // sehingga hanya terkena padding dari SingleChildScrollView
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
                     decoration: BoxDecoration(
                       color: const Color(0xFFEFEDED),
                       borderRadius: BorderRadius.circular(8),
@@ -191,9 +235,11 @@ class FareDetailSheet extends StatelessWidget {
                     child: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.only(left: 6,),
+                          padding: const EdgeInsets.only(
+                            left: 6,
+                          ),
                           decoration: BoxDecoration(
-                            color:Color(0xFFC42D27),
+                            color: Color(0xFFC42D27),
                             borderRadius: BorderRadius.circular(2),
                           ),
                           child: const Text(
@@ -233,12 +279,14 @@ class FareDetailSheet extends StatelessWidget {
                           children: [
                             RichText(
                               text: const TextSpan(
-                                style: TextStyle(fontSize: 14, color: Color(0xFF3D3C3C)),
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xFF3D3C3C)),
                                 children: [
                                   TextSpan(text: 'Dewasa  '),
                                   TextSpan(
                                     text: '- x1',
-                                    style: TextStyle(fontWeight: FontWeight.w800),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w800),
                                   ),
                                 ],
                               ),
@@ -282,8 +330,8 @@ class FareDetailSheet extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       SizedBox(
-                        width: 110,  // ← atur lebar button Copy di sini
-                        height: 44,  // ← atur tinggi button di sini
+                        width: 110, // ← atur lebar button Copy di sini
+                        height: 44, // ← atur tinggi button di sini
                         child: ElevatedButton(
                           onPressed: () => showModalBottomSheet(
                             context: context,
@@ -312,8 +360,8 @@ class FareDetailSheet extends StatelessWidget {
                       ),
                       const SizedBox(width: 12),
                       SizedBox(
-                        width: 110,  // ← atur lebar button Lanjut di sini
-                        height: 44,  // ← atur tinggi button di sini
+                        width: 110, // ← atur lebar button Lanjut di sini
+                        height: 44, // ← atur tinggi button di sini
                         child: ElevatedButton(
                           onPressed: () {
                             // Tutup fare detail sheet, lalu navigasi via named route
@@ -582,7 +630,6 @@ class _CopyFareSummarySheet extends StatelessWidget {
           ),
           const Divider(height: 1, color: Color(0xFFE0E0E0)),
 
-
           // ── Body dengan watermark lingkaran besar ─────────────────────
           SizedBox(
             height: 450,
@@ -592,8 +639,8 @@ class _CopyFareSummarySheet extends StatelessWidget {
                 Positioned(
                   left: -120,
                   top: -30,
-                    child: Container(
-                      width: 450,
+                  child: Container(
+                    width: 450,
                     height: 450,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -674,6 +721,7 @@ class _CopyFareSummarySheet extends StatelessWidget {
     );
   }
 }
+
 // ─── Catatan Bottom Sheet ─────────────────────────────────────────────────
 class _CatatanSheet extends StatelessWidget {
   const _CatatanSheet();
@@ -757,9 +805,7 @@ class _CatatanSheet extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: notes
-                    .map((n) => _buildNoteItem(n))
-                    .toList(),
+                children: notes.map((n) => _buildNoteItem(n)).toList(),
               ),
             ),
           ),

@@ -167,14 +167,26 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
   final _ctrl = TextEditingController();
   late List<String> _recent;
 
+  final Map<String, String> _airportCode = {
+    'Jakarta': 'CGK',
+    'Denpasar': 'DPS',
+    'Surabaya': 'SUB',
+    'Yogyakarta': 'YIA',
+    'Semarang': 'SMG',
+    'Bandung': 'BDO',
+    'Palangkaraya': 'PKY',
+    'Palembang': 'PLM',
+    'Padang': 'PDG',
+  };
+
   final List<String> _popular = [
     'Jakarta',
     'Denpasar',
     'Surabaya',
-    'Kulonprogo',
+    'Yogyakarta',
     'Semarang',
     'Bandung',
-    'Medan',
+    'Palangkaraya',
     'Palembang',
     'Padang',
   ];
@@ -203,11 +215,17 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
     super.dispose();
   }
 
-  void _select(String city) => Navigator.pop(context, city);
+  void _select(String city) {
+    final code = _airportCode[city];
+    final value = code != null ? '$city ($code)' : city;
+    Navigator.pop(context, value);
+  }
+
   void _removeRecent(String city) => setState(() => _recent.remove(city));
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
     return DraggableScrollableSheet(
       initialChildSize: 0.85,
       minChildSize: 0.5,
@@ -222,102 +240,127 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Header ──
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-              child: Row(
+            SizedBox(
+              height: 70,
+              width: double.infinity,
+              child: Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: primaryRed,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          widget.title == 'Kedatangan'
-                              ? Icons.flight_land_rounded
-                              : Icons.flight_takeoff_rounded,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          widget.title,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ],
+                  Positioned(
+                    left: -(sw * 0.18),
+                    top: 5,
+                    bottom: 0,
+                    child: Image.asset(
+                      'assets/images/Ellipseblue.png',
+                      width: sw * 0.76,
+                      fit: BoxFit.fill,
                     ),
                   ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      width: 34,
-                      height: 34,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        shape: BoxShape.circle,
+                  const Positioned(
+                    left: 20,
+                    top: 0,
+                    bottom: 0,
+                    child: Center(
+                      child: Text(
+                        'Cari Lokasi',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      child: const Icon(Icons.close, size: 18),
+                    ),
+                  ),
+                  Positioned(
+                    right: 0,
+                    top: 15,
+                    child: GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/Ellipseyell.png',
+                            width: 60,
+                            height: 45,
+                            fit: BoxFit.fill,
+                          ),
+                          const Text(
+                            'X',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF1A1A1A),
+                              height: 1,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
 
-            // ── Body ──
+            // ── Body (nimpah header) ──
+            // ── Body (nimpah header) ──
             Expanded(
-              child: ListView(
-                controller: scroll,
-                padding: const EdgeInsets.all(16),
-                children: [
-                  // Search field
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFFE0E0E0)),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: TextField(
-                      controller: _ctrl,
-                      autofocus: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Kata Kunci',
-                        labelStyle: TextStyle(color: primaryRed, fontSize: 13),
-                        hintText: 'Masukkan nama kota atau bandara',
-                        hintStyle:
-                            TextStyle(color: Color(0xFFAAAAAA), fontSize: 14),
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                      ),
+              child: Transform.translate(
+                offset: const Offset(0, -16), // ✅ geser ke atas 16px
+                child: Container(
+                  margin: EdgeInsets.only(top: 6),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFFFFFF),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
                     ),
                   ),
-                  const SizedBox(height: 20),
-
-                  if (_isSearching) ...[
-                    _sectionTitle('Hasil Pencarian'),
-                    const SizedBox(height: 10),
-                    _chipWrap(_filtered, showDelete: false),
-                  ] else ...[
-                    if (_recent.isNotEmpty) ...[
-                      _sectionTitle('Terakhir dipilih'),
-                      const SizedBox(height: 10),
-                      _chipWrap(_recent, showDelete: true),
+                  child: ListView(
+                    controller: scroll,
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 32),
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: const Color(0xFFE0E0E0)),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: TextField(
+                          controller: _ctrl,
+                          autofocus: true,
+                          decoration: const InputDecoration(
+                            labelText: 'Kata Kunci',
+                            labelStyle:
+                                TextStyle(color: primaryRed, fontSize: 13),
+                            hintText: 'Masukkan nama kota atau bandara',
+                            hintStyle: TextStyle(
+                                color: Color(0xFFAAAAAA), fontSize: 14),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 14),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 20),
+                      if (_isSearching) ...[
+                        _sectionTitle('Hasil Pencarian'),
+                        const SizedBox(height: 10),
+                        _chipWrap(_filtered, showDelete: false),
+                      ] else ...[
+                        if (_recent.isNotEmpty) ...[
+                          _sectionTitle('Terakhir dipilih'),
+                          const SizedBox(height: 10),
+                          _chipWrap(_recent, showDelete: true),
+                          const SizedBox(height: 20),
+                        ],
+                        _sectionTitle('Destinasi Populer'),
+                        const SizedBox(height: 10),
+                        _chipWrap(_popular, showDelete: false),
+                      ],
                     ],
-                    _sectionTitle('Destinasi Populer'),
-                    const SizedBox(height: 10),
-                    _chipWrap(_popular, showDelete: false),
-                  ],
-                ],
+                  ),
+                ),
               ),
             ),
           ],
@@ -395,6 +438,8 @@ class _HomeTabState extends State<_HomeTab> {
   List<String> _recentFrom = ['Jakarta'];
   List<String> _recentTo = ['Denpasar'];
 
+  DateTime _tanggalPergi = DateTime.now();
+  DateTime? _tanggalPulang;
   void _swapLocations() {
     setState(() {
       final tmp = _from;
@@ -446,9 +491,11 @@ class _HomeTabState extends State<_HomeTab> {
       recentSelections: _recentFrom,
     );
     if (result != null) {
+      // ✅ simpan hanya nama kota (hapus " (CGK)" dst)
+      final cityOnly = result.split(' (').first;
       setState(() {
-        if (!_recentFrom.contains(result)) {
-          _recentFrom = [result, ..._recentFrom];
+        if (!_recentFrom.contains(cityOnly)) {
+          _recentFrom = [cityOnly, ..._recentFrom];
         }
         _from = result;
       });
@@ -462,13 +509,80 @@ class _HomeTabState extends State<_HomeTab> {
       recentSelections: _recentTo,
     );
     if (result != null) {
+      // ✅ simpan hanya nama kota
+      final cityOnly = result.split(' (').first;
       setState(() {
-        if (!_recentTo.contains(result)) {
-          _recentTo = [result, ..._recentTo];
+        if (!_recentTo.contains(cityOnly)) {
+          _recentTo = [cityOnly, ..._recentTo];
         }
         _to = result;
       });
     }
+  }
+
+  Future<void> _pickTanggalPergi() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _tanggalPergi,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: const ColorScheme.light(
+            primary: primaryRed,
+            onPrimary: Colors.white,
+            onSurface: Color(0xFF1A1A1A),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(foregroundColor: primaryRed),
+          ),
+        ),
+        child: child!,
+      ),
+    );
+    if (picked != null) setState(() => _tanggalPergi = picked);
+  }
+
+  String _formatTanggal(DateTime dt) {
+    const hari = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+    const bulan = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des'
+    ];
+    return '${hari[dt.weekday - 1]}, ${dt.day} ${bulan[dt.month - 1]} ${dt.year}';
+  }
+
+  Future<void> _pickTanggalPulang() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _tanggalPulang ?? _tanggalPergi.add(const Duration(days: 3)),
+      firstDate: _tanggalPergi.add(const Duration(days: 1)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: const ColorScheme.light(
+            primary: primaryRed,
+            onPrimary: Colors.white,
+            onSurface: Color(0xFF1A1A1A),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(foregroundColor: primaryRed),
+          ),
+        ),
+        child: child!,
+      ),
+    );
+    if (picked != null) setState(() => _tanggalPulang = picked);
   }
 
   @override
@@ -606,52 +720,56 @@ class _HomeTabState extends State<_HomeTab> {
                     const SizedBox(height: 12),
 
                     // Date Pergi + toggle row
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFFE0E0E0)),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.calendar_today_rounded,
-                              color: Color(0xFFAAAAAA), size: 18),
-                          const SizedBox(width: 10),
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Pergi',
-                                  style: TextStyle(
-                                      fontSize: 11, color: Color(0xFFAAAAAA))),
-                              SizedBox(height: 2),
-                              Text(
-                                'Sen, 26 Jan 2026',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF1A1A1A),
+                    GestureDetector(
+                      onTap: _pickTanggalPergi,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: const Color(0xFFE0E0E0)),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.calendar_today_rounded,
+                                color: Color(0xFFAAAAAA), size: 18),
+                            const SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Pergi',
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        color: Color(0xFFAAAAAA))),
+                                const SizedBox(height: 2),
+                                Text(
+                                  _formatTanggal(_tanggalPergi),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF1A1A1A),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          const Text('Pulang- pergi?',
-                              style: TextStyle(
-                                  fontSize: 11, color: Color(0xFFAAAAAA))),
-                          const SizedBox(width: 4),
-                          Transform.scale(
-                            scale: 0.8,
-                            child: Switch(
-                              value: _roundTrip,
-                              onChanged: (val) =>
-                                  setState(() => _roundTrip = val),
-                              activeColor: primaryRed,
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
+                              ],
                             ),
-                          ),
-                        ],
+                            const Spacer(),
+                            const Text('Pulang- pergi?',
+                                style: TextStyle(
+                                    fontSize: 11, color: Color(0xFFAAAAAA))),
+                            const SizedBox(width: 4),
+                            Transform.scale(
+                              scale: 0.8,
+                              child: Switch(
+                                value: _roundTrip,
+                                onChanged: (val) =>
+                                    setState(() => _roundTrip = val),
+                                activeColor: primaryRed,
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 
@@ -662,40 +780,48 @@ class _HomeTabState extends State<_HomeTab> {
                           ? Column(
                               children: [
                                 const SizedBox(height: 10),
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: const Color(0xFFE0E0E0)),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 14, vertical: 10),
-                                  child: const Row(
-                                    children: [
-                                      Icon(Icons.calendar_today_rounded,
-                                          color: Color(0xFFAAAAAA), size: 18),
-                                      SizedBox(width: 10),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Pulang',
+                                GestureDetector(
+                                  onTap: _pickTanggalPulang,
+                                  child: Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: const Color(0xFFE0E0E0)),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 10),
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.calendar_today_rounded,
+                                            color: Color(0xFFAAAAAA), size: 18),
+                                        const SizedBox(width: 10),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text('Pulang',
+                                                style: TextStyle(
+                                                    fontSize: 11,
+                                                    color: Color(0xFFAAAAAA))),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              _tanggalPulang != null
+                                                  ? _formatTanggal(
+                                                      _tanggalPulang!)
+                                                  : 'Pilih tanggal',
                                               style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: Color(0xFFAAAAAA))),
-                                          SizedBox(height: 2),
-                                          Text(
-                                            'Kam, 29 Jan 2026',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                              color: Color(0xFF1A1A1A),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                                color: _tanggalPulang != null
+                                                    ? const Color(0xFF1A1A1A)
+                                                    : const Color(0xFFAAAAAA),
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
