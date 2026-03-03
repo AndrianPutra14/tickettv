@@ -1,5 +1,7 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'flight_models.dart';
+import 'package:project1/utils/routes.dart';
 
 class FareDetailSheet extends StatelessWidget {
   final FareModel fare;
@@ -275,32 +277,60 @@ class FareDetailSheet extends StatelessWidget {
                   ),
                   const SizedBox(height: 14),
 
-                  // â”€â”€ Buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                  // ── Buttons ────────────────────────────────────────────────────────
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {},
-                          style: OutlinedButton.styleFrom(
+                      SizedBox(
+                        width: 110,  // ← atur lebar button Copy di sini
+                        height: 44,  // ← atur tinggi button di sini
+                        child: ElevatedButton(
+                          onPressed: () => showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (ctx) => _CopyFareSummarySheet(
+                              fare: fare,
+                              flight: flight,
+                              totalPrice: totalPrice,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: kRed.withOpacity(0.5),
+                            elevation: 0,
+                            padding: EdgeInsets.zero,
                             side: const BorderSide(color: kRed, width: 1.5),
-                            foregroundColor: kRed,
-                            padding: const EdgeInsets.symmetric(vertical: 13),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                           child: const Text('Copy',
                               style: TextStyle(
-                                  fontWeight: FontWeight.w700, fontSize: 14)),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14)),
                         ),
                       ),
                       const SizedBox(width: 12),
-                      Expanded(
+                      SizedBox(
+                        width: 110,  // ← atur lebar button Lanjut di sini
+                        height: 44,  // ← atur tinggi button di sini
                         child: ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () {
+                            // Tutup fare detail sheet, lalu navigasi via named route
+                            Navigator.pop(context);
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.informasiPemesanan,
+                              arguments: {
+                                'fare': fare,
+                                'flight': flight,
+                              },
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: kRed,
                             elevation: 0,
-                            padding: const EdgeInsets.symmetric(vertical: 13),
+                            padding: EdgeInsets.zero,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
                           ),
@@ -336,11 +366,11 @@ class FareDetailSheet extends StatelessWidget {
                         const Row(
                           children: [
                             Icon(Icons.edit_note_rounded,
-                                size: 22, color: Color(0xFF121212)),
+                                size: 27, color: Color(0xFF121212)),
                             SizedBox(width: 6),
                             Text('Catatan',
                                 style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.w700,
                                     color: Color(0xFF121212))),
                           ],
@@ -356,11 +386,24 @@ class FareDetailSheet extends StatelessWidget {
                         _noteItem(
                             'Validity passport > 6 bulan dari tanggal terakhir penerbangan'),
                         const SizedBox(height: 6),
-                        const Text('Tampilan selengkapnya...',
+                        GestureDetector(
+                          onTap: () => showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (ctx) => const _CatatanSheet(),
+                          ),
+                          child: const Text(
+                            'Tampilan selengkapnya...',
                             style: TextStyle(
-                                color: kRed,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600)),
+                              color: kRed,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              decoration: TextDecoration.underline,
+                              decorationColor: kRed,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -416,7 +459,7 @@ class FareDetailSheet extends StatelessWidget {
           Expanded(
             child: RichText(
               text: TextSpan(
-                style: const TextStyle(fontSize: 12, color: Color(0xFF444444)),
+                style: const TextStyle(fontSize: 13, color: Color(0xFF3D3C3C)),
                 children: [
                   TextSpan(text: text),
                   if (linkText != null)
@@ -449,4 +492,346 @@ class FareDetailSheet extends StatelessWidget {
     }
     return buf.toString().split('').reversed.join();
   }
+}
+
+// ─── Copy Fare Summary Bottom Sheet ───────────────────────────────────────
+class _CopyFareSummarySheet extends StatelessWidget {
+  final FareModel fare;
+  final FlightModel flight;
+  final double totalPrice;
+
+  const _CopyFareSummarySheet({
+    required this.fare,
+    required this.flight,
+    required this.totalPrice,
+  });
+
+  String _fmtRp(double value) {
+    final s = value.toStringAsFixed(0);
+    final buf = StringBuffer();
+    int count = 0;
+    for (int i = s.length - 1; i >= 0; i--) {
+      if (count > 0 && count % 3 == 0) buf.write('.');
+      buf.write(s[i]);
+      count++;
+    }
+    return buf.toString().split('').reversed.join();
+  }
+
+  String _buildSummaryText() {
+    return 'Depart Summary :\n\n'
+        '${flight.no} - ${fare.cls}(${fare.code})\n'
+        '${flight.depAp} - ${flight.arrAp}\n'
+        'Keberangkatan ${flight.dep} LT\n'
+        'Kedatangan ${flight.arr} LT.\n\n'
+        'Total Price : Rp. ${_fmtRp(totalPrice)}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final summaryText = _buildSummaryText();
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Header ───────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 18, 16, 14),
+            child: Row(
+              children: [
+                const Icon(Icons.copy_outlined,
+                    size: 24, color: Color(0xFF1A1A1A)),
+                const SizedBox(width: 10),
+                const Expanded(
+                  child: Text(
+                    'Copy Fare Summary',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF1A1A1A),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: SizedBox(
+                    width: 45,
+                    height: 45,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/images/Ellipseyell.png',
+                          width: 45,
+                          height: 45,
+                          fit: BoxFit.contain,
+                        ),
+                        const Icon(Icons.close,
+                            size: 26, color: Color(0xFF0F0F0F)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1, color: Color(0xFFE0E0E0)),
+
+
+          // ── Body dengan watermark lingkaran besar ─────────────────────
+          SizedBox(
+            height: 450,
+            child: Stack(
+              children: [
+                // Lingkaran watermark merah
+                Positioned(
+                  left: -120,
+                  top: -30,
+                    child: Container(
+                      width: 450,
+                    height: 450,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: kRed.withOpacity(0.12),
+                    ),
+                  ),
+                ),
+                // Teks summary
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      summaryText,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        height: 1.8,
+                        color: Color(0xFF2A2A2A),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // ── Card Copy button ───────────────────────────────────────────
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFE0E0E0)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.07),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await Clipboard.setData(ClipboardData(text: summaryText));
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Teks berhasil disalin!'),
+                        duration: Duration(seconds: 2),
+                        backgroundColor: kRed,
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: kRed,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+                child: const Text(
+                  'Copy',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+// ─── Catatan Bottom Sheet ─────────────────────────────────────────────────
+class _CatatanSheet extends StatelessWidget {
+  const _CatatanSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    final notes = [
+      _NoteData(
+        text: 'Informasi fare rules, klik ',
+        linkText: 'disini',
+      ),
+      _NoteData(
+        text: 'Block seat dapat dilakukan untuk Reservasi dengan jadwal '
+            'penerbangan > 48 jam sebelum DOT dan tidak berlaku untuk '
+            'kelas promo (Q,T,V,S,H,L)',
+      ),
+      _NoteData(
+        text: 'Permintaan add ',
+        boldText: 'GFF',
+        suffix: ' dapat melalui Helpdesk',
+      ),
+      _NoteData(
+        text: 'Permintaan Void diperkenankan (tanggal issued dan tanggal '
+            'void adalah sama)',
+      ),
+      _NoteData(
+        text: 'Permintaan Rebook, Refund dan Reroute dapat melalui Helpdesk',
+      ),
+      _NoteData(
+        text: 'Rute rute tertentu tidak dapat menggunakan kelas ',
+        boldText: 'V',
+        suffix: ' untuk Return dann Connecting Flight',
+      ),
+      _NoteData(
+        text: 'Ketentuan untuk penerbangan Return atau Connecting dengan '
+            'kombinasi kelas mengikuti kelas terendah',
+      ),
+    ];
+
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Header ────────────────────────────────────────────────────
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            decoration: const BoxDecoration(
+              color: kRed,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.edit_rounded, color: Colors.white, size: 22),
+                const SizedBox(width: 10),
+                const Text(
+                  'Catatan',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: const Icon(Icons.close, color: Colors.white, size: 24),
+                ),
+              ],
+            ),
+          ),
+
+          // ── Body ──────────────────────────────────────────────────────
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: notes
+                    .map((n) => _buildNoteItem(n))
+                    .toList(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNoteItem(_NoteData note) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 1),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 7,
+            height: 7,
+            margin: const EdgeInsets.only(top: 10, right: 10),
+            decoration: const BoxDecoration(
+              color: kRed,
+              shape: BoxShape.circle,
+            ),
+          ),
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFF333333),
+                  height: 1.5,
+                ),
+                children: [
+                  TextSpan(text: note.text),
+                  if (note.linkText != null)
+                    TextSpan(
+                      text: note.linkText,
+                      style: const TextStyle(
+                        color: kRed,
+                        fontWeight: FontWeight.w600,
+                        decoration: TextDecoration.underline,
+                        decorationColor: kRed,
+                      ),
+                    ),
+                  if (note.boldText != null)
+                    TextSpan(
+                      text: note.boldText,
+                      style: const TextStyle(
+                        color: kRed,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  if (note.suffix != null) TextSpan(text: note.suffix),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NoteData {
+  final String text;
+  final String? linkText;
+  final String? boldText;
+  final String? suffix;
+
+  const _NoteData({
+    required this.text,
+    this.linkText,
+    this.boldText,
+    this.suffix,
+  });
 }

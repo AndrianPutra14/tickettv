@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'flight_results_page.dart';
+import 'package:project1/utils/routes.dart';
 
 const Color primaryRed = Color(0xFFC42D27);
 
@@ -646,7 +646,7 @@ class _HomeTabState extends State<_HomeTab> {
                               value: _roundTrip,
                               onChanged: (val) =>
                                   setState(() => _roundTrip = val),
-                              activeThumbColor: primaryRed,
+                              activeColor: primaryRed,
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
                             ),
@@ -726,15 +726,14 @@ class _HomeTabState extends State<_HomeTab> {
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushNamed(
                             context,
-                            MaterialPageRoute(
-                              builder: (_) => FlightResultsPage(
-                                from: _from,
-                                to: _to,
-                                paxLabel: 'All Class . $_passengerLabel',
-                              ),
-                            ),
+                            AppRoutes.flightResults,
+                            arguments: {
+                              'from': _from,
+                              'to': _to,
+                              'paxLabel': 'All Class . $_passengerLabel',
+                            },
                           );
                         },
                         style: ElevatedButton.styleFrom(
