@@ -4,7 +4,7 @@ import 'package:project1/utils/routes.dart';
 const Color primaryRed = Color(0xFFC42D27);
 
 class OnboardingScreen extends StatelessWidget {
-  const OnboardingScreen({Key? key}) : super(key: key);
+  const OnboardingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

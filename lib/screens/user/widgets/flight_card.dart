@@ -4,7 +4,7 @@ import 'fare_detail_sheet.dart';
 
 class FlightCard extends StatefulWidget {
   final FlightModel flight;
-  const FlightCard({required this.flight});
+  const FlightCard({super.key, required this.flight});
 
   @override
   State<FlightCard> createState() => _FlightCardState();
@@ -108,15 +108,15 @@ class _FlightCardState extends State<FlightCard> {
                         Text(widget.flight.dur,
                             style: const TextStyle(
                                 fontSize: 11, color: Color(0xFF3D3C3C), height: 0.5)),
-                        Row(
+                        const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.flight_rounded, size: 20, color: kRed),
+                            Icon(Icons.flight_rounded, size: 20, color: kRed),
                             SizedBox(
                               width: 47, height: 8,
                               child: CustomPaint(painter: _DashedLinePainter(color: kRed)),
                             ),
-                            const Icon(Icons.location_on_rounded, size: 20, color: kRed),
+                            Icon(Icons.location_on_rounded, size: 20, color: kRed),
                           ],
                         ),
                         const Text('Direct',

@@ -5,12 +5,12 @@ import 'widgets/filter_sheet.dart';
 
 // â”€â”€â”€ Demo data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 final _flights = <FlightModel>[
-  FlightModel('IU916', '12:00', 'SUB', '13:30', 'DPS', '1j 30m', [FareModel('ECO', 'B 9', 980.0, sel: true)]),
-  FlightModel('IU917', '12:00', 'SUB', '13:30', 'DPS', '1j 30m', [FareModel('ECO', 'B 9', 980.0, sel: true)]),
-  FlightModel('IU918', '12:00', 'SUB', '13:30', 'DPS', '1j 30m', [FareModel('ECO', 'B 9', 980.0, sel: true)]),
-  FlightModel('IU919', '06:00', 'PKU', '07:45', 'CGK', '1j 45m', [FareModel('ECO', 'B 9', 1243.5, sel: true)]),
-  FlightModel('IU920', '09:00', 'CGK', '10:45', 'SUB', '1j 45m', [FareModel('ECO', 'B 9', 1243.5, sel: true)]),
-  FlightModel('IU921', '12:00', 'SUB', '13:30', 'DPS', '1j 30m', [FareModel('ECO', 'B 9', 980.0, sel: true)]),
+  FlightModel('IU916', '12:00', 'SUB', '13:30', 'DPS', '1j 30m', [const FareModel('ECO', 'B 9', 980.0, sel: true)]),
+  FlightModel('IU917', '12:00', 'SUB', '13:30', 'DPS', '1j 30m', [const FareModel('ECO', 'B 9', 980.0, sel: true)]),
+  FlightModel('IU918', '12:00', 'SUB', '13:30', 'DPS', '1j 30m', [const FareModel('ECO', 'B 9', 980.0, sel: true)]),
+  FlightModel('IU919', '06:00', 'PKU', '07:45', 'CGK', '1j 45m', [const FareModel('ECO', 'B 9', 1243.5, sel: true)]),
+  FlightModel('IU920', '09:00', 'CGK', '10:45', 'SUB', '1j 45m', [const FareModel('ECO', 'B 9', 1243.5, sel: true)]),
+  FlightModel('IU921', '12:00', 'SUB', '13:30', 'DPS', '1j 30m', [const FareModel('ECO', 'B 9', 980.0, sel: true)]),
 ];
 
 const _dates = [

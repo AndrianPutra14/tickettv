@@ -6,7 +6,7 @@ import 'package:project1/utils/routes.dart';
 class FareDetailSheet extends StatelessWidget {
   final FareModel fare;
   final FlightModel flight;
-  const FareDetailSheet({required this.fare, required this.flight});
+  const FareDetailSheet({super.key, required this.fare, required this.flight});
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class FareDetailSheet extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
                     decoration: BoxDecoration(
-                      color: Color(0XFFEFEDED),
+                      color: const Color(0XFFEFEDED),
                       borderRadius: BorderRadius.circular(7),
                       border: Border.all(color: const Color(0xFFE0E0E0)),
                     ),
@@ -135,21 +135,23 @@ class FareDetailSheet extends StatelessWidget {
                             children: [
                               Column(
                                 children: [
+                                  // Row 1: airline code | flight no | depAp | dep
                                   Row(
                                     children: [
-                                      const Expanded(child: Text('UI', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
-                                      Expanded(child: Text(flight.no, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
-                                      Expanded(child: Text(flight.depAp, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
-                                      Expanded(child: Text(flight.dep, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
+                                      Expanded(child: Text(flight.no.replaceAll(RegExp(r'\d'), ''), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
+                                      Expanded(child: Text(flight.no, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
+                                      Expanded(child: Text(flight.depAp, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
+                                      Expanded(child: Text(flight.dep, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
                                     ],
                                   ),
                                   const SizedBox(height: 2),
+                                  // Row 2: airline code | ECO-B9 | arrAp | arr
                                   Row(
                                     children: [
-                                      const Expanded(child: Text('0 Stop', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
-                                      Expanded(child: Text(fare.cls + '-' + fare.code.replaceAll(' ', ''), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
-                                      Expanded(child: Text(flight.arrAp, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
-                                      Expanded(child: Text(flight.arr, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600))),
+                                      Expanded(child: Text(flight.no.replaceAll(RegExp(r'\d'), ''), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
+                                      Expanded(child: Text('${fare.cls}-${fare.code.replaceAll(' ', '')}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
+                                      Expanded(child: Text(flight.arrAp, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
+                                      Expanded(child: Text(flight.arr, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
                                     ],
                                   ),
                                 ],
@@ -193,7 +195,7 @@ class FareDetailSheet extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.only(left: 6,),
                           decoration: BoxDecoration(
-                            color:Color(0xFFC42D27),
+                            color:const Color(0xFFC42D27),
                             borderRadius: BorderRadius.circular(2),
                           ),
                           child: const Text(
@@ -229,30 +231,78 @@ class FareDetailSheet extends StatelessWidget {
                                 fontWeight: FontWeight.w900,
                                 color: Colors.black)),
                         const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            RichText(
-                              text: const TextSpan(
-                                style: TextStyle(fontSize: 14, color: Color(0xFF3D3C3C)),
+                        Builder(builder: (context) {
+                          // Harga asli sebelum diskon
+                          final originalPrice = totalPrice * 1.25;
+                          final discountPct   = 20; // persen diskon
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Label "Dewasa - x1"
+                              RichText(
+                                text: const TextSpan(
+                                  style: TextStyle(fontSize: 14, color: Color(0xFF3D3C3C)),
+                                  children: [
+                                    TextSpan(text: 'Dewasa  '),
+                                    TextSpan(
+                                      text: '- x1',
+                                      style: TextStyle(fontWeight: FontWeight.w800),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Spacer(),
+                              // Kolom harga: dicoret di atas, diskon di bawah
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  TextSpan(text: 'Dewasa  '),
-                                  TextSpan(
-                                    text: '- x1',
-                                    style: TextStyle(fontWeight: FontWeight.w800),
+                                  // Badge diskon + harga asli dicoret
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: kRed,
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: Text(
+                                          '$discountPct%',
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        'Rp. ${_fmtRp(originalPrice)}',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFF999999),
+                                          decoration: TextDecoration.lineThrough,
+                                          decorationColor: Color(0xFF999999),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  // Harga setelah diskon
+                                  Text(
+                                    'Rp. ${_fmtRp(totalPrice)}',
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w800,
+                                        color: kRed),
                                   ),
                                 ],
                               ),
-                            ),
-                            const Spacer(),
-                            Text('Rp. ${_fmtRp(totalPrice)}',
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w800,
-                                    color: Color(0xFF1A1A1A))),
-                          ],
-                        ),
+                            ],
+                          );
+                        }),
                         const SizedBox(height: 4),
-                        _priceRow('Biaya Jasa', 'Rp. 0', hasInfo: true),
+                        _priceRow('Biaya Jasa', 'Rp. 20.000'),
                         const SizedBox(height: 4),
                         _priceRow('Ancillaries', 'Rp. 0'),
                         const SizedBox(height: 5),
@@ -265,7 +315,7 @@ class FareDetailSheet extends StatelessWidget {
                                     fontWeight: FontWeight.w700,
                                     color: kRed)),
                             const Spacer(),
-                            Text('Rp. ${_fmtRp(totalPrice)}',
+                            Text('Rp. ${_fmtRp(totalPrice + 20000)}',
                                 style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700,
@@ -681,33 +731,33 @@ class _CatatanSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final notes = [
-      _NoteData(
+      const _NoteData(
         text: 'Informasi fare rules, klik ',
         linkText: 'disini',
       ),
-      _NoteData(
+      const _NoteData(
         text: 'Block seat dapat dilakukan untuk Reservasi dengan jadwal '
             'penerbangan > 48 jam sebelum DOT dan tidak berlaku untuk '
             'kelas promo (Q,T,V,S,H,L)',
       ),
-      _NoteData(
+      const _NoteData(
         text: 'Permintaan add ',
         boldText: 'GFF',
         suffix: ' dapat melalui Helpdesk',
       ),
-      _NoteData(
+      const _NoteData(
         text: 'Permintaan Void diperkenankan (tanggal issued dan tanggal '
             'void adalah sama)',
       ),
-      _NoteData(
+      const _NoteData(
         text: 'Permintaan Rebook, Refund dan Reroute dapat melalui Helpdesk',
       ),
-      _NoteData(
+      const _NoteData(
         text: 'Rute rute tertentu tidak dapat menggunakan kelas ',
         boldText: 'V',
         suffix: ' untuk Return dann Connecting Flight',
       ),
-      _NoteData(
+      const _NoteData(
         text: 'Ketentuan untuk penerbangan Return atau Connecting dengan '
             'kombinasi kelas mengikuti kelas terendah',
       ),

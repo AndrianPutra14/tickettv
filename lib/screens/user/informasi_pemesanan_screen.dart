@@ -19,22 +19,39 @@ class InformasiPemesananScreen extends StatefulWidget {
 class _InformasiPemesananScreenState
     extends State<InformasiPemesananScreen> {
   // Controllers
-  final _namaDepanController = TextEditingController();
-  final _namaBelakangController = TextEditingController();
-  final _namaLengkapController = TextEditingController();
-  final _hpController = TextEditingController();
-  final _hpAltController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _keteranganController = TextEditingController();
+  final _namaDepanController     = TextEditingController();
+  final _namaBelakangController  = TextEditingController();
+  final _namaLengkapController   = TextEditingController();
+  final _hpController            = TextEditingController();
+  final _hpAltController         = TextEditingController();
+  final _emailController         = TextEditingController();
+  final _keteranganController    = TextEditingController();
   final _keteranganFileController = TextEditingController();
 
-  String _selectedTitle = 'Tn';
+  // Passport controllers (muncul jika bukan WNI)
+  final _noPasporController        = TextEditingController();
+  final _tglLahirController        = TextEditingController();
+  final _tglKadaluarsaController   = TextEditingController();
+  final _negaraPenerbitController  = TextEditingController();
+
+  // Bagasi
+  String? _selectedBagasi;
+  final List<Map<String, dynamic>> _bagasiOptions = [
+    {'label': 'Tidak ada baggage yang dipilih', 'price': null},
+    {'label': '5kg extra bag',  'price': 700400.0},
+    {'label': '10kg extra bag', 'price': 1400800.0},
+    {'label': '20kg extra bag', 'price': 2801600.0},
+    {'label': '30kg extra bag', 'price': 4202400.0},
+    {'label': '40kg extra bag', 'price': 5603200.0},
+  ];
+
+  String _selectedTitle  = 'Tn';
   String _selectedNegara = 'Indonesia';
 
   double get _totalPrice => widget.fare.price * 1000;
 
   String _fmtRp(double value) {
-    final s = value.toStringAsFixed(0);
+    final s   = value.toStringAsFixed(0);
     final buf = StringBuffer();
     int count = 0;
     for (int i = s.length - 1; i >= 0; i--) {
@@ -55,6 +72,10 @@ class _InformasiPemesananScreenState
     _emailController.dispose();
     _keteranganController.dispose();
     _keteranganFileController.dispose();
+    _noPasporController.dispose();
+    _tglLahirController.dispose();
+    _tglKadaluarsaController.dispose();
+    _negaraPenerbitController.dispose();
     super.dispose();
   }
 
@@ -77,10 +98,6 @@ class _InformasiPemesananScreenState
             _buildPenumpangSection(),
             const SizedBox(height: 10),
             _buildKontakPenumpangSection(),
-            const SizedBox(height: 10),
-            _buildKontakAgenSection(),
-            const SizedBox(height: 10),
-            _buildBagasiSection(),
             const SizedBox(height: 10),
             _buildInformasiTambahanSection(),
             const SizedBox(height: 10),
@@ -128,34 +145,38 @@ class _InformasiPemesananScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header row: icon + label + date + green check
-          Row(
-            children: [
-              const Icon(Icons.flight_takeoff_rounded, color: kRed, size: 18),
-              const SizedBox(width: 6),
-              const Text(
-                'Berangkat',
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black),
-              ),
-              const Text(
-                '  -  Jun, 27 Feb 2026',
-                style: TextStyle(fontSize: 13, color: Color(0xFF555555)),
-              ),
-              const Spacer(),
-              Container(
-                width: 22,
-                height: 22,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF4CAF50),
-                  borderRadius: BorderRadius.circular(5),
+          // Header row: Berangkat — styled like fare_detail_sheet
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEFEDED),
+              borderRadius: BorderRadius.circular(7),
+              border: Border.all(color: const Color(0xFFE0E0E0)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.flight_takeoff_rounded, color: kRed, size: 22),
+                const SizedBox(width: 8),
+                const Text(
+                  'Berangkat  -  Jun, 27 Feb 2026',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: kRed),
                 ),
-                child:
-                    const Icon(Icons.check, color: Colors.white, size: 15),
-              ),
-            ],
+                const Spacer(),
+                Container(
+                  width: 22,
+                  height: 22,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF4CAF50),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child:
+                      const Icon(Icons.check, color: Colors.white, size: 15),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 10),
 
@@ -165,92 +186,117 @@ class _InformasiPemesananScreenState
               Expanded(
                   child: Text('MASKAPAI',
                       style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 10,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF888888)))),
               Expanded(
                   child: Text('FLIGHT NO.',
                       style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 10,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF888888)))),
               Expanded(
                   child: Text('RUTE',
                       style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 10,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF888888)))),
               Expanded(
                   child: Text('ETD/ETA',
                       style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 10,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF888888)))),
             ],
           ),
-          const Divider(height: 10, thickness: 1, color: Color(0xFFDDDDDD)),
+          const Divider(height: 8, thickness: 1, color: Color(0xFFDDDDDD)),
 
-          // Row 1: UI | IU916 | PKU | 06:00
+          // Row 1
           Row(
             children: [
-              const Expanded(
-                  child: Text('UI',
-                      style: TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w600))),
+              Expanded(
+                  child: Text(
+                      widget.flight.no.replaceAll(RegExp(r'\d'), ''),
+                      style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          height: 1.5))),
               Expanded(
                   child: Text(widget.flight.no,
                       style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w600))),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          height: 1.5))),
               Expanded(
                   child: Text(widget.flight.depAp,
                       style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w600))),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          height: 1.5))),
               Expanded(
                   child: Text(widget.flight.dep,
                       style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w600))),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          height: 1.5))),
             ],
           ),
-          const SizedBox(height: 3),
 
-          // Row 2: ECO-B9 | | CGK | 07:45
+          // Row 2: UI | ECO-B9 | arrAp | arr
           Row(
             children: [
               Expanded(
                 child: Text(
-                  '${widget.fare.cls}-${widget.fare.code.replaceAll(' ', '')}',
+                  widget.flight.no.replaceAll(RegExp(r'\d'), ''),
                   style: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w600),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      height: 1.5),
                 ),
               ),
-              const Expanded(child: SizedBox()),
+              Expanded(
+                child: Text(
+                  '${widget.fare.cls}-${widget.fare.code.replaceAll(' ', '')}',
+                  style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      height: 1.5),
+                ),
+              ),
               Expanded(
                   child: Text(widget.flight.arrAp,
                       style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w600))),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          height: 1.5))),
               Expanded(
                   child: Text(widget.flight.arr,
                       style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w600))),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          height: 1.5))),
             ],
           ),
-          const SizedBox(height: 10),
-
+          const Divider(height: 1, thickness: 1, color: Color(0xFFDDDDDD)),
+          const SizedBox(height: 8),
           // Ganti button (right-aligned)
           Align(
             alignment: Alignment.centerRight,
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              decoration: BoxDecoration(
-                color: kRed,
-                borderRadius: BorderRadius.circular(6),
+            child: GestureDetector(
+              onTap: () {},
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+                decoration: BoxDecoration(
+                  color: kRed,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Text('Ganti',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700)),
               ),
-              child: const Text('Ganti',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700)),
             ),
           ),
         ],
@@ -266,8 +312,38 @@ class _InformasiPemesananScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section header with numbered badge
-          _numberedSectionHeader(3, 'Rincian Harga'),
+          // Section header — styled like fare_detail_sheet
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEFEDED),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(left: 6),
+                  decoration: BoxDecoration(
+                    color: kRed,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                  child: const Text(
+                    '\$: ',
+                    style: TextStyle(
+                        fontSize: 17,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Text('Rincian Harga',
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: kRed)),
+              ],
+            ),
+          ),
           const SizedBox(height: 10),
           const Divider(height: 1, thickness: 1, color: Color(0xFFEEEEEE)),
           const SizedBox(height: 8),
@@ -278,16 +354,83 @@ class _InformasiPemesananScreenState
                   TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
           const SizedBox(height: 6),
 
-          _priceRow('Dewasa  - x1', 'Rp. ${_fmtRp(_totalPrice)}',
-              bold: true),
+          // Harga Dewasa dengan diskon
+          Builder(builder: (context) {
+            final originalPrice = _totalPrice * 1.25;
+            const discountPct   = 20;
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  text: const TextSpan(
+                    style: TextStyle(fontSize: 13, color: Color(0xFF3D3C3C)),
+                    children: [
+                      TextSpan(text: 'Dewasa  '),
+                      TextSpan(
+                        text: '- x1',
+                        style: TextStyle(fontWeight: FontWeight.w800),
+                      ),
+                    ],
+                  ),
+                ),
+                const Spacer(),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    // Badge diskon + harga asli dicoret
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: kRed,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: const Text(
+                            '$discountPct%',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          'Rp. ${_fmtRp(originalPrice)}',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: Color(0xFF999999),
+                            decoration: TextDecoration.lineThrough,
+                            decorationColor: Color(0xFF999999),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    // Harga setelah diskon
+                    Text(
+                      'Rp. ${_fmtRp(_totalPrice)}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: kRed,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          }),
           const SizedBox(height: 4),
-          _priceRow('Biaya Jasa', 'Rp. 0', hasPlus: true),
+          _priceRow('Biaya Jasa', 'Rp. 20.000', ),
           const SizedBox(height: 4),
           _priceRow('Ancillaries', 'Rp. 0'),
           const SizedBox(height: 6),
           const Divider(height: 1, thickness: 1, color: Color(0xFFEEEEEE)),
           const SizedBox(height: 6),
-          _priceRow('Total', 'Rp. ${_fmtRp(_totalPrice)}',
+          _priceRow('Total', 'Rp. ${_fmtRp(_totalPrice + 20000)}',
               bold: true, red: true),
           const SizedBox(height: 10),
 
@@ -298,10 +441,11 @@ class _InformasiPemesananScreenState
               onTap: () {},
               child: Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+                    const EdgeInsets.symmetric(horizontal: 22, vertical: 7),
                 decoration: BoxDecoration(
-                  color: kRed,
+                  color: kRed.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: kRed, width: 1.5),
                 ),
                 child: const Text('Copy',
                     style: TextStyle(
@@ -324,8 +468,8 @@ class _InformasiPemesananScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: const [
+          const Row(
+            children: [
               Icon(Icons.edit_note_rounded,
                   size: 20, color: Color(0xFF121212)),
               SizedBox(width: 6),
@@ -336,23 +480,24 @@ class _InformasiPemesananScreenState
                       color: Color(0xFF121212))),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           _bulletNote('Informasi fare rules, klik ', linkText: 'disini'),
-          const SizedBox(height: 6),
           _bulletNote(
               'Komisi 0 rupiah untuk rute SIN-CGK dikelas promo (X,V), '
               'silahkan untuk menambahkan Service Fee sebagai komisi'),
-          const SizedBox(height: 6),
           _bulletNote(
               'Validity passport > 6 bulan dari tanggal terakhir penerbangan'),
           const SizedBox(height: 8),
-          const Text('Tampilan selengkapnya...',
-              style: TextStyle(
-                  color: kRed,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  decoration: TextDecoration.underline,
-                  decorationColor: kRed)),
+          GestureDetector(
+            onTap: () {},
+            child: const Text('Tampilan selengkapnya...',
+                style: TextStyle(
+                    color: kRed,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    decoration: TextDecoration.underline,
+                    decorationColor: kRed)),
+          ),
         ],
       ),
     );
@@ -369,6 +514,7 @@ class _InformasiPemesananScreenState
           _sectionHeader(Icons.person_outline_rounded, 'Penumpang'),
           const SizedBox(height: 12),
 
+          // "Dewasa" label in red
           const Text('Dewasa',
               style: TextStyle(
                   fontSize: 13,
@@ -376,13 +522,13 @@ class _InformasiPemesananScreenState
                   color: kRed)),
           const SizedBox(height: 10),
 
-          // Title + Nama Depan
+          // Title dropdown + Nama Depan
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Title dropdown
               Container(
-                width: 78,
+                width: 80,
                 height: 44,
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 decoration: BoxDecoration(
@@ -395,7 +541,7 @@ class _InformasiPemesananScreenState
                     isDense: true,
                     items: ['Tn', 'Ny', 'Nn']
                         .map((t) =>
-                            DropdownMenuItem(value: t, child: Text(t)))
+                            DropdownMenuItem(value: t, child: Text(t, style: const TextStyle(fontSize: 13))))
                         .toList(),
                     onChanged: (v) => setState(() => _selectedTitle = v!),
                   ),
@@ -408,7 +554,7 @@ class _InformasiPemesananScreenState
           ),
           const SizedBox(height: 8),
           _inputField('Nama Belakang', _namaBelakangController),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
 
           const Text(
               '* Sesuai identitas diri/identitas paspor dan harus back.',
@@ -417,7 +563,7 @@ class _InformasiPemesananScreenState
 
           // Nationality dropdown
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               border: Border.all(color: const Color(0xFFCCCCCC)),
               borderRadius: BorderRadius.circular(6),
@@ -429,49 +575,231 @@ class _InformasiPemesananScreenState
                 isDense: true,
                 items: ['Indonesia', 'Malaysia', 'Singapore']
                     .map((n) =>
-                        DropdownMenuItem(value: n, child: Text(n)))
+                        DropdownMenuItem(value: n, child: Text(n, style: const TextStyle(fontSize: 13))))
                     .toList(),
                 onChanged: (v) =>
                     setState(() => _selectedNegara = v!),
               ),
             ),
           ),
-          const SizedBox(height: 10),
 
-          // Bagasi route inside Penumpang
+          // ── Data Paspor (hanya jika bukan WNI) ──────────────────────────
+          if (_selectedNegara != 'Indonesia') ...[
+            const SizedBox(height: 14),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF8F8),
+                border: Border.all(color: const Color(0xFFEECCCC)),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header
+                  Row(
+                    children: [
+                      const Icon(Icons.badge_outlined, size: 18, color: kRed),
+                      const SizedBox(width: 6),
+                      const Text(
+                        'Data Paspor',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: kRed,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+
+                  // No. Paspor
+                  _inputField('No. Paspor', _noPasporController),
+                  const SizedBox(height: 8),
+
+                  // Tanggal Lahir
+                  GestureDetector(
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime(1990),
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime.now(),
+                        helpText: 'Pilih Tanggal Lahir',
+                      );
+                      if (picked != null) {
+                        setState(() {
+                          _tglLahirController.text =
+                              '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
+                        });
+                      }
+                    },
+                    child: AbsorbPointer(
+                      child: _inputField(
+                        'Tanggal Lahir  (DD/MM/YYYY)',
+                        _tglLahirController,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Tanggal Kadaluarsa
+                  GestureDetector(
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now().add(
+                            const Duration(days: 365 * 2)),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2100),
+                        helpText: 'Tanggal Kadaluarsa Paspor',
+                      );
+                      if (picked != null) {
+                        setState(() {
+                          _tglKadaluarsaController.text =
+                              '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
+                        });
+                      }
+                    },
+                    child: AbsorbPointer(
+                      child: _inputField(
+                        'Tanggal Kadaluarsa  (DD/MM/YYYY)',
+                        _tglKadaluarsaController,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Negara Penerbit
+                  _inputField('Negara Penerbit Paspor', _negaraPenerbitController),
+
+                  const SizedBox(height: 8),
+                  const Text(
+                    '* Validity passport > 6 bulan dari tanggal terakhir penerbangan',
+                    style: TextStyle(fontSize: 11, color: Color(0xFF888888)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
+          const SizedBox(height: 12),
+
+          // Bagasi sub-section
           const Text('Bagasi',
               style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF444444))),
           const SizedBox(height: 6),
+
+          // ── Rute header + delete icon ──
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF0F0),
-              border: Border.all(color: const Color(0xFFEEDDDD)),
-              borderRadius: BorderRadius.circular(6),
+              color: const Color(0xFFF5F5F5),
+              border: Border.all(color: const Color(0xFFDDDDDD)),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
             ),
             child: Row(
               children: [
-                const Icon(Icons.luggage_outlined, color: kRed, size: 18),
-                const SizedBox(width: 8),
-                const Expanded(
-                    child: Text('PKU >> CGK (Pergi)',
-                        style: TextStyle(fontSize: 12))),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: kRed,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: const Text('Pilih Bagasi',
-                      style:
-                          TextStyle(color: Colors.white, fontSize: 11)),
+                const Icon(Icons.flight_takeoff_rounded,
+                    color: Color(0xFF555555), size: 15),
+                const SizedBox(width: 6),
+                const Text('PKU',
+                    style: TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w700)),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  child: Icon(Icons.double_arrow_rounded,
+                      size: 14, color: Color(0xFF888888)),
+                ),
+                const Text('CGK',
+                    style: TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w700)),
+                const SizedBox(width: 6),
+                const Text('(Pergi)',
+                    style: TextStyle(
+                        fontSize: 12, color: Color(0xFF666666))),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () => setState(() => _selectedBagasi = null),
+                  child: const Icon(Icons.delete_outline_rounded,
+                      size: 18, color: Color(0xFF888888)),
                 ),
               ],
+            ),
+          ),
+
+          // ── Dropdown pilih bagasi ──
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: const Color(0xFFDDDDDD)),
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(6)),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String?>(
+                value: _selectedBagasi,
+                isExpanded: true,
+                isDense: true,
+                hint: const Text(
+                  'Pilih Bagasi',
+                  style: TextStyle(fontSize: 15, color: Color(0xFF888888)),
+                ),
+                icon: const Icon(Icons.keyboard_arrow_down_rounded,
+                    color: Color(0xFF555555)),
+                selectedItemBuilder: (context) {
+                  return _bagasiOptions.map((opt) {
+                    return Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        opt['label'] as String,
+                        style: const TextStyle(
+                            fontSize: 14, color: Color(0xFF222222)),
+                      ),
+                    );
+                  }).toList();
+                },
+                items: _bagasiOptions.map((opt) {
+                  final isNone = opt['price'] == null;
+                  return DropdownMenuItem<String?>(
+                    value: opt['label'] as String,
+                    child: Container(
+                      color: isNone
+                          ? const Color(0xFF6D6D6D)
+                          : Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 6),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              opt['label'] as String,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: isNone
+                                    ? Colors.white
+                                    : const Color(0xFF222222),
+                              ),
+                            ),
+                          ),
+                          if (!isNone)
+                            Text(
+                              'Rp. ${_fmtRp(opt['price'] as double)}',
+                              style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF222222)),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (v) => setState(() => _selectedBagasi = v),
+              ),
             ),
           ),
         ],
@@ -502,76 +830,6 @@ class _InformasiPemesananScreenState
     );
   }
 
-  // ── Kontak Agen ───────────────────────────────────────────────────────────
-  Widget _buildKontakAgenSection() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: _cardDecor(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _sectionHeader(Icons.business_outlined, 'Kontak Agen'),
-          const SizedBox(height: 12),
-          _labelReadOnlyField('Agen', 'PT. Mega Sagara Perkasa'),
-          const SizedBox(height: 8),
-          _labelReadOnlyField('No.HP', '+62 8123960338'),
-          const SizedBox(height: 8),
-          _labelReadOnlyField('Email', 'fajri.agara@nasagroup.net'),
-        ],
-      ),
-    );
-  }
-
-  // ── Bagasi ────────────────────────────────────────────────────────────────
-  Widget _buildBagasiSection() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: _cardDecor(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              _sectionHeader(Icons.luggage_outlined, 'Bagasi'),
-              const Spacer(),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                decoration: BoxDecoration(
-                  color: kRed,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: const Text('Atur bagasi',
-                    style: TextStyle(color: Colors.white, fontSize: 11)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF0F0),
-              border: Border.all(color: const Color(0xFFEEDDDD)),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: const Row(
-              children: [
-                Icon(Icons.luggage_outlined, color: kRed, size: 18),
-                SizedBox(width: 8),
-                Expanded(
-                    child: Text('PKU >> CGK (Pergi)',
-                        style: TextStyle(fontSize: 12))),
-                Text('Rp. 0',
-                    style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w600)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   // ── Informasi Tambahan (Opsional) ─────────────────────────────────────────
   Widget _buildInformasiTambahanSection() {
@@ -604,16 +862,19 @@ class _InformasiPemesananScreenState
                     child: Text('Unggah Dokumen',
                         style: TextStyle(
                             fontSize: 13, color: Color(0xFF888888)))),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF555555),
-                    borderRadius: BorderRadius.circular(5),
+                GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF555555),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: const Text('Pilih',
+                        style:
+                            TextStyle(color: Colors.white, fontSize: 12)),
                   ),
-                  child: const Text('Pilih',
-                      style:
-                          TextStyle(color: Colors.white, fontSize: 12)),
                 ),
               ],
             ),
@@ -634,8 +895,8 @@ class _InformasiPemesananScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: const [
+          const Row(
+            children: [
               Icon(Icons.edit_note_rounded,
                   size: 20, color: Color(0xFF121212)),
               SizedBox(width: 6),
@@ -646,23 +907,24 @@ class _InformasiPemesananScreenState
                       color: Color(0xFF121212))),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           _bulletNote('Informasi fare rules, klik ', linkText: 'disini'),
-          const SizedBox(height: 6),
           _bulletNote(
               'Komisi 0 rupiah untuk rute SIN-CGK dikelas promo (X,V), '
               'silahkan untuk menambahkan Service Fee sebagai komisi'),
-          const SizedBox(height: 6),
           _bulletNote(
               'Validity passport > 6 bulan dari tanggal terakhir penerbangan'),
           const SizedBox(height: 8),
-          const Text('Tampilan selengkapnya...',
-              style: TextStyle(
-                  color: kRed,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  decoration: TextDecoration.underline,
-                  decorationColor: kRed)),
+          GestureDetector(
+            onTap: () {},
+            child: const Text('Tampilan selengkapnya...',
+                style: TextStyle(
+                    color: kRed,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    decoration: TextDecoration.underline,
+                    decorationColor: kRed)),
+          ),
         ],
       ),
     );
@@ -775,7 +1037,7 @@ class _InformasiPemesananScreenState
                 borderRadius: BorderRadius.circular(3)),
             child: const Icon(Icons.add, color: kRed, size: 14),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 6),
         ],
         Text(value,
             style: TextStyle(
@@ -816,11 +1078,11 @@ class _InformasiPemesananScreenState
     );
   }
 
-  /// Read-only field with label on left and value on right
+  /// Read-only display field (grey background)
   Widget _labelReadOnlyField(String label, String value) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
       decoration: BoxDecoration(
         color: const Color(0xFFF7F7F7),
         border: Border.all(color: const Color(0xFFDDDDDD)),
@@ -886,37 +1148,44 @@ class _InformasiPemesananScreenState
     );
   }
 
-  /// Bullet note with optional inline link text
+  /// Bullet note with optional inline red link text — styled like fare_detail_sheet
   Widget _bulletNote(String text, {String? linkText}) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('• ',
-            style:
-                TextStyle(fontSize: 12, color: Color(0xFF444444))),
-        Expanded(
-          child: RichText(
-            text: TextSpan(
-              style: const TextStyle(
-                  fontSize: 12,
-                  color: Color(0xFF444444),
-                  height: 1.45),
-              children: [
-                TextSpan(text: text),
-                if (linkText != null)
-                  TextSpan(
-                    text: linkText,
-                    style: const TextStyle(
-                        color: kRed,
-                        fontWeight: FontWeight.w600,
-                        decoration: TextDecoration.underline,
-                        decorationColor: kRed),
-                  ),
-              ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            margin: const EdgeInsets.only(top: 5, right: 8),
+            decoration:
+                const BoxDecoration(color: kRed, shape: BoxShape.circle),
+          ),
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF444444),
+                    height: 1.45),
+                children: [
+                  TextSpan(text: text),
+                  if (linkText != null)
+                    TextSpan(
+                      text: linkText,
+                      style: const TextStyle(
+                          color: kRed,
+                          fontWeight: FontWeight.w600,
+                          decoration: TextDecoration.underline,
+                          decorationColor: kRed),
+                    ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

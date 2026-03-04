@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'flight_models.dart';
 
 class FilterSheet extends StatefulWidget {
-  const FilterSheet();
+  const FilterSheet({super.key});
 
   @override
   State<FilterSheet> createState() => _FilterSheetState();
@@ -279,8 +279,8 @@ class _FilterSheetState extends State<FilterSheet> {
                           const SizedBox(height: 12),
                           const Divider(color: Color(0xFFF0F0F0)),
                           const SizedBox(height: 4),
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               Text('Waktu', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: kRed)),
                               Spacer(),
                               Text('Hapus Semua', style: TextStyle(fontSize: 12, color: Color(0xFF888888))),
