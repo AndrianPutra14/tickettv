@@ -290,7 +290,7 @@ class _MyBookingPageState extends State<MyBookingPage> {
         color: _kRed,
         borderRadius: BorderRadius.circular(10),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       child: Row(
         children: const [
           Icon(Icons.menu_rounded, color: Colors.white, size: 22),
