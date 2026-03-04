@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:project1/screens/user/mybookng.dart';
 import 'package:project1/utils/routes.dart';
 
 const Color primaryRed = Color(0xFFC42D27);
@@ -1276,10 +1277,7 @@ class _MyBookingTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('My Booking',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-    );
+    return const MyBookingPage();
   }
 }
 

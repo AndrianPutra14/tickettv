@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project1/screens/onboarding.dart';
 import 'package:project1/screens/welcome_screen.dart';
 import 'package:project1/screens/user/homepage.dart';
+import 'package:project1/screens/user/mybookng.dart';
 import 'package:project1/screens/user/flight_results_page.dart';
 import 'package:project1/screens/user/informasi_pemesanan_screen.dart';
 import 'package:project1/screens/user/widgets/flight_models.dart';
@@ -13,6 +14,7 @@ class AppRoutes {
   static const String home = '/home';
   static const String flightResults = '/flight-results';
   static const String informasiPemesanan = '/informasi-pemesanan';
+  static const String myBooking = '/my-booking';
 
   // Route map
   static Map<String, WidgetBuilder> get routes => {
@@ -36,5 +38,6 @@ class AppRoutes {
             flight: args['flight'] as FlightModel,
           );
         },
+        myBooking: (context) => const MyBookingPage(),
       };
 }
