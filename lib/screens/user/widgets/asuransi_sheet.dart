@@ -10,7 +10,7 @@ class AsuransiSheet extends StatefulWidget {
 }
 
 class _AsuransiSheetState extends State<AsuransiSheet> {
-  bool _pilihSemua    = true;
+  bool _pilihSemua = true;
   bool _cermatiDipilih = true;
 
   final String _prefix = '+62';
@@ -18,7 +18,7 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
 
   static const List<String> _manfaat = [
     'Penerbangan overbook, hingga IDR 2,500,00',
-    'Meninggal dunia hingga cacat tetap kibat kecelakaan , sebesar IDR 25,000,000',
+    'Meninggal dunia hingga cacat tetap akibat kecelakaan , sebesar IDR 25,000,000',
     'Biaya pengobatan akibat kecelakaan, hingga IDR 5,000,000',
     'Pembatalan oleh Tertanggung, hingga IDR 2.500.000',
     'Keterlambatan Penerbangan, hingga IDR 500,000',
@@ -35,14 +35,15 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 60),
+      // margin atas dihapus agar header naik
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
         children: [
-          // ── Header ──────────────────────────────────────────────────────
+
+          // ── HEADER ─────────────────────────────────────
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -70,14 +71,16 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
             ),
           ),
 
-          // ── Body ────────────────────────────────────────────────────────
+          // ── BODY ───────────────────────────────────────
           Flexible(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
               child: Column(
+                
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Jenis Asuransi row
+                  
+                  // Jenis Asuransi
                   Row(
                     children: [
                       const Icon(Icons.menu_rounded,
@@ -92,12 +95,11 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
                         ),
                       ),
                       const Spacer(),
-                      // "Pilih Semua" teks
-                      const Text('Pilih Semua',
-                          style: TextStyle(
-                              fontSize: 13, color: Color(0xFF444444))),
+                      const Text(
+                        'Pilih Semua',
+                        style: TextStyle(fontSize: 13, color: Color(0xFF444444)),
+                      ),
                       const SizedBox(width: 6),
-                      // List icon
                       Container(
                         width: 26,
                         height: 26,
@@ -109,7 +111,6 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
                             color: Colors.white, size: 18),
                       ),
                       const SizedBox(width: 6),
-                      // Checkbox pilih semua
                       GestureDetector(
                         onTap: () =>
                             setState(() => _pilihSemua = !_pilihSemua),
@@ -134,9 +135,10 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
 
-                  // Provider label
+                  const SizedBox(height: 15),
+
+                  // Provider
                   const Text(
                     'Provider : cermati',
                     style: TextStyle(
@@ -145,9 +147,10 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
                       color: kRed,
                     ),
                   ),
+
                   const SizedBox(height: 8),
 
-                  // ── Cermati Insurance Card ─────────────────────────────
+                  // ── CARD CERMATI INSURANCE ─────────────────
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: const Color(0xFFDDDDDD)),
@@ -155,14 +158,11 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
                     ),
                     child: Column(
                       children: [
-                        // Card header
+
+                        // Header card
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 10),
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(8)),
-                          ),
                           child: Row(
                             children: [
                               const Expanded(
@@ -175,11 +175,9 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
                                   ),
                                 ),
                               ),
-                              // Sort icon
                               const Icon(Icons.unfold_more_rounded,
                                   size: 18, color: Color(0xFF888888)),
                               const SizedBox(width: 8),
-                              // Harga
                               const Text(
                                 'Rp. 10.000',
                                 style: TextStyle(
@@ -189,7 +187,6 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              // Toggle dipilih
                               GestureDetector(
                                 onTap: () => setState(
                                     () => _cermatiDipilih = !_cermatiDipilih),
@@ -215,9 +212,10 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
                             ],
                           ),
                         ),
+
                         const Divider(height: 1, color: Color(0xFFEEEEEE)),
 
-                        // Daftar manfaat
+                        // Manfaat
                         Padding(
                           padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
                           child: Column(
@@ -255,85 +253,27 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 16),
 
-                  // ── Telepon Alternatif field ────────────────────────────
-                  Stack(
-                    children: [
-                      // Outline border container
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xFFCCCCCC)),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            // Flag + kode negara
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 14),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/Ellipsered.png',
-                                    width: 22,
-                                    height: 16,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) =>
-                                        const Icon(Icons.flag,
-                                            size: 18, color: kRed),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(_prefix,
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600)),
-                                ],
-                              ),
-                            ),
-                            Container(
-                                width: 1,
-                                height: 30,
-                                color: const Color(0xFFCCCCCC)),
-                            Expanded(
-                              child: TextField(
-                                controller: _teleponAltController,
-                                keyboardType: TextInputType.phone,
-                                style: const TextStyle(fontSize: 14),
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 14),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                  // Telepon Alternatif
+                  TextField(
+                    controller: _teleponAltController,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                      labelText: 'Telepon Alternatif',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      // Floating label "Telepon Alternatif"
-                      Positioned(
-                        top: -9,
-                        left: 12,
-                        child: Container(
-                          color: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: const Text(
-                            'Telepon Alternatif',
-                            style: TextStyle(
-                                fontSize: 11,
-                                color: Color(0xFF888888)),
-                          ),
-                        ),
-                      ),
-                    ],
+                      prefixText: '$_prefix ',
+                    ),
                   ),
                 ],
               ),
             ),
           ),
 
-          // ── Footer buttons ───────────────────────────────────────────────
+          // ── FOOTER BUTTON ─────────────────────────────
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: const BoxDecoration(
@@ -342,7 +282,6 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
             ),
             child: Row(
               children: [
-                // OK button (outlined)
                 Expanded(
                   child: SizedBox(
                     height: 46,
@@ -354,14 +293,15 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: const Text('Ok',
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w700)),
+                      child: const Text(
+                        'Ok',
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w700),
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 12),
-                // Tidak perlu Asuransi button (filled red)
                 Expanded(
                   flex: 2,
                   child: SizedBox(
@@ -374,11 +314,13 @@ class _AsuransiSheetState extends State<AsuransiSheet> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: const Text('Tidak perlu Asuransi',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700)),
+                      child: const Text(
+                        'Tidak perlu Asuransi',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700),
+                      ),
                     ),
                   ),
                 ),

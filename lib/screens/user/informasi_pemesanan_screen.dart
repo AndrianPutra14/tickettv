@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'widgets/flight_models.dart';
+import 'widgets/asuransi_sheet.dart' as sheet;
 
 class InformasiPemesananScreen extends StatefulWidget {
   final FareModel fare;
@@ -16,42 +17,41 @@ class InformasiPemesananScreen extends StatefulWidget {
       _InformasiPemesananScreenState();
 }
 
-class _InformasiPemesananScreenState
-    extends State<InformasiPemesananScreen> {
+class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
   // Controllers
-  final _namaDepanController     = TextEditingController();
-  final _namaBelakangController  = TextEditingController();
-  final _namaLengkapController   = TextEditingController();
-  final _hpController            = TextEditingController();
-  final _hpAltController         = TextEditingController();
-  final _emailController         = TextEditingController();
-  final _keteranganController    = TextEditingController();
+  final _namaDepanController = TextEditingController();
+  final _namaBelakangController = TextEditingController();
+  final _namaLengkapController = TextEditingController();
+  final _hpController = TextEditingController();
+  final _hpAltController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _keteranganController = TextEditingController();
   final _keteranganFileController = TextEditingController();
 
   // Passport controllers (muncul jika bukan WNI)
-  final _noPasporController        = TextEditingController();
-  final _tglLahirController        = TextEditingController();
-  final _tglKadaluarsaController   = TextEditingController();
-  final _negaraPenerbitController  = TextEditingController();
+  final _noPasporController = TextEditingController();
+  final _tglLahirController = TextEditingController();
+  final _tglKadaluarsaController = TextEditingController();
+  final _negaraPenerbitController = TextEditingController();
 
   // Bagasi
   String? _selectedBagasi;
   final List<Map<String, dynamic>> _bagasiOptions = [
     {'label': 'Tidak ada baggage yang dipilih', 'price': null},
-    {'label': '5kg extra bag',  'price': 700400.0},
+    {'label': '5kg extra bag', 'price': 700400.0},
     {'label': '10kg extra bag', 'price': 1400800.0},
     {'label': '20kg extra bag', 'price': 2801600.0},
     {'label': '30kg extra bag', 'price': 4202400.0},
     {'label': '40kg extra bag', 'price': 5603200.0},
   ];
 
-  String _selectedTitle  = 'Tn';
+  String _selectedTitle = 'Tn';
   String _selectedNegara = 'Indonesia';
 
   double get _totalPrice => widget.fare.price * 1000;
 
   String _fmtRp(double value) {
-    final s   = value.toStringAsFixed(0);
+    final s = value.toStringAsFixed(0);
     final buf = StringBuffer();
     int count = 0;
     for (int i = s.length - 1; i >= 0; i--) {
@@ -160,9 +160,7 @@ class _InformasiPemesananScreenState
                 const Text(
                   'Berangkat  -  Jun, 27 Feb 2026',
                   style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: kRed),
+                      fontSize: 14, fontWeight: FontWeight.w700, color: kRed),
                 ),
                 const Spacer(),
                 Container(
@@ -172,8 +170,7 @@ class _InformasiPemesananScreenState
                     color: const Color(0xFF4CAF50),
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child:
-                      const Icon(Icons.check, color: Colors.white, size: 15),
+                  child: const Icon(Icons.check, color: Colors.white, size: 15),
                 ),
               ],
             ),
@@ -215,8 +212,7 @@ class _InformasiPemesananScreenState
           Row(
             children: [
               Expanded(
-                  child: Text(
-                      widget.flight.no.replaceAll(RegExp(r'\d'), ''),
+                  child: Text(widget.flight.no.replaceAll(RegExp(r'\d'), ''),
                       style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -249,18 +245,14 @@ class _InformasiPemesananScreenState
                 child: Text(
                   widget.flight.no.replaceAll(RegExp(r'\d'), ''),
                   style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      height: 1.5),
+                      fontSize: 12, fontWeight: FontWeight.w600, height: 1.5),
                 ),
               ),
               Expanded(
                 child: Text(
                   '${widget.fare.cls}-${widget.fare.code.replaceAll(' ', '')}',
                   style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      height: 1.5),
+                      fontSize: 12, fontWeight: FontWeight.w600, height: 1.5),
                 ),
               ),
               Expanded(
@@ -350,14 +342,13 @@ class _InformasiPemesananScreenState
 
           // JT label
           const Text('JT',
-              style:
-                  TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
           const SizedBox(height: 6),
 
           // Harga Dewasa dengan diskon
           Builder(builder: (context) {
             final originalPrice = _totalPrice * 1.25;
-            const discountPct   = 20;
+            const discountPct = 20;
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -424,7 +415,10 @@ class _InformasiPemesananScreenState
             );
           }),
           const SizedBox(height: 4),
-          _priceRow('Biaya Jasa', 'Rp. 20.000', ),
+          _priceRow(
+            'Biaya Jasa',
+            'Rp. 20.000',
+          ),
           const SizedBox(height: 4),
           _priceRow('Ancillaries', 'Rp. 0'),
           const SizedBox(height: 6),
@@ -470,8 +464,7 @@ class _InformasiPemesananScreenState
         children: [
           const Row(
             children: [
-              Icon(Icons.edit_note_rounded,
-                  size: 20, color: Color(0xFF121212)),
+              Icon(Icons.edit_note_rounded, size: 20, color: Color(0xFF121212)),
               SizedBox(width: 6),
               Text('Catatan',
                   style: TextStyle(
@@ -482,8 +475,7 @@ class _InformasiPemesananScreenState
           ),
           const SizedBox(height: 8),
           _bulletNote('Informasi fare rules, klik ', linkText: 'disini'),
-          _bulletNote(
-              'Komisi 0 rupiah untuk rute SIN-CGK dikelas promo (X,V), '
+          _bulletNote('Komisi 0 rupiah untuk rute SIN-CGK dikelas promo (X,V), '
               'silahkan untuk menambahkan Service Fee sebagai komisi'),
           _bulletNote(
               'Validity passport > 6 bulan dari tanggal terakhir penerbangan'),
@@ -517,9 +509,7 @@ class _InformasiPemesananScreenState
           // "Dewasa" label in red
           const Text('Dewasa',
               style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: kRed)),
+                  fontSize: 13, fontWeight: FontWeight.w700, color: kRed)),
           const SizedBox(height: 10),
 
           // Title dropdown + Nama Depan
@@ -540,24 +530,24 @@ class _InformasiPemesananScreenState
                     value: _selectedTitle,
                     isDense: true,
                     items: ['Tn', 'Ny', 'Nn']
-                        .map((t) =>
-                            DropdownMenuItem(value: t, child: Text(t, style: const TextStyle(fontSize: 13))))
+                        .map((t) => DropdownMenuItem(
+                            value: t,
+                            child:
+                                Text(t, style: const TextStyle(fontSize: 13))))
                         .toList(),
                     onChanged: (v) => setState(() => _selectedTitle = v!),
                   ),
                 ),
               ),
               const SizedBox(width: 8),
-              Expanded(
-                  child: _inputField('Nama Depan', _namaDepanController)),
+              Expanded(child: _inputField('Nama Depan', _namaDepanController)),
             ],
           ),
           const SizedBox(height: 8),
           _inputField('Nama Belakang', _namaBelakangController),
           const SizedBox(height: 6),
 
-          const Text(
-              '* Sesuai identitas diri/identitas paspor dan harus back.',
+          const Text('* Sesuai identitas diri/identitas paspor dan harus back.',
               style: TextStyle(fontSize: 11, color: Color(0xFF888888))),
           const SizedBox(height: 10),
 
@@ -574,11 +564,11 @@ class _InformasiPemesananScreenState
                 isExpanded: true,
                 isDense: true,
                 items: ['Indonesia', 'Malaysia', 'Singapore']
-                    .map((n) =>
-                        DropdownMenuItem(value: n, child: Text(n, style: const TextStyle(fontSize: 13))))
+                    .map((n) => DropdownMenuItem(
+                        value: n,
+                        child: Text(n, style: const TextStyle(fontSize: 13))))
                     .toList(),
-                onChanged: (v) =>
-                    setState(() => _selectedNegara = v!),
+                onChanged: (v) => setState(() => _selectedNegara = v!),
               ),
             ),
           ),
@@ -648,8 +638,8 @@ class _InformasiPemesananScreenState
                     onTap: () async {
                       final picked = await showDatePicker(
                         context: context,
-                        initialDate: DateTime.now().add(
-                            const Duration(days: 365 * 2)),
+                        initialDate:
+                            DateTime.now().add(const Duration(days: 365 * 2)),
                         firstDate: DateTime.now(),
                         lastDate: DateTime(2100),
                         helpText: 'Tanggal Kadaluarsa Paspor',
@@ -671,7 +661,8 @@ class _InformasiPemesananScreenState
                   const SizedBox(height: 8),
 
                   // Negara Penerbit
-                  _inputField('Negara Penerbit Paspor', _negaraPenerbitController),
+                  _inputField(
+                      'Negara Penerbit Paspor', _negaraPenerbitController),
 
                   const SizedBox(height: 8),
                   const Text(
@@ -699,7 +690,8 @@ class _InformasiPemesananScreenState
             decoration: BoxDecoration(
               color: const Color(0xFFF5F5F5),
               border: Border.all(color: const Color(0xFFDDDDDD)),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(6)),
             ),
             child: Row(
               children: [
@@ -707,20 +699,19 @@ class _InformasiPemesananScreenState
                     color: Color(0xFF555555), size: 15),
                 const SizedBox(width: 6),
                 const Text('PKU',
-                    style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w700)),
+                    style:
+                        TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 4),
                   child: Icon(Icons.double_arrow_rounded,
                       size: 14, color: Color(0xFF888888)),
                 ),
                 const Text('CGK',
-                    style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w700)),
+                    style:
+                        TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
                 const SizedBox(width: 6),
                 const Text('(Pergi)',
-                    style: TextStyle(
-                        fontSize: 12, color: Color(0xFF666666))),
+                    style: TextStyle(fontSize: 12, color: Color(0xFF666666))),
                 const Spacer(),
                 GestureDetector(
                   onTap: () => setState(() => _selectedBagasi = null),
@@ -737,7 +728,8 @@ class _InformasiPemesananScreenState
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(color: const Color(0xFFDDDDDD)),
-              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(6)),
+              borderRadius:
+                  const BorderRadius.vertical(bottom: Radius.circular(6)),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String?>(
@@ -767,9 +759,7 @@ class _InformasiPemesananScreenState
                   return DropdownMenuItem<String?>(
                     value: opt['label'] as String,
                     child: Container(
-                      color: isNone
-                          ? const Color(0xFF6D6D6D)
-                          : Colors.white,
+                      color: isNone ? const Color(0xFF6D6D6D) : Colors.white,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 4, vertical: 6),
                       child: Row(
@@ -830,7 +820,6 @@ class _InformasiPemesananScreenState
     );
   }
 
-
   // ── Informasi Tambahan (Opsional) ─────────────────────────────────────────
   Widget _buildInformasiTambahanSection() {
     return Container(
@@ -850,8 +839,7 @@ class _InformasiPemesananScreenState
 
           // Unggah Dokumen row
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
             decoration: BoxDecoration(
               border: Border.all(color: const Color(0xFFCCCCCC)),
               borderRadius: BorderRadius.circular(6),
@@ -860,20 +848,19 @@ class _InformasiPemesananScreenState
               children: [
                 const Expanded(
                     child: Text('Unggah Dokumen',
-                        style: TextStyle(
-                            fontSize: 13, color: Color(0xFF888888)))),
+                        style:
+                            TextStyle(fontSize: 13, color: Color(0xFF888888)))),
                 GestureDetector(
                   onTap: () {},
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                     decoration: BoxDecoration(
                       color: const Color(0xFF555555),
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: const Text('Pilih',
-                        style:
-                            TextStyle(color: Colors.white, fontSize: 12)),
+                        style: TextStyle(color: Colors.white, fontSize: 12)),
                   ),
                 ),
               ],
@@ -897,8 +884,7 @@ class _InformasiPemesananScreenState
         children: [
           const Row(
             children: [
-              Icon(Icons.edit_note_rounded,
-                  size: 20, color: Color(0xFF121212)),
+              Icon(Icons.edit_note_rounded, size: 20, color: Color(0xFF121212)),
               SizedBox(width: 6),
               Text('Catatan',
                   style: TextStyle(
@@ -909,8 +895,7 @@ class _InformasiPemesananScreenState
           ),
           const SizedBox(height: 8),
           _bulletNote('Informasi fare rules, klik ', linkText: 'disini'),
-          _bulletNote(
-              'Komisi 0 rupiah untuk rute SIN-CGK dikelas promo (X,V), '
+          _bulletNote('Komisi 0 rupiah untuk rute SIN-CGK dikelas promo (X,V), '
               'silahkan untuk menambahkan Service Fee sebagai komisi'),
           _bulletNote(
               'Validity passport > 6 bulan dari tanggal terakhir penerbangan'),
@@ -939,18 +924,30 @@ class _InformasiPemesananScreenState
         width: double.infinity,
         height: 50,
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              backgroundColor: Colors.transparent,
+              builder: (context) {
+                return const sheet.AsuransiSheet();
+              },
+            );
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: kRed,
             elevation: 0,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10)),
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
-          child: const Text('Pesan',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16)),
+          child: const Text(
+            'Pesan',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+          ),
         ),
       ),
     );
@@ -1002,9 +999,7 @@ class _InformasiPemesananScreenState
           child: Text(
             '$number',
             style: const TextStyle(
-                color: Colors.white,
-                fontSize: 13,
-                fontWeight: FontWeight.w700),
+                color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700),
           ),
         ),
         const SizedBox(width: 8),
@@ -1025,8 +1020,7 @@ class _InformasiPemesananScreenState
             style: TextStyle(
                 fontSize: 13,
                 color: red ? kRed : const Color(0xFF3D3C3C),
-                fontWeight:
-                    bold ? FontWeight.w700 : FontWeight.normal)),
+                fontWeight: bold ? FontWeight.w700 : FontWeight.normal)),
         const Spacer(),
         if (hasPlus) ...[
           Container(
@@ -1049,8 +1043,7 @@ class _InformasiPemesananScreenState
   }
 
   Widget _inputField(String hint, TextEditingController controller,
-      {TextInputType keyboardType = TextInputType.text,
-      int maxLines = 1}) {
+      {TextInputType keyboardType = TextInputType.text, int maxLines = 1}) {
     return TextField(
       controller: controller,
       keyboardType: keyboardType,
@@ -1058,8 +1051,7 @@ class _InformasiPemesananScreenState
       style: const TextStyle(fontSize: 13),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle:
-            const TextStyle(fontSize: 13, color: Color(0xFFAAAAAA)),
+        hintStyle: const TextStyle(fontSize: 13, color: Color(0xFFAAAAAA)),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
         border: OutlineInputBorder(
@@ -1089,8 +1081,7 @@ class _InformasiPemesananScreenState
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(value,
-          style:
-              const TextStyle(fontSize: 13, color: Color(0xFF3D3C3C))),
+          style: const TextStyle(fontSize: 13, color: Color(0xFF3D3C3C))),
     );
   }
 
@@ -1105,8 +1096,7 @@ class _InformasiPemesananScreenState
         children: [
           // Flag + code prefix
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
             decoration: const BoxDecoration(
               border: Border(
                 right: BorderSide(color: Color(0xFFCCCCCC)),
@@ -1135,10 +1125,10 @@ class _InformasiPemesananScreenState
               style: const TextStyle(fontSize: 13),
               decoration: InputDecoration(
                 hintText: hint,
-                hintStyle: const TextStyle(
-                    fontSize: 13, color: Color(0xFFAAAAAA)),
-                contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 11),
+                hintStyle:
+                    const TextStyle(fontSize: 13, color: Color(0xFFAAAAAA)),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
                 border: InputBorder.none,
               ),
             ),
@@ -1166,9 +1156,7 @@ class _InformasiPemesananScreenState
             child: RichText(
               text: TextSpan(
                 style: const TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF444444),
-                    height: 1.45),
+                    fontSize: 12, color: Color(0xFF444444), height: 1.45),
                 children: [
                   TextSpan(text: text),
                   if (linkText != null)
