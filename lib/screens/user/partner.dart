@@ -47,12 +47,11 @@ class PartnerPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Space di atas agar tidak tertutup banner
-                        const SizedBox(height: 90),
+                        const SizedBox(height: 70),
                         _buildBenefitCard(),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 20),
                         _buildInformationSection(),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 8),
                       ],
                     ),
                   ),
@@ -62,10 +61,10 @@ class PartnerPage extends StatelessWidget {
           ),
           // ── Banner nimpa di tengah-tengah ─────────────────────────────
           Positioned(
-            left: 16,
-            right: 16,
+            left: 15,
+            right: 15,
             bottom:
-                MediaQuery.of(context).size.height * 0.53, // sesuaikan posisi
+                MediaQuery.of(context).size.height * 0.54, // sesuaikan posisi
             child: _buildPremiumBanner(),
           ),
         ],
@@ -95,87 +94,124 @@ class PartnerPage extends StatelessWidget {
   // ─── Premium Banner ────────────────────────────────────────────────────────
   Widget _buildPremiumBanner() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.white, width: 1),
-          gradient: const LinearGradient(
-            colors: [Color(0xFFD32F2F), Color(0xFFE57373)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            // Text content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Premium',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        child: Container(
+          width: 330,
+          height: 179,
+          child: Stack(
+            children: [
+              Positioned(
+                left: 0,
+                top: 0,
+                child: Container(
+                  width: 325,
+                  height: 179,
+                  decoration: ShapeDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment(1.00, 0.50),
+                      end: Alignment(-0.00, 0.50),
+                      colors: [
+                        const Color(0xFFF18985),
+                        const Color(0xFFC42D27)
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Upgrade ke Premium Partner & Dapatkan\nDeviden dari Setiap Tiket Terjual.',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.white,
-                      height: 1.4,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 1, color: Colors.white),
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  OutlinedButton(
-                    onPressed: () {},
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.white, width: 1.5),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 18, vertical: 10),
-                    ),
-                    child: const Text(
-                      'Daftar Menjadi Partner',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Airplane image
-            SizedBox(
-              width: 110,
-              child: Transform.scale(
-                scaleX: -1.3,
-                scaleY: 1.5, // naikan angka ini untuk perbesar
-                child: Image.asset(
-                  'assets/images/airplane.png',
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const Icon(
-                    Icons.flight,
-                    size: 150,
-                    color: Colors.white54,
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
+              Positioned(
+                left: 29.72,
+                top: 16.25,
+                child: SizedBox(
+                  width: 215.15,
+                  height: 30.65,
+                  child: Text(
+                    'Premium',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 30,
+                top: 56,
+                child: SizedBox(
+                  width: 278,
+                  height: 40,
+                  child: Text(
+                    'Upgrade ke Premium Partner & Dapatkan Deviden dari Setiap Tiket Terjual. ',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 19,
+                top: 114,
+                child: Container(
+                  width: 179,
+                  height: 40,
+                  padding: const EdgeInsets.all(12),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: Colors.white.withValues(alpha: 0.25),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 2, color: Colors.white),
+                      borderRadius: BorderRadius.circular(21),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 8,
+                    children: [
+                      Text(
+                        'Daftar Menjadi Partner',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                          height: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 335,
+                top: 118,
+                child: Container(
+                  transform: Matrix4.identity()
+                    ..translate(0.0, 0.0)
+                    ..rotateX(9)
+                    ..rotateZ(3.09),
+                  width: 132.31,
+                  height: 81.30,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/airplane.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 
   // ─── Benefit Card ──────────────────────────────────────────────────────────
@@ -250,14 +286,14 @@ class PartnerPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             ...[
               'Harga Lebih kompetitif',
               'Dashboard khusus Partner',
               'Support Prioritas',
               'Deviden dari setiap Tiket',
             ].map((item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 5),
+                  padding: const EdgeInsets.only(bottom: 2),
                   child: Row(
                     children: [
                       const Text('• ',

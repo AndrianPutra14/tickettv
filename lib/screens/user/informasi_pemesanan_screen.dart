@@ -1,4 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:project1/screens/user/widgets/atur_kursi.dart';
+// import 'user/widgets/atur_kursi.dart';
 import 'widgets/flight_models.dart';
 import 'widgets/asuransi_sheet.dart' as sheet;
 
@@ -894,7 +897,8 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
             ],
           ),
           const SizedBox(height: 8),
-          _bulletNote('Informasi fare rules, klik ', linkText: 'disini'),
+          _bulletNote('Informasi fare rules, klik ',
+              linkText: 'disini', context: context),
           _bulletNote('Komisi 0 rupiah untuk rute SIN-CGK dikelas promo (X,V), '
               'silahkan untuk menambahkan Service Fee sebagai komisi'),
           _bulletNote(
@@ -1139,7 +1143,20 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
   }
 
   /// Bullet note with optional inline red link text — styled like fare_detail_sheet
-  Widget _bulletNote(String text, {String? linkText}) {
+  // import 'package:flutter/gestures.dart'; // tambahkan import ini di atas file
+
+  Widget _bulletNote(String text, {String? linkText, BuildContext? context}) {
+    final TapGestureRecognizer? recognizer =
+        (linkText != null && context != null)
+            ? (TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.push(
+                  context!, // ← tambahkan ! karena context nullable
+                  MaterialPageRoute(builder: (_) => AturKursiScreen()),
+                );
+              })
+            : null;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(
@@ -1162,6 +1179,7 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
                   if (linkText != null)
                     TextSpan(
                       text: linkText,
+                      recognizer: recognizer,
                       style: const TextStyle(
                           color: kRed,
                           fontWeight: FontWeight.w600,
