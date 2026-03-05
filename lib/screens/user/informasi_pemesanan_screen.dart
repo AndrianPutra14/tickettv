@@ -4,6 +4,7 @@ import 'package:project1/screens/user/widgets/atur_kursi.dart';
 // import 'user/widgets/atur_kursi.dart';
 import 'widgets/flight_models.dart';
 import 'widgets/asuransi_sheet.dart' as sheet;
+import 'widgets/info_persetujuan_sheet.dart';
 
 class InformasiPemesananScreen extends StatefulWidget {
   final FareModel fare;
@@ -928,12 +929,30 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
         width: double.infinity,
         height: 50,
         child: ElevatedButton(
-          onPressed: () {
-            showModalBottomSheet(
+          onPressed: () async {
+            // Tampilkan AsuransiSheet dan simpan hasilnya
+            // ✕ → null (kembali ke layar ini)
+            // OK → true, Tidak Perlu Asuransi → false (lanjut ke info persetujuan)
+            final result = await showModalBottomSheet<bool>(
               context: context,
               backgroundColor: Colors.transparent,
               builder: (context) {
                 return const sheet.AsuransiSheet();
+              },
+            );
+
+            // Hanya tampilkan InfoPersetujuanSheet jika bukan ✕ yang ditekan
+            if (!mounted || result == null) return;
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (context) {
+                return InfoPersetujuanSheet(
+                  onKonfirmasi: () {
+                    // TODO: lanjutkan proses pemesanan
+                  },
+                );
               },
             );
           },
@@ -1109,7 +1128,7 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset('assets/images/Ellipsered.png',
+                Image.asset('assets/images/flag.png',
                     width: 20,
                     height: 14,
                     fit: BoxFit.cover,
