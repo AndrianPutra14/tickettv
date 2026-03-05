@@ -642,15 +642,19 @@ class _HomeTabState extends State<_HomeTab> {
                               style: TextStyle(
                                   fontSize: 11, color: Color(0xFFAAAAAA))),
                           const SizedBox(width: 4),
-                          Transform.scale(
-                            scale: 0.8,
-                            child: Switch(
-                              value: _roundTrip,
-                              onChanged: (val) =>
-                                  setState(() => _roundTrip = val),
-                              activeColor: primaryRed,
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
+                          SizedBox(
+                            width: 44,
+                            height: 28,
+                            child: FittedBox(
+                              fit: BoxFit.contain,
+                              child: Switch(
+                                value: _roundTrip,
+                                onChanged: (val) =>
+                                    setState(() => _roundTrip = val),
+                                activeColor: primaryRed,
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                              ),
                             ),
                           ),
                         ],
@@ -785,7 +789,7 @@ class _HomeTabState extends State<_HomeTab> {
                     imagePath: 'assets/images/airplane.png',
                     onTap: () {},
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: 10),
                   _PremiumCard(
                     gradient: const LinearGradient(
                       colors: [Color(0xFF1565C0), Color(0xFF42A5F5)],
@@ -861,7 +865,7 @@ class _PremiumCard extends StatelessWidget {
                   subtitle,
                   style: const TextStyle(
                     color: Colors.white70,
-                    fontSize: 13.5,
+                    fontSize: 12,
                     height: 1.5,
                   ),
                 ),

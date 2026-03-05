@@ -6,6 +6,7 @@ import 'package:project1/screens/user/mybookng.dart';
 import 'package:project1/screens/user/partner.dart';
 import 'package:project1/screens/user/flight_results_page.dart';
 import 'package:project1/screens/user/informasi_pemesanan_screen.dart';
+import 'package:project1/screens/user/booking_detail_screen.dart';
 import 'package:project1/screens/user/widgets/flight_models.dart';
 
 class AppRoutes {
@@ -17,6 +18,8 @@ class AppRoutes {
   static const String informasiPemesanan = '/informasi-pemesanan';
   static const String myBooking = '/my-booking';
   static const String partner = '/partner';
+
+  static const String bookingDetail = '/booking-detail';
 
   // Route map
   static Map<String, WidgetBuilder> get routes => {
@@ -42,5 +45,7 @@ class AppRoutes {
         },
         myBooking: (context) => const MyBookingPage(),
         partner: (context) => const PartnerPage(),
+        bookingDetail: (context) => const BookingDetailScreen(),
+
       };
 }
