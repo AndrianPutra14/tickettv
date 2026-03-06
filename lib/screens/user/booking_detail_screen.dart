@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project1/screens/user/widgets/atur_kursi.dart';
 import 'widgets/kwitansi_sheet.dart';
 
 const Color _kRed = Color(0xFFC42D27);
@@ -513,7 +514,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
       ],
     );
   }
-  
+
   // ── Kontak Card ───────────────────────────────────────────────────────────
   Widget _buildKontakCard() {
     return Column(
@@ -521,7 +522,6 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
       children: [
         const Row(
           children: [
-            
             Icon(Icons.contact_phone_outlined,
                 size: 18, color: Color(0xFF333333)),
             SizedBox(width: 6),
@@ -540,9 +540,9 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
           ),
           child: Table(
             columnWidths: const {
-              0: IntrinsicColumnWidth(),  // label
-              1: FixedColumnWidth(16),     // " : "
-              2: FlexColumnWidth(),        // nilai
+              0: IntrinsicColumnWidth(), // label
+              1: FixedColumnWidth(16), // " : "
+              2: FlexColumnWidth(), // nilai
             },
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: const [
@@ -592,7 +592,6 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     );
   }
 
-
   // ── Kursi Card ────────────────────────────────────────────────────────────
   Widget _buildKursiCard() {
     return Column(
@@ -606,21 +605,36 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
             const SizedBox(width: 6),
             const Text('Kursi',
                 style: TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
                     color: Color(0xFF1A1A1A))),
             const Spacer(),
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-              decoration: BoxDecoration(
-                color: _kRed,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: const Text('Atur Kursi',
+            InkWell(
+              borderRadius: BorderRadius.circular(5),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AturKursiScreen(),
+                  ),
+                );
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                decoration: BoxDecoration(
+                  color: _kRed,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: const Text(
+                  'Atur Kursi',
                   style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700)),
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -634,7 +648,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 13),
-                 child: const Row(
+                child: const Row(
                   children: [
                     Icon(Icons.flight_takeoff_rounded,
                         size: 14, color: Color(0xFF555555)),
@@ -667,7 +681,6 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     );
   }
 
-
   // ── Catatan Card ──────────────────────────────────────────────────────────
   Widget _buildCatatanCard() {
     return Column(
@@ -679,7 +692,9 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
             Icon(Icons.edit_note_rounded, size: 18, color: Color(0xFF333333)),
             SizedBox(width: 6),
             Text('Catatan',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700,
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
                     color: Color(0xFF1A1A1A))),
           ],
         ),
@@ -689,14 +704,13 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
           border: Border.all(color: const Color(0xFFB8B8B9), width: 1.2),
           child: const Text(
             '1. SYSTEM: Free Baggage ADT (1 pax) IU\n(PKU - CGK): 10KG',
-            style: TextStyle(
-                fontSize: 13, color: Color(0xFF444444), height: 1.5),
+            style:
+                TextStyle(fontSize: 13, color: Color(0xFF444444), height: 1.5),
           ),
         ),
       ],
     );
   }
-
 
   // ── Cancel / Kwitansi Row ─────────────────────────────────────────────────
   Widget _buildActionRow() {
@@ -710,8 +724,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
             ),
             const SizedBox(width: 10),
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
               decoration: BoxDecoration(
                 color: _kRed,
                 borderRadius: BorderRadius.circular(6),
@@ -801,7 +814,8 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
-  Widget _card({required Widget child, EdgeInsets? padding, BoxBorder? border}) {
+  Widget _card(
+      {required Widget child, EdgeInsets? padding, BoxBorder? border}) {
     return Container(
       width: double.infinity,
       padding: padding ?? const EdgeInsets.all(12),

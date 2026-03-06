@@ -11,6 +11,9 @@ class PartnerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double s = MediaQuery.of(context).size.width;
+    final double r = s / 390;
+
     return Scaffold(
       backgroundColor: _kRed,
       body: Stack(
@@ -24,34 +27,34 @@ class PartnerPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 55),
-                      _buildGreeting(),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 55 * r),
+                      _buildGreeting(r),
+                      SizedBox(height: 20 * r),
                       // Space placeholder setinggi banner agar konten tidak tertutup
-                      const SizedBox(height: 180),
+                      SizedBox(height: 180 * r),
                     ],
                   ),
                 ),
               ),
               // ── White bottom area ─────────────────────────────────────
               ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20 * r),
+                  topRight: Radius.circular(20 * r),
                 ),
                 child: Container(
                   color: _kBg,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(vertical: 16 * r),
                   child: SafeArea(
                     bottom: false,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 70),
-                        _buildBenefitCard(),
-                        const SizedBox(height: 20),
-                        _buildInformationSection(),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 90 * r),
+                        _buildBenefitCard(r),
+                        SizedBox(height: 20 * r),
+                        _buildInformationSection(r),
+                        SizedBox(height: 8 * r),
                       ],
                     ),
                   ),
@@ -61,11 +64,10 @@ class PartnerPage extends StatelessWidget {
           ),
           // ── Banner nimpa di tengah-tengah ─────────────────────────────
           Positioned(
-            left: 15,
-            right: 15,
-            bottom:
-                MediaQuery.of(context).size.height * 0.54, // sesuaikan posisi
-            child: _buildPremiumBanner(),
+            left: 15 * r,
+            right: 15 * r,
+            bottom: MediaQuery.of(context).size.height * 0.54,
+            child: _buildPremiumBanner(r),
           ),
         ],
       ),
@@ -73,17 +75,17 @@ class PartnerPage extends StatelessWidget {
   }
 
   // ─── Greeting ──────────────────────────────────────────────────────────────
-  Widget _buildGreeting() {
+  Widget _buildGreeting(double r) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+      padding: EdgeInsets.fromLTRB(20 * r, 24 * r, 20 * r, 0),
       child: RichText(
-        text: const TextSpan(
+        text: TextSpan(
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 24 * r,
             fontWeight: FontWeight.w700,
             color: Colors.white,
           ),
-          children: [
+          children: const [
             TextSpan(text: 'Halo, Teman Ezytix !'),
           ],
         ),
@@ -92,132 +94,129 @@ class PartnerPage extends StatelessWidget {
   }
 
   // ─── Premium Banner ────────────────────────────────────────────────────────
-  Widget _buildPremiumBanner() {
+  Widget _buildPremiumBanner(double r) {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14),
-        child: Container(
-          width: 330,
-          height: 179,
-          child: Stack(
-            children: [
-              Positioned(
-                left: 0,
-                top: 0,
-                child: Container(
-                  width: 325,
-                  height: 179,
-                  decoration: ShapeDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment(1.00, 0.50),
-                      end: Alignment(-0.00, 0.50),
-                      colors: [
-                        const Color(0xFFF18985),
-                        const Color(0xFFC42D27)
-                      ],
-                    ),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 1, color: Colors.white),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
+      padding: EdgeInsets.symmetric(horizontal: 14 * r),
+      child: SizedBox(
+        width: 330 * r,
+        height: 179 * r,
+        child: Stack(
+          children: [
+            Positioned(
+              left: 0,
+              top: 0,
+              child: Container(
+                width: 325 * r,
+                height: 179 * r,
+                decoration: ShapeDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment(1.00, 0.50),
+                    end: Alignment(-0.00, 0.50),
+                    colors: [Color(0xFFF18985), Color(0xFFC42D27)],
+                  ),
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(width: 1, color: Colors.white),
+                    borderRadius: BorderRadius.circular(15 * r),
                   ),
                 ),
               ),
-              Positioned(
-                left: 29.72,
-                top: 16.25,
-                child: SizedBox(
-                  width: 215.15,
-                  height: 30.65,
-                  child: Text(
-                    'Premium',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w800,
-                    ),
+            ),
+            Positioned(
+              left: 29.72 * r,
+              top: 16.25 * r,
+              child: SizedBox(
+                width: 215.15 * r,
+                height: 30.65 * r,
+                child: Text(
+                  'Premium',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22 * r,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
-              Positioned(
-                left: 30,
-                top: 56,
-                child: SizedBox(
-                  width: 278,
-                  height: 40,
-                  child: Text(
-                    'Upgrade ke Premium Partner & Dapatkan Deviden dari Setiap Tiket Terjual. ',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w500,
-                    ),
+            ),
+            Positioned(
+              left: 30 * r,
+              top: 56 * r,
+              child: SizedBox(
+                width: 278 * r,
+                height: 40 * r,
+                child: Text(
+                  'Upgrade ke Premium Partner & Dapatkan Deviden dari Setiap Tiket Terjual. ',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14 * r,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
-              Positioned(
-                left: 19,
-                top: 114,
-                child: Container(
-                  width: 179,
-                  height: 40,
-                  padding: const EdgeInsets.all(12),
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: Colors.white.withValues(alpha: 0.25),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 2, color: Colors.white),
-                      borderRadius: BorderRadius.circular(21),
-                    ),
+            ),
+            Positioned(
+              left: 19 * r,
+              top: 114 * r,
+              child: Container(
+                width: 150 * r,
+                height: 38 * r,
+                padding: EdgeInsets.all(8 * r),
+                clipBehavior: Clip.antiAlias,
+                decoration: ShapeDecoration(
+                  color: Colors.white.withValues(alpha: 0.25),
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(width: 2, color: Colors.white),
+                    borderRadius: BorderRadius.circular(21 * r),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 8,
-                    children: [
-                      Text(
-                        'Daftar Menjadi Partner',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w600,
-                          height: 1,
-                        ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Daftar Menjadi Partner',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12 * r,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w600,
+                        height: 1,
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 335,
-                top: 118,
-                child: Container(
-                  transform: Matrix4.identity()
-                    ..translate(0.0, 0.0)
-                    ..rotateX(9)
-                    ..rotateZ(3.09),
-                  width: 132.31,
-                  height: 81.30,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/airplane.png'),
-                      fit: BoxFit.cover,
                     ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 335 * r,
+              top: 118 * r,
+              child: Container(
+                transform: Matrix4.identity()
+                  ..translate(0.0, 0.0)
+                  ..rotateX(9)
+                  ..rotateZ(3.09),
+                width: 132.31 * r,
+                height: 81.30 * r,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/airplane.png'),
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   // ─── Benefit Card ──────────────────────────────────────────────────────────
-  Widget _buildBenefitCard() {
+  Widget _buildBenefitCard(double r) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 16 * r),
       child: Container(
         decoration: BoxDecoration(
           gradient: const LinearGradient(
@@ -225,9 +224,9 @@ class PartnerPage extends StatelessWidget {
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(14 * r),
         ),
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16 * r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -238,20 +237,20 @@ class PartnerPage extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Lihat Benefit Premium disini !',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 14 * r,
                           fontWeight: FontWeight.bold,
                           color: _kDivider,
                         ),
                       ),
-                      SizedBox(height: 3),
+                      SizedBox(height: 3 * r),
                       Text(
                         'Cek Penawaran dari Ezytix Preium!',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 14 * r,
                           color: _kDivider,
                         ),
                       ),
@@ -261,21 +260,21 @@ class PartnerPage extends StatelessWidget {
                 // PREMIUM badge
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      EdgeInsets.symmetric(horizontal: 10 * r, vertical: 5 * r),
                   decoration: BoxDecoration(
                     color: const Color(0xFFB8860B),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6 * r),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
+                    children: [
                       Icon(Icons.workspace_premium_rounded,
-                          size: 13, color: Colors.amber),
-                      SizedBox(width: 4),
+                          size: 13 * r, color: Colors.amber),
+                      SizedBox(width: 4 * r),
                       Text(
                         'PREMIUM',
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 11 * r,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                           letterSpacing: 0.5,
@@ -286,25 +285,25 @@ class PartnerPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8 * r),
             ...[
               'Harga Lebih kompetitif',
               'Dashboard khusus Partner',
               'Support Prioritas',
               'Deviden dari setiap Tiket',
             ].map((item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 2),
+                  padding: EdgeInsets.only(bottom: 2 * r),
                   child: Row(
                     children: [
-                      const Text('• ',
+                      Text('• ',
                           style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 14 * r,
                               fontWeight: FontWeight.w700,
                               color: _kDivider)),
                       Text(
                         item,
-                        style: const TextStyle(
-                          fontSize: 13,
+                        style: TextStyle(
+                          fontSize: 13 * r,
                           color: _kDivider,
                         ),
                       ),
@@ -318,16 +317,16 @@ class PartnerPage extends StatelessWidget {
   }
 
   // ─── Information Section ───────────────────────────────────────────────────
-  Widget _buildInformationSection() {
+  Widget _buildInformationSection(double r) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.fromLTRB(20, 0, 20, 12),
+        Padding(
+          padding: EdgeInsets.fromLTRB(20 * r, 0, 20 * r, 12 * r),
           child: Text(
             'Information',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 16 * r,
               fontWeight: FontWeight.w700,
               color: _kTextDark,
             ),
@@ -340,19 +339,22 @@ class PartnerPage extends StatelessWidget {
               _buildInfoItem(
                 icon: Icons.language_rounded,
                 label: 'Bahasa',
-                trailing: _buildFlagWidget(),
+                trailing: _buildFlagWidget(r),
+                r: r,
               ),
-              const Divider(
-                  height: 1, thickness: 1, color: _kDivider, indent: 56),
+              Divider(
+                  height: 1, thickness: 1, color: _kDivider, indent: 56 * r),
               _buildInfoItem(
                 icon: Icons.info_outline_rounded,
                 label: 'Pusat Bantuan',
+                r: r,
               ),
-              const Divider(
-                  height: 1, thickness: 1, color: _kDivider, indent: 56),
+              Divider(
+                  height: 1, thickness: 1, color: _kDivider, indent: 56 * r),
               _buildInfoItem(
                 icon: Icons.headset_mic_outlined,
                 label: 'Hubungi Kami',
+                r: r,
               ),
             ],
           ),
@@ -364,19 +366,20 @@ class PartnerPage extends StatelessWidget {
   Widget _buildInfoItem({
     required IconData icon,
     required String label,
+    required double r,
     Widget? trailing,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      padding: EdgeInsets.symmetric(horizontal: 20 * r, vertical: 14 * r),
       child: Row(
         children: [
-          Icon(icon, size: 24, color: _kTextDark),
-          const SizedBox(width: 16),
+          Icon(icon, size: 24 * r, color: _kTextDark),
+          SizedBox(width: 16 * r),
           Expanded(
             child: Text(
               label,
-              style: const TextStyle(
-                fontSize: 15,
+              style: TextStyle(
+                fontSize: 15 * r,
                 fontWeight: FontWeight.w500,
                 color: _kTextDark,
               ),
@@ -388,12 +391,11 @@ class PartnerPage extends StatelessWidget {
     );
   }
 
-  Widget _buildFlagWidget() {
-    // Indonesia flag: red top half, white bottom half in a circle
+  Widget _buildFlagWidget(double r) {
     return ClipOval(
       child: SizedBox(
-        width: 28,
-        height: 28,
+        width: 28 * r,
+        height: 28 * r,
         child: CustomPaint(painter: _IndonesiaFlagPainter()),
       ),
     );
@@ -416,7 +418,6 @@ class _IndonesiaFlagPainter extends CustomPainter {
         Rect.fromLTWH(0, size.height / 2, size.width, size.height / 2),
         whitePaint);
 
-    // Draw circular border
     final center = Offset(size.width / 2, size.height / 2);
     canvas.drawCircle(
         center, size.width / 2 - borderPaint.strokeWidth / 2, borderPaint);
