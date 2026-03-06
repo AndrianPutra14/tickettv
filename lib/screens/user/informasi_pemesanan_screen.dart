@@ -1161,9 +1161,6 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
     );
   }
 
-  /// Bullet note with optional inline red link text — styled like fare_detail_sheet
-  // import 'package:flutter/gestures.dart'; // tambahkan import ini di atas file
-
   Widget _bulletNote(String text, {String? linkText, BuildContext? context}) {
     final TapGestureRecognizer? recognizer =
         (linkText != null && context != null)

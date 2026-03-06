@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 const Color _kRed = Color(0xFFC42D27);
 
 enum KwitansiOption { unduh, kirimEmail }
+
 /// Panggil lewat [KwitansiSheet.show(context)].
 class KwitansiSheet extends StatefulWidget {
   const KwitansiSheet({super.key});
@@ -30,6 +32,24 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
     super.dispose();
   }
 
+  void _onKonfirmasi() {
+    // Tutup sheet Kwitansi
+    Navigator.pop(context);
+
+    // Teks sukses berdasarkan pilihan
+    final label = _option == KwitansiOption.unduh
+        ? 'Berhasil Mengunduh'
+        : 'Berhasil Mengirim Email';
+
+    // Tampilkan success sheet
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => _KwitansiSuccessSheet(label: label),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isEmail = _option == KwitansiOption.kirimEmail;
@@ -44,7 +64,7 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Header (sama persis dengan Copy Fare Summary) ───────────────
+          // ── Header ─────────────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 5, 0, 5),
             child: Row(
@@ -62,7 +82,6 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
                     ),
                   ),
                 ),
-                // Tombol close — ellipse kuning seperti Copy Fare Summary
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: SizedBox(
@@ -96,10 +115,9 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
           ),
           const Divider(height: 1, color: Color(0xFFE0E0E0)),
 
-          // ── Body dengan watermark lingkaran merah (kiri atas) ───────────
+          // ── Body dengan watermark ───────────────────────────────────────────
           Stack(
             children: [
-              // Lingkaran watermark — sama seperti Copy Fare Summary
               Positioned(
                 left: -120,
                 top: -30,
@@ -112,15 +130,13 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
                   ),
                 ),
               ),
-
-              // Konten body
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 20, 20, bottomInset + 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // ── Radio Options ───────────────────────────────────
+                    // ── Radio Options ─────────────────────────────────────
                     Row(
                       children: [
                         _radioOption(
@@ -135,7 +151,7 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
                       ],
                     ),
 
-                    // ── Email section ────────────────────────────────────
+                    // ── Email section ─────────────────────────────────────
                     if (isEmail) ...[
                       const SizedBox(height: 14),
                       const Text(
@@ -168,8 +184,8 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                                color: _kRed, width: 1.5),
+                            borderSide:
+                                const BorderSide(color: _kRed, width: 1.5),
                           ),
                         ),
                       ),
@@ -183,10 +199,8 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
                               color: Color(0xFF9E9E9E),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(
-                                Icons.person_outline_rounded,
-                                size: 16,
-                                color: Colors.white),
+                            child: const Icon(Icons.person_outline_rounded,
+                                size: 16, color: Colors.white),
                           ),
                           const SizedBox(width: 10),
                           const Text(
@@ -203,7 +217,7 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
             ],
           ),
 
-          // ── Footer: Konfirmasi button (fixed, di luar body) ─────────────
+          // ── Footer: Konfirmasi button ───────────────────────────────────────
           Container(
             color: Colors.white,
             padding: EdgeInsets.fromLTRB(16, 10, 16, 16 + bottomPad),
@@ -211,10 +225,7 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
               height: 50,
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  // TODO: handle download or send email logic
-                },
+                onPressed: _onKonfirmasi,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _kRed,
                   elevation: 0,
@@ -260,6 +271,174 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
               fontWeight: FontWeight.w700,
               color: Color(0xFF1A1A1A),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Success Sheet ────────────────────────────────────────────────────────────
+class _KwitansiSuccessSheet extends StatefulWidget {
+  final String label;
+  const _KwitansiSuccessSheet({required this.label});
+
+  @override
+  State<_KwitansiSuccessSheet> createState() => _KwitansiSuccessSheetState();
+}
+
+class _KwitansiSuccessSheetState extends State<_KwitansiSuccessSheet> {
+  int _countdown = 1;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-close setelah 1 detik
+    _timer = Timer(const Duration(seconds: 2), () {
+      if (mounted) Navigator.pop(context);
+    });
+
+    // Countdown tiap detik (untuk teks "X detik")
+    Timer.periodic(const Duration(seconds: 2), (t) {
+      if (!mounted) {
+        t.cancel();
+        return;
+      }
+      setState(() => _countdown--);
+      if (_countdown <= 0) t.cancel();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomPad = MediaQuery.of(context).padding.bottom;
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Header — Copy Fare Summary style ─────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 0, 10),
+            child: Row(
+              children: [
+                const Icon(Icons.receipt_long_outlined,
+                    size: 24, color: Color(0xFF1A1A1A)),
+                const SizedBox(width: 10),
+                const Expanded(
+                  child: Text(
+                    'Kwitansi',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF1A1A1A),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: SizedBox(
+                    width: 45,
+                    height: 45,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/images/Ellipseyell.png',
+                          width: 45,
+                          height: 45,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => Container(
+                            width: 36,
+                            height: 36,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFF5F5F5),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                        const Icon(Icons.close,
+                            size: 26, color: Color(0xFF0F0F0F)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1, color: Color(0xFFE0E0E0)),
+
+          // ── Body: watermark + konten sukses (identik dengan body utama) ─────
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                left: -150,
+                child: Container(
+                  width: 450,
+                  height: 450,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _kRed.withOpacity(0.12),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 20, 20, bottomPad + 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 16),
+                    // Ikon centang hijau besar
+                    Container(
+                      width: 72,
+                      height: 72,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF4CAF50),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.check_rounded,
+                          color: Colors.white, size: 42),
+                    ),
+                    const SizedBox(height: 20),
+                    // Judul
+                    Text(
+                      widget.label,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF1A1A1A),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    // Subtitle countdown
+                    Text(
+                      'Popup akan ditutup otomatis setelah\n$_countdown detik',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Color(0xFF888888),
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
