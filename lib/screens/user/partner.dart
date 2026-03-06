@@ -11,6 +11,9 @@ class PartnerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: _kRed,
       body: Stack(
@@ -18,22 +21,23 @@ class PartnerPage extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Red top area ──────────────────────────────────────────
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 55),
+                      SizedBox(height: screenHeight * 0.07),
                       _buildGreeting(),
-                      const SizedBox(height: 20),
-                      // Space placeholder setinggi banner agar konten tidak tertutup
-                      const SizedBox(height: 180),
+                      SizedBox(height: screenHeight * 0.02),
+
+                      /// ruang untuk banner
+                      SizedBox(height: screenHeight * 0.22),
                     ],
                   ),
                 ),
               ),
-              // ── White bottom area ─────────────────────────────────────
+
+              /// Bottom putih
               ClipRRect(
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
@@ -47,11 +51,18 @@ class PartnerPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
                         const SizedBox(height: 70),
                         _buildBenefitCard(),
                         const SizedBox(height: 20),
                         _buildInformationSection(),
                         const SizedBox(height: 8),
+
+                        SizedBox(height: screenHeight * 0.08),
+                        _buildBenefitCard(),
+                        const SizedBox(height: 20),
+                        _buildInformationSection(),
+                        // (update welcome screen)
                       ],
                     ),
                   ),
@@ -59,37 +70,42 @@ class PartnerPage extends StatelessWidget {
               ),
             ],
           ),
-          // ── Banner nimpa di tengah-tengah ─────────────────────────────
+
+          /// Banner di tengah
           Positioned(
+
             left: 15,
             right: 15,
             bottom:
                 MediaQuery.of(context).size.height * 0.54, // sesuaikan posisi
             child: _buildPremiumBanner(),
+
+            left: 20,
+            right: 20,
+            bottom: screenHeight * 0.52,
+            child: _buildPremiumBanner(context),
+// (update welcome screen)
           ),
         ],
       ),
     );
   }
 
-  // ─── Greeting ──────────────────────────────────────────────────────────────
+  /// Greeting
   Widget _buildGreeting() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
-      child: RichText(
-        text: const TextSpan(
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-          children: [
-            TextSpan(text: 'Halo, Teman Ezytix !'),
-          ],
+    return const Padding(
+      padding: EdgeInsets.fromLTRB(20, 24, 20, 0),
+      child: Text(
+        'Halo, Teman Ezytix !',
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w700,
+          color: Colors.white,
         ),
       ),
     );
   }
+
 
   // ─── Premium Banner ────────────────────────────────────────────────────────
   Widget _buildPremiumBanner() {
@@ -212,9 +228,88 @@ class PartnerPage extends StatelessWidget {
             ],
           ),
         ));
+
+  /// Premium Banner (Responsive)
+  Widget _buildPremiumBanner(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    return Container(
+      width: width,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.centerRight,
+          end: Alignment.centerLeft,
+          colors: [
+            Color(0xFFF18985),
+            Color(0xFFC42D27),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.white),
+      ),
+      child: Row(
+        children: [
+          /// Text Section
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Premium",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  "Upgrade ke Premium Partner & Dapatkan Deviden dari Setiap Tiket Terjual.",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                /// Button
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.25),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  child: const Text(
+                    "Daftar Menjadi Partner",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 10),
+
+          /// Gambar pesawat
+          Image.asset(
+            "assets/images/airplane.png",
+            width: width * 0.25,
+            fit: BoxFit.contain,
+          )
+        ],
+      ),
+    );
+// (update welcome screen)
   }
 
-  // ─── Benefit Card ──────────────────────────────────────────────────────────
+  /// Benefit Card
   Widget _buildBenefitCard() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -232,9 +327,7 @@ class PartnerPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Left text
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,7 +342,7 @@ class PartnerPage extends StatelessWidget {
                       ),
                       SizedBox(height: 3),
                       Text(
-                        'Cek Penawaran dari Ezytix Preium!',
+                        'Cek Penawaran dari Ezytix Premium!',
                         style: TextStyle(
                           fontSize: 14,
                           color: _kDivider,
@@ -258,7 +351,8 @@ class PartnerPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                // PREMIUM badge
+
+                /// Badge
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -267,7 +361,6 @@ class PartnerPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
                     children: const [
                       Icon(Icons.workspace_premium_rounded,
                           size: 13, color: Colors.amber),
@@ -278,7 +371,6 @@ class PartnerPage extends StatelessWidget {
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
-                          letterSpacing: 0.5,
                         ),
                       ),
                     ],
@@ -286,7 +378,12 @@ class PartnerPage extends StatelessWidget {
                 ),
               ],
             ),
+
             const SizedBox(height: 8),
+
+            const SizedBox(height: 10),
+
+// (update welcome screen)
             ...[
               'Harga Lebih kompetitif',
               'Dashboard khusus Partner',
@@ -294,6 +391,9 @@ class PartnerPage extends StatelessWidget {
               'Deviden dari setiap Tiket',
             ].map((item) => Padding(
                   padding: const EdgeInsets.only(bottom: 2),
+
+                  padding: const EdgeInsets.only(bottom: 4),
+// (update welcome screen)
                   child: Row(
                     children: [
                       const Text('• ',
@@ -317,7 +417,7 @@ class PartnerPage extends StatelessWidget {
     );
   }
 
-  // ─── Information Section ───────────────────────────────────────────────────
+  /// Information Section
   Widget _buildInformationSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -342,14 +442,12 @@ class PartnerPage extends StatelessWidget {
                 label: 'Bahasa',
                 trailing: _buildFlagWidget(),
               ),
-              const Divider(
-                  height: 1, thickness: 1, color: _kDivider, indent: 56),
+              const Divider(height: 1, thickness: 1, color: _kDivider),
               _buildInfoItem(
                 icon: Icons.info_outline_rounded,
                 label: 'Pusat Bantuan',
               ),
-              const Divider(
-                  height: 1, thickness: 1, color: _kDivider, indent: 56),
+              const Divider(height: 1, thickness: 1, color: _kDivider),
               _buildInfoItem(
                 icon: Icons.headset_mic_outlined,
                 label: 'Hubungi Kami',
@@ -389,7 +487,6 @@ class PartnerPage extends StatelessWidget {
   }
 
   Widget _buildFlagWidget() {
-    // Indonesia flag: red top half, white bottom half in a circle
     return ClipOval(
       child: SizedBox(
         width: 28,
@@ -400,7 +497,6 @@ class PartnerPage extends StatelessWidget {
   }
 }
 
-// ─── Indonesia Flag Painter ───────────────────────────────────────────────────
 class _IndonesiaFlagPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -416,12 +512,12 @@ class _IndonesiaFlagPainter extends CustomPainter {
         Rect.fromLTWH(0, size.height / 2, size.width, size.height / 2),
         whitePaint);
 
-    // Draw circular border
     final center = Offset(size.width / 2, size.height / 2);
     canvas.drawCircle(
         center, size.width / 2 - borderPaint.strokeWidth / 2, borderPaint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter old) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
 }

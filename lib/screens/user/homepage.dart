@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:project1/screens/user/mybookng.dart';
-import 'package:project1/screens/user/partner.dart';
 import 'package:project1/utils/routes.dart';
+import 'mybookng.dart';
+import 'partner.dart';
 
 const Color primaryRed = Color(0xFFC42D27);
 
@@ -33,8 +33,8 @@ class _HomePageState extends State<HomePage> {
         index: _selectedIndex,
         children: const [
           _HomeTab(),
-          _MyBookingTab(),
-          _PartnerTab(),
+          MyBookingPage(),
+          PartnerPage(),
         ],
       ),
       bottomNavigationBar: _BottomNavBar(
@@ -1282,7 +1282,10 @@ class _MyBookingTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MyBookingPage();
+    return const Center(
+      child: Text('My Booking',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+    );
   }
 }
 
@@ -1291,7 +1294,10 @@ class _PartnerTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const PartnerPage();
+    return const Center(
+      child: Text('Partner',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+    );
   }
 }
 
@@ -1752,3 +1758,4 @@ class _KelasButton extends StatelessWidget {
     );
   }
 }
+

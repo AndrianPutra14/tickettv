@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'widgets/kwitansi_sheet.dart';
+import 'payments/payment_method_sheet.dart';
 
 const Color _kRed = Color(0xFFC42D27);
 const Color _kRedBg = Color(0xFFFFE6E5);
@@ -137,7 +138,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
               child: SizedBox(
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () => PaymentMethodSheet.show(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _kRed,
                     elevation: 0,
@@ -240,14 +241,18 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
       child: Column(
         children: [
           Row(
-            children: const [
-              Text('Keberangkatan  - 27 Feb 2026',
+            children: [
+              const Text('Keberangkatan  - 27 Feb 2026',
                   style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF1A1A1A))),
-              Spacer(),
-              Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF555555)),
+              const Spacer(),
+              GestureDetector(
+                onTap: () => _showTripDetail(context),
+                child: const Icon(Icons.keyboard_arrow_down_rounded,
+                    color: Color(0xFF555555)),
+              ),
             ],
           ),
           const SizedBox(height: 4),
@@ -709,18 +714,21 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                   style: TextStyle(fontSize: 13, color: Color(0xFF1A1A1A))),
             ),
             const SizedBox(width: 10),
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-              decoration: BoxDecoration(
-                color: _kRed,
-                borderRadius: BorderRadius.circular(6),
+            GestureDetector(
+              onTap: () => _showCancelConfirmation(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+                decoration: BoxDecoration(
+                  color: _kRed,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Text('Batal',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700)),
               ),
-              child: const Text('Batal',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700)),
             ),
           ],
         ),
@@ -753,8 +761,663 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     );
   }
 
+  // ── Payment Method Sheet ───────────────────────────────────────────────────
+  void _showPaymentMethodSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ── Handle bar ──────────────────────────────────────────────
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFDDDDDD),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // ── Header row ──────────────────────────────────────────────
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: _kRedBg,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.wallet_rounded,
+                        size: 20, color: _kRed),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    'Metode Pembayaran',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF1A1A1A)),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: const Icon(Icons.close_rounded,
+                        size: 24, color: Color(0xFF666666)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+
+              // ── Row 1: Credit Card & Auto Transfer ──────────────────────
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _paymentOption(
+                    icon: Icons.credit_card_rounded,
+                    label: 'Credit Card',
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  _paymentOption(
+                    icon: Icons.swap_horiz_rounded,
+                    label: 'Auto Transfer',
+                    onTap: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // ── Row 2: Virtual Account, Payment Link, Auto Ticket ───────
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _paymentOption(
+                    icon: Icons.account_balance_rounded,
+                    label: 'Virtual Account',
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  _paymentOption(
+                    icon: Icons.link_rounded,
+                    label: 'Payment Link',
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  _paymentOption(
+                    icon: Icons.confirmation_number_rounded,
+                    label: 'Auto Ticket',
+                    onTap: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _paymentOption({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 72,
+            height: 72,
+            decoration: const BoxDecoration(
+              color: _kRed,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 32, color: Colors.white),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF1A1A1A),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Trip Detail Sheet ──────────────────────────────────────────────────────
+  void _showTripDetail(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ── Header ──────────────────────────────────────────────────
+              SizedBox(
+                height: 60,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    // Red ellipse bg
+                    Positioned(
+                      left: -(MediaQuery.of(context).size.width * 0.08),
+                      top: 2,
+                      bottom: 0,
+                      child: Image.asset(
+                        'assets/images/Ellipsered.png',
+                        width: MediaQuery.of(context).size.width * 0.76,
+                        fit: BoxFit.fill,
+                        errorBuilder: (_, __, ___) => Container(
+                          width: MediaQuery.of(context).size.width * 0.76,
+                          color: _kRed,
+                        ),
+                      ),
+                    ),
+                    // Icon + Title
+                    const Positioned(
+                      left: 16,
+                      top: 0,
+                      bottom: 0,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.route_outlined,
+                              size: 20, color: Colors.black),
+                          SizedBox(width: 8),
+                          Text(
+                            'Detail Perjalanan',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // X button (Ellipseyell)
+                    Positioned(
+                      right: 8,
+                      top: 10,
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/Ellipseyell.png',
+                              width: 80,
+                              height: 40,
+                              fit: BoxFit.fill,
+                              errorBuilder: (_, __, ___) => Container(
+                                width: 60,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF5F5F5),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                            ),
+                            const Text(
+                              'X',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF1A1A1A),
+                                height: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1, color: Color(0xFFE0E0E0)),
+
+              // ── Timeline body ────────────────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Time column
+                      const SizedBox(
+                        width: 56,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text('17:30',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xFF1A1A1A))),
+                                Text('6 Feb',
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        color: Color(0xFF888888))),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text('1j 50m',
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF555555))),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text('17:30',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xFF1A1A1A))),
+                                Text('6 Feb',
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        color: Color(0xFF888888))),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+
+                      // Vertical line + dots
+                      Column(
+                        children: [
+                          // Top dot (hollow)
+                          Container(
+                            width: 14,
+                            height: 14,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: _kRed, width: 2),
+                            ),
+                          ),
+                          // Line
+                          Expanded(
+                            child: Container(
+                              width: 2,
+                              color: _kRed,
+                            ),
+                          ),
+                          // Bottom dot (filled)
+                          Container(
+                            width: 14,
+                            height: 14,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: _kRed,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 14),
+
+                      // Content column
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Departure
+                            const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Jakarta (CGK)',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xFF1A1A1A))),
+                                SizedBox(height: 2),
+                                Text('Soekarno-Hatta International Airport',
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        color: Color(0xFF888888))),
+                              ],
+                            ),
+
+                            // Airline info
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Row(
+                                children: [
+                                  // Airline logo
+                                  Container(
+                                    width: 44,
+                                    height: 44,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                      border: Border.all(color: _kRed, width: 1.5),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Color(0x14000000),
+                                            blurRadius: 4)
+                                      ],
+                                    ),
+                                    child: ClipOval(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(6),
+                                        child: Image.asset(
+                                          'assets/images/lionair.png',
+                                          fit: BoxFit.contain,
+                                          errorBuilder: (_, __, ___) =>
+                                              const Icon(Icons.flight,
+                                                  color: _kRed, size: 20),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text('Lion Air',
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w700,
+                                              color: Color(0xFF1A1A1A))),
+                                      const SizedBox(height: 2),
+                                      RichText(
+                                        text: const TextSpan(
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Color(0xFF555555)),
+                                          children: [
+                                            TextSpan(text: 'IUI919 | Economy '),
+                                            TextSpan(
+                                              text: 'T',
+                                              style: TextStyle(
+                                                  color: _kRed,
+                                                  fontWeight:
+                                                      FontWeight.w700),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // Arrival
+                            const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Denpasar (DPS)',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xFF1A1A1A))),
+                                SizedBox(height: 2),
+                                Text(
+                                    'Ngurah Rai (Bali) International Airport',
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        color: Color(0xFF888888))),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // ── Footer banner ────────────────────────────────────────────
+              Container(
+                margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFDE8E8),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: _kRed.withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: const [
+                    Icon(Icons.calendar_today_rounded,
+                        size: 16, color: _kRed),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'Kamu akan sampai pada Jumat, 6 Februari',
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: _kRed),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // ── Cancel Confirmation Sheet ─────────────────────────────────────────────
+  void _showCancelConfirmation(BuildContext context) {
+    const String bookingCode = 'AZRQRP';
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ── Content area with decorative circles ──
+              ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
+                child: Stack(
+                  clipBehavior: Clip.hardEdge,
+                  children: [
+                    // Decorative circle — top left
+                    Positioned(
+                      top: -60,
+                      left: -60,
+                      child: Container(
+                        width: 180,
+                        height: 180,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _kRed.withOpacity(0.12),
+                        ),
+                      ),
+                    ),
+                    // Decorative circle — top right
+                    Positioned(
+                      top: -30,
+                      right: -50,
+                      child: Container(
+                        width: 140,
+                        height: 140,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: const Color(0xFFFFF0C0).withOpacity(0.7),
+                        ),
+                      ),
+                    ),
+                    // Actual content
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Close button
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: Container(
+                                width: 34,
+                                height: 34,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.close,
+                                    size: 18, color: Colors.black54),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          // Warning icon
+                          Container(
+                            width: 64,
+                            height: 64,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFF3E0),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: const Color(0xFFFFB74D), width: 1.5),
+                            ),
+                            child: const Icon(Icons.warning_amber_rounded,
+                                size: 36, color: Color(0xFFF57C00)),
+                          ),
+                          const SizedBox(height: 16),
+                          // Title
+                          const Text(
+                            'Batalkan Pemesanan',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w800,
+                              color: _kRed,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          // Description
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Color(0xFF444444),
+                                  height: 1.5),
+                              children: [
+                                const TextSpan(
+                                    text:
+                                        'Apakah Anda ingin membatalkan pesanan\ndengan kode pemesanan '),
+                                TextSpan(
+                                  text: bookingCode,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF1A1A1A)),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 28),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // ── Konfirmasi button ──
+              Container(
+                padding:
+                    const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      // TODO: handle cancel booking logic
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _kRed,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: const Text(
+                      'Konfirmasi',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   // ── Total Harga Card ──────────────────────────────────────────────────────
+  // ── helper: format angka jadi "1.223.500" ──────────────────────────────
+  String _fmtRp(double value) {
+    final s = value.toStringAsFixed(0);
+    final buf = StringBuffer();
+    int count = 0;
+    for (int i = s.length - 1; i >= 0; i--) {
+      if (count > 0 && count % 3 == 0) buf.write('.');
+      buf.write(s[i]);
+      count++;
+    }
+    return buf.toString().split('').reversed.join();
+  }
+
   Widget _buildTotalCard() {
+    // Harga tiket setelah diskon
+    const double tiketDiskon = 1223500;
+    const double discountPct = 20;
+    final double tiketAsli = tiketDiskon / (1 - discountPct / 100); // harga sebelum diskon
+
     return _card(
       child: Column(
         children: [
@@ -788,7 +1451,74 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
             const SizedBox(height: 10),
             const Divider(height: 1, color: Color(0xFFEEEEEE)),
             const SizedBox(height: 8),
-            _priceRow('Tiket', 'Rp. 1.223.500'),
+
+            // ── Tiket row dengan diskon (sama seperti fare_detail_sheet) ──
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Label "Tiket  Dewasa - x1"
+                RichText(
+                  text: const TextSpan(
+                    style: TextStyle(fontSize: 13, color: Color(0xFF3D3C3C)),
+                    children: [
+                      TextSpan(text: 'Tiket  '),
+                      TextSpan(
+                        text: 'Dewasa - x1',
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ],
+                  ),
+                ),
+                const Spacer(),
+                // Kolom harga: badge+coret di atas, diskon di bawah
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    // Badge % + harga asli dicoret
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: _kRed,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            '${discountPct.toInt()}%',
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          'Rp. ${_fmtRp(tiketAsli)}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF999999),
+                            decoration: TextDecoration.lineThrough,
+                            decorationColor: Color(0xFF999999),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    // Harga setelah diskon
+                    Text(
+                      'Rp. ${_fmtRp(tiketDiskon)}',
+                      style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                          color: _kRed),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
             const SizedBox(height: 4),
             _priceRow('Biaya Jasa', 'Rp. 20.000'),
             const SizedBox(height: 4),
@@ -853,3 +1583,4 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     );
   }
 }
+
