@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:project1/screens/user/widgets/notificaions.dart';
 import 'package:project1/utils/routes.dart';
 import 'mybookng.dart';
 import 'partner.dart';
+import 'upgrade_screen.dart';
 
 const Color primaryRed = Color(0xFFC42D27);
 
@@ -170,18 +171,6 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
   final _ctrl = TextEditingController();
   late List<String> _recent;
 
-  final Map<String, String> _airportCode = {
-    'Jakarta': 'CGK',
-    'Denpasar': 'DPS',
-    'Surabaya': 'SUB',
-    'Kulonprogo': 'YIA',
-    'Semarang': 'SRG',
-    'Bandung': 'BDO',
-    'Medan': 'KNO',
-    'Palembang': 'PLM',
-    'Padang': 'PDG',
-  };
-
   final List<String> _popular = [
     'Jakarta',
     'Denpasar',
@@ -218,12 +207,7 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
     super.dispose();
   }
 
-  void _select(String city) {
-    final code = _airportCode[city];
-    final value = code != null ? '$city ($code)' : city;
-    Navigator.pop(context, value);
-  }
-
+  void _select(String city) => Navigator.pop(context, city);
   void _removeRecent(String city) => setState(() => _recent.remove(city));
 
   @override
@@ -404,7 +388,8 @@ class _HomeTab extends StatefulWidget {
   State<_HomeTab> createState() => _HomeTabState();
 }
 
-class _HomeTabState extends State<_HomeTab> {
+class _HomeTabState extends State<_HomeTab>
+    with SingleTickerProviderStateMixin {
   String _from = 'Jakarta (CGK)';
   String _to = 'Surabaya (SUB)';
   bool _roundTrip = false;
@@ -412,18 +397,42 @@ class _HomeTabState extends State<_HomeTab> {
   int _anak = 0;
   int _bayi = 0;
 
-  // ── Tanggal state ──────────────────────────────────────────────────────────
-  DateTime _tanggalPergi = DateTime.now();
-  DateTime? _tanggalPulang;
+  DateTime _departDate = DateTime.now().add(const Duration(days: 1));
+  DateTime _returnDate = DateTime.now().add(const Duration(days: 4));
+
+  // Auto-scroll card
+  late PageController _cardPageCtrl;
+  int _currentCardPage = 0;
+  Timer? _cardTimer;
 
   List<String> _recentFrom = ['Jakarta'];
   List<String> _recentTo = ['Denpasar'];
 
-  // ── Format: "Sen, 26 Jan 2026" ─────────────────────────────────────────────
-  String _formatTanggal(DateTime d) {
-    const hari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-    const bulan = [
-      '',
+  @override
+  void initState() {
+    super.initState();
+    _cardPageCtrl = PageController(viewportFraction: 0.92);
+    _cardTimer = Timer.periodic(const Duration(milliseconds: 3500), (_) {
+      if (!mounted) return;
+      final next = (_currentCardPage + 1) % 2;
+      _cardPageCtrl.animateToPage(
+        next,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _cardTimer?.cancel();
+    _cardPageCtrl.dispose();
+    super.dispose();
+  }
+
+  String _formatDate(DateTime d) {
+    const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+    const months = [
       'Jan',
       'Feb',
       'Mar',
@@ -437,52 +446,44 @@ class _HomeTabState extends State<_HomeTab> {
       'Nov',
       'Des'
     ];
-    return '${hari[d.weekday % 7]}, ${d.day} ${bulan[d.month]} ${d.year}';
+    return '${days[d.weekday % 7]}, ${d.day} ${months[d.month - 1]} ${d.year}';
   }
 
-  // ── Buka date picker tanggal pergi ─────────────────────────────────────────
-  Future<void> _pickTanggalPergi() async {
+  Future<void> _pickDepartDate() async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: _tanggalPergi,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-      locale: const Locale('id', 'ID'),
+      initialDate: _departDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (ctx, child) => Theme(
-        data: Theme.of(ctx).copyWith(
-          colorScheme: const ColorScheme.light(primary: primaryRed),
-        ),
-        child: child!,
-      ),
+          data: Theme.of(ctx).copyWith(
+              colorScheme: const ColorScheme.light(primary: primaryRed)),
+          child: child!),
     );
-    if (picked == null) return;
-    setState(() {
-      _tanggalPergi = picked;
-      if (_tanggalPulang != null && _tanggalPulang!.isBefore(picked)) {
-        _tanggalPulang = picked.add(const Duration(days: 3));
-      }
-    });
+    if (picked != null) {
+      setState(() {
+        _departDate = picked;
+        if (_returnDate.isBefore(picked)) {
+          _returnDate = picked.add(const Duration(days: 3));
+        }
+      });
+    }
   }
 
-  // ── Buka date picker tanggal pulang ────────────────────────────────────────
-  Future<void> _pickTanggalPulang() async {
-    final initial =
-        _tanggalPulang ?? _tanggalPergi.add(const Duration(days: 3));
+  Future<void> _pickReturnDate() async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: initial,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-      locale: const Locale('id', 'ID'),
+      initialDate: _returnDate.isAfter(_departDate)
+          ? _returnDate
+          : _departDate.add(const Duration(days: 1)),
+      firstDate: _departDate.add(const Duration(days: 1)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (ctx, child) => Theme(
-        data: Theme.of(ctx).copyWith(
-          colorScheme: const ColorScheme.light(primary: primaryRed),
-        ),
-        child: child!,
-      ),
+          data: Theme.of(ctx).copyWith(
+              colorScheme: const ColorScheme.light(primary: primaryRed)),
+          child: child!),
     );
-    if (picked == null) return;
-    setState(() => _tanggalPulang = picked);
+    if (picked != null) setState(() => _returnDate = picked);
   }
 
   void _swapLocations() {
@@ -536,11 +537,9 @@ class _HomeTabState extends State<_HomeTab> {
       recentSelections: _recentFrom,
     );
     if (result != null) {
-      // ✅ simpan hanya nama kota (hapus " (CGK)" dst)
-      final cityOnly = result.split(' (').first;
       setState(() {
-        if (!_recentFrom.contains(cityOnly)) {
-          _recentFrom = [cityOnly, ..._recentFrom];
+        if (!_recentFrom.contains(result)) {
+          _recentFrom = [result, ..._recentFrom];
         }
         _from = result;
       });
@@ -554,11 +553,9 @@ class _HomeTabState extends State<_HomeTab> {
       recentSelections: _recentTo,
     );
     if (result != null) {
-      // ✅ simpan hanya nama kota
-      final cityOnly = result.split(' (').first;
       setState(() {
-        if (!_recentTo.contains(cityOnly)) {
-          _recentTo = [cityOnly, ..._recentTo];
+        if (!_recentTo.contains(result)) {
+          _recentTo = [result, ..._recentTo];
         }
         _to = result;
       });
@@ -615,55 +612,17 @@ class _HomeTabState extends State<_HomeTab> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const NotificationPage(),
-                          ),
-                        );
-                      },
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.15),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.notifications_outlined,
-                              color: Colors.white,
-                              size: 22,
-                            ),
-                          ),
-                          // ── Badge unread ──
-                          Positioned(
-                            top: -2,
-                            right: -2,
-                            child: Container(
-                              width: 18,
-                              height: 18,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFFFCC00),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  '3', // ganti dengan jumlah notif belum dibaca
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xFF1A1A1A),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.notifications_outlined,
+                        color: Colors.white,
+                        size: 22,
                       ),
                     ),
                   ],
@@ -737,9 +696,9 @@ class _HomeTabState extends State<_HomeTab> {
                     ),
                     const SizedBox(height: 12),
 
-                    // ── Tanggal Pergi + toggle ──────────────────────────────
+                    // Date Pergi + toggle row
                     GestureDetector(
-                      onTap: _pickTanggalPergi,
+                      onTap: _pickDepartDate,
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: const Color(0xFFE0E0E0)),
@@ -761,7 +720,7 @@ class _HomeTabState extends State<_HomeTab> {
                                         color: Color(0xFFAAAAAA))),
                                 const SizedBox(height: 2),
                                 Text(
-                                  _formatTanggal(_tanggalPergi),
+                                  _formatDate(_departDate),
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
@@ -782,16 +741,8 @@ class _HomeTabState extends State<_HomeTab> {
                                 fit: BoxFit.contain,
                                 child: Switch(
                                   value: _roundTrip,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      _roundTrip = val;
-                                      // Set default tanggal pulang saat toggle ON
-                                      if (val && _tanggalPulang == null) {
-                                        _tanggalPulang = _tanggalPergi
-                                            .add(const Duration(days: 3));
-                                      }
-                                    });
-                                  },
+                                  onChanged: (val) =>
+                                      setState(() => _roundTrip = val),
                                   activeColor: primaryRed,
                                   materialTapTargetSize:
                                       MaterialTapTargetSize.shrinkWrap,
@@ -803,7 +754,6 @@ class _HomeTabState extends State<_HomeTab> {
                       ),
                     ),
 
-                    // ── Tanggal Pulang (muncul jika roundTrip aktif) ────────
                     AnimatedSize(
                       duration: const Duration(milliseconds: 250),
                       curve: Curves.easeInOut,
@@ -812,7 +762,7 @@ class _HomeTabState extends State<_HomeTab> {
                               children: [
                                 const SizedBox(height: 10),
                                 GestureDetector(
-                                  onTap: _pickTanggalPulang,
+                                  onTap: _pickReturnDate,
                                   child: Container(
                                     width: double.infinity,
                                     decoration: BoxDecoration(
@@ -837,23 +787,15 @@ class _HomeTabState extends State<_HomeTab> {
                                                     color: Color(0xFFAAAAAA))),
                                             const SizedBox(height: 2),
                                             Text(
-                                              _tanggalPulang != null
-                                                  ? _formatTanggal(
-                                                      _tanggalPulang!)
-                                                  : 'Pilih tanggal',
-                                              style: TextStyle(
+                                              _formatDate(_returnDate),
+                                              style: const TextStyle(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
-                                                color: _tanggalPulang != null
-                                                    ? const Color(0xFF1A1A1A)
-                                                    : const Color(0xFFAAAAAA),
+                                                color: Color(0xFF1A1A1A),
                                               ),
                                             ),
                                           ],
                                         ),
-                                        const Spacer(),
-                                        const Icon(Icons.chevron_right_rounded,
-                                            color: Color(0xFFAAAAAA), size: 20),
                                       ],
                                     ),
                                   ),
@@ -924,41 +866,84 @@ class _HomeTabState extends State<_HomeTab> {
           // ── Premium Scroll Section ──────────────────────────────────────
           Transform.translate(
             offset: const Offset(0, -20),
-            child: SizedBox(
-              height: 195,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                children: [
-                  _PremiumCard(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFB71C1C), Color(0xFFE53935)],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
+            child: Column(
+              children: [
+                ClipRect(
+                  child: SizedBox(
+                    height: 215,
+                    child: PageView(
+                      controller: _cardPageCtrl,
+                      onPageChanged: (i) =>
+                          setState(() => _currentCardPage = i),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: _PremiumCard(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFB71C1C), Color(0xFFE53935)],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            title: 'Premium',
+                            subtitle:
+                                'Upgrade ke Premium Partner &\nDapatkan Deviden dari Setiap\nTiket Terjual',
+                            buttonLabel: 'Upgrade',
+                            imagePath: 'assets/images/airplane.png',
+                            badgeText: 'GRATIS',
+                            rotateImage: false,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const UpgradeScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: _PremiumCard(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF1565C0), Color(0xFF42A5F5)],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            title: 'Promo Spesial',
+                            subtitle:
+                                'Diskon hingga 50% untuk\npenerbangan domestik\npilihan hari ini!',
+                            buttonLabel: 'Lihat Promo',
+                            imagePath: 'assets/images/Deals1.png',
+                            badgeText: '50% OFF',
+                            rotateImage: true,
+                            onTap: () {},
+                          ),
+                        ),
+                      ],
                     ),
-                    title: 'Premium',
-                    subtitle:
-                        'Upgrade ke Premium Partner &\nDapatkan Deviden dari Setiap\nTiket Terjual',
-                    buttonLabel: 'Upgrade',
-                    imagePath: 'assets/images/airplane.png',
-                    onTap: () {},
                   ),
-                  const SizedBox(width: 10),
-                  _PremiumCard(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF1565C0), Color(0xFF42A5F5)],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
-                    title: 'Promo Spesial',
-                    subtitle:
-                        'Diskon hingga 50% untuk\npenerbangan domestik\npilihan hari ini!',
-                    buttonLabel: 'Lihat Promo',
-                    imagePath: 'assets/images/airplane.png',
-                    onTap: () {},
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 10),
+                // Dot indicator
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(2, (i) {
+                    final isActive = i == _currentCardPage;
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      width: isActive ? 22 : 7,
+                      height: 7,
+                      decoration: BoxDecoration(
+                        color: isActive
+                            ? primaryRed
+                            : Colors.grey.withOpacity(0.35),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    );
+                  }),
+                ),
+              ],
             ),
           ),
 
@@ -971,12 +956,14 @@ class _HomeTabState extends State<_HomeTab> {
 
 // ─── Premium Card ─────────────────────────────────────────────────────────────
 
-class _PremiumCard extends StatelessWidget {
+class _PremiumCard extends StatefulWidget {
   final LinearGradient gradient;
   final String title;
   final String subtitle;
   final String buttonLabel;
   final String imagePath;
+  final String badgeText;
+  final bool rotateImage;
   final VoidCallback onTap;
 
   const _PremiumCard({
@@ -986,81 +973,279 @@ class _PremiumCard extends StatelessWidget {
     required this.buttonLabel,
     required this.imagePath,
     required this.onTap,
+    this.badgeText = '',
+    this.rotateImage = false,
   });
+
+  @override
+  State<_PremiumCard> createState() => _PremiumCardState();
+}
+
+class _PremiumCardState extends State<_PremiumCard>
+    with TickerProviderStateMixin {
+  late AnimationController _shimmerCtrl;
+  late AnimationController _floatCtrl;
+  late AnimationController _pulseCtrl;
+  late AnimationController _rotateCtrl;
+  late AnimationController _appearCtrl;
+
+  late Animation<double> _shimmer;
+  late Animation<double> _float;
+  late Animation<double> _pulse;
+  late Animation<double> _rotate;
+  late Animation<double> _appear;
+
+  @override
+  void initState() {
+    super.initState();
+    _shimmerCtrl =
+        AnimationController(vsync: this, duration: const Duration(seconds: 3))
+          ..repeat();
+    _floatCtrl =
+        AnimationController(vsync: this, duration: const Duration(seconds: 4))
+          ..repeat(reverse: true);
+    _pulseCtrl =
+        AnimationController(vsync: this, duration: const Duration(seconds: 2))
+          ..repeat(reverse: true);
+    _rotateCtrl =
+        AnimationController(vsync: this, duration: const Duration(seconds: 12))
+          ..repeat();
+    _appearCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 800));
+
+    _shimmer = Tween<double>(begin: -2.0, end: 3.0).animate(
+        CurvedAnimation(parent: _shimmerCtrl, curve: Curves.easeInOut));
+    _float = Tween<double>(begin: -9.0, end: 9.0)
+        .animate(CurvedAnimation(parent: _floatCtrl, curve: Curves.easeInOut));
+    _pulse = Tween<double>(begin: 0.0, end: 1.0)
+        .animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
+    _rotate = Tween<double>(begin: 0, end: 2 * 3.14159)
+        .animate(CurvedAnimation(parent: _rotateCtrl, curve: Curves.linear));
+    _appear = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _appearCtrl, curve: Curves.elasticOut));
+
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (mounted) _appearCtrl.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _shimmerCtrl.dispose();
+    _floatCtrl.dispose();
+    _pulseCtrl.dispose();
+    _rotateCtrl.dispose();
+    _appearCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    return Container(
-      width: screenWidth - 40,
-      decoration: BoxDecoration(
-        gradient: gradient,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      padding: const EdgeInsets.fromLTRB(20, 18, 0, 18),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 140),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.w900,
-                  ),
+
+    return AnimatedBuilder(
+      animation: Listenable.merge([_shimmer, _float, _pulse, _rotate, _appear]),
+      builder: (_, __) {
+        return Transform.scale(
+          scale: 0.7 + _appear.value * 0.3,
+          child: Opacity(
+            opacity: _appear.value.clamp(0.0, 1.0),
+            child: Container(
+              width: screenWidth - 40,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment(_shimmer.value - 1.5, -0.3),
+                  end: Alignment(_shimmer.value, 0.3),
+                  colors: [
+                    widget.gradient.colors[0],
+                    widget.gradient.colors.last,
+                    widget.gradient.colors[0].withOpacity(0.85),
+                    widget.gradient.colors.last,
+                  ],
+                  stops: const [0.0, 0.35, 0.65, 1.0],
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 12,
-                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                OutlinedButton(
-                  onPressed: onTap,
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.white60, width: 1.2),
-                    shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: const EdgeInsets.fromLTRB(20, 18, 0, 18),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // ── Clipped background layer (rings + sparkle) ──
+                  Positioned.fill(
+                    child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
+                      child: Stack(children: [
+                        Positioned.fill(
+                          child: CustomPaint(
+                            painter: _SparkPainter(
+                                t: _shimmerCtrl.value, color: Colors.white),
+                          ),
+                        ),
+                        Positioned(
+                          right: -20,
+                          top: -20,
+                          child: Transform.rotate(
+                            angle: _rotate.value,
+                            child: Container(
+                              width: 120,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: Colors.white.withOpacity(0.12),
+                                    width: 12),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 20,
+                          bottom: -40,
+                          child: Transform.rotate(
+                            angle: -_rotate.value * 0.5,
+                            child: Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: Colors.white.withOpacity(0.07),
+                                    width: 8),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]),
                     ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: Text(
-                    buttonLabel,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
+
+                  // ── Foreground: text + badge (NOT clipped) ──
+                  Padding(
+                    padding: const EdgeInsets.only(right: 130),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (widget.badgeText.isNotEmpty)
+                          Transform.rotate(
+                            angle: -0.05 + _pulse.value * 0.04,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 3),
+                              margin: const EdgeInsets.only(bottom: 6),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.22),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                    color: Colors.white.withOpacity(0.4)),
+                              ),
+                              child: Text(
+                                widget.badgeText,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ShaderMask(
+                          shaderCallback: (b) => LinearGradient(
+                            begin: Alignment(_shimmer.value - 1, 0),
+                            end: Alignment(_shimmer.value, 0),
+                            colors: [
+                              Colors.white,
+                              Colors.white.withOpacity(0.8),
+                              Colors.white
+                            ],
+                          ).createShader(b),
+                          child: Text(
+                            widget.title,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w900),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(widget.subtitle,
+                            style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 11.5,
+                                height: 1.5)),
+                        const SizedBox(height: 12),
+                        Transform.scale(
+                          scale: 1.0 + _pulse.value * 0.04,
+                          alignment: Alignment.centerLeft,
+                          child: OutlinedButton(
+                            onPressed: widget.onTap,
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(
+                                  color: Colors.white
+                                      .withOpacity(0.5 + _pulse.value * 0.4),
+                                  width: 1.2),
+                              backgroundColor:
+                                  Colors.white.withOpacity(_pulse.value * 0.06),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 18, vertical: 6),
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Text(widget.buttonLabel,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700)),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+
+                  // ── Floating image ──
+                  Positioned(
+                    right: 8,
+                    bottom: -38 + _float.value,
+                    child: Transform.rotate(
+                      angle: widget.rotateImage ? _rotate.value * 0.08 : 0,
+                      child: Image.asset(widget.imagePath,
+                          width: 150, fit: BoxFit.contain),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          Positioned(
-            right: 20,
-            bottom: -40,
-            child: Image.asset(
-              imagePath,
-              width: 170,
-              fit: BoxFit.contain,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
+}
+
+// Sparkle painter
+class _SparkPainter extends CustomPainter {
+  final double t;
+  final Color color;
+  _SparkPainter({required this.t, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..style = PaintingStyle.fill;
+    final rng = [0.1, 0.3, 0.55, 0.7, 0.85, 0.2, 0.65, 0.45, 0.9];
+    for (int i = 0; i < 9; i++) {
+      final phase = (t + i * 0.11) % 1.0;
+      final x = rng[i] * size.width;
+      final y = rng[(i + 3) % 9] * size.height;
+      final opacity = (0.5 * (1 - (phase * 2 - 1).abs())).clamp(0.0, 1.0);
+      paint.color = color.withOpacity(opacity * 0.18);
+      canvas.drawCircle(Offset(x, y), 3.0 + phase * 2, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_SparkPainter old) => old.t != t;
 }
 
 // ─── Reusable Widgets ─────────────────────────────────────────────────────────
@@ -1226,7 +1411,7 @@ class _PassengerSheetState extends State<_PassengerSheet> {
                           ),
                         ),
                         Positioned(
-                          right: 0,
+                          right: 12,
                           top: 7,
                           child: GestureDetector(
                             onTap: () => Navigator.pop(context),
@@ -1236,7 +1421,7 @@ class _PassengerSheetState extends State<_PassengerSheet> {
                                 Image.asset(
                                   'assets/images/Ellipseyell.png',
                                   width: 60,
-                                  height: 45,
+                                  height: 40,
                                   fit: BoxFit.fill,
                                 ),
                                 const Text(
@@ -1535,7 +1720,7 @@ class _FilterSheetState extends State<_FilterSheet> {
                       children: [
                         Positioned(
                           left: -(sw * 0.18),
-                          top: 1,
+                          top: 0,
                           bottom: 0,
                           child: Image.asset(
                             'assets/images/Ellipseblue.png',
@@ -1567,7 +1752,7 @@ class _FilterSheetState extends State<_FilterSheet> {
                           ),
                         ),
                         Positioned(
-                          right: 0,
+                          right: 12,
                           top: 7,
                           child: GestureDetector(
                             onTap: () => Navigator.pop(context),
@@ -1576,8 +1761,8 @@ class _FilterSheetState extends State<_FilterSheet> {
                               children: [
                                 Image.asset(
                                   'assets/images/Ellipseyell.png',
-                                  width: 60,
-                                  height: 45,
+                                  width: 80,
+                                  height: 40,
                                   fit: BoxFit.fill,
                                 ),
                                 const Text(

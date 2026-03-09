@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'upgrade_screen.dart';
 
 const _kRed = Color(0xFFC42D27);
 const _kBg = Color(0xFFF7F7F7);
@@ -67,7 +68,7 @@ class PartnerPage extends StatelessWidget {
             left: 15 * r,
             right: 15 * r,
             bottom: MediaQuery.of(context).size.height * 0.54,
-            child: _buildPremiumBanner(r),
+            child: _buildPremiumBanner(r, context),
           ),
         ],
       ),
@@ -94,13 +95,14 @@ class PartnerPage extends StatelessWidget {
   }
 
   // ─── Premium Banner ────────────────────────────────────────────────────────
-  Widget _buildPremiumBanner(double r) {
+  Widget _buildPremiumBanner(double r, BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 14 * r),
       child: SizedBox(
         width: 330 * r,
         height: 179 * r,
         child: Stack(
+          clipBehavior: Clip.none,
           children: [
             Positioned(
               left: 0,
@@ -158,40 +160,48 @@ class PartnerPage extends StatelessWidget {
             Positioned(
               left: 19 * r,
               top: 114 * r,
-              child: Container(
-                width: 150 * r,
-                height: 38 * r,
-                padding: EdgeInsets.all(8 * r),
-                clipBehavior: Clip.antiAlias,
-                decoration: ShapeDecoration(
-                  color: Colors.white.withValues(alpha: 0.25),
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(width: 2, color: Colors.white),
-                    borderRadius: BorderRadius.circular(21 * r),
+              child: GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const UpgradeScreen(),
                   ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Daftar Menjadi Partner',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12 * r,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
-                        height: 1,
-                      ),
+                child: Container(
+                  width: 150 * r,
+                  height: 38 * r,
+                  padding: EdgeInsets.all(8 * r),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: Colors.white.withOpacity(0.25),
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(width: 2, color: Colors.white),
+                      borderRadius: BorderRadius.circular(21 * r),
                     ),
-                  ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Daftar Menjadi Partner',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12 * r,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                          height: 1,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             Positioned(
-              left: 335 * r,
-              top: 118 * r,
+              right: -120 * r,
+              top: 110 * r,
               child: Container(
                 transform: Matrix4.identity()
                   ..translate(0.0, 0.0)
