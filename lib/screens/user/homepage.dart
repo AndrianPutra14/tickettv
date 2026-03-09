@@ -394,8 +394,78 @@ class _HomeTabState extends State<_HomeTab> {
   int _anak = 0;
   int _bayi = 0;
 
+  // ── Tanggal state ──────────────────────────────────────────────────────────
+  DateTime _tanggalPergi = DateTime.now();
+  DateTime? _tanggalPulang;
+
   List<String> _recentFrom = ['Jakarta'];
   List<String> _recentTo = ['Denpasar'];
+
+  // ── Format: "Sen, 26 Jan 2026" ─────────────────────────────────────────────
+  String _formatTanggal(DateTime d) {
+    const hari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+    const bulan = [
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des'
+    ];
+    return '${hari[d.weekday % 7]}, ${d.day} ${bulan[d.month]} ${d.year}';
+  }
+
+  // ── Buka date picker tanggal pergi ─────────────────────────────────────────
+  Future<void> _pickTanggalPergi() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _tanggalPergi,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+      locale: const Locale('id', 'ID'),
+      builder: (ctx, child) => Theme(
+        data: Theme.of(ctx).copyWith(
+          colorScheme: const ColorScheme.light(primary: primaryRed),
+        ),
+        child: child!,
+      ),
+    );
+    if (picked == null) return;
+    setState(() {
+      _tanggalPergi = picked;
+      if (_tanggalPulang != null && _tanggalPulang!.isBefore(picked)) {
+        _tanggalPulang = picked.add(const Duration(days: 3));
+      }
+    });
+  }
+
+  // ── Buka date picker tanggal pulang ────────────────────────────────────────
+  Future<void> _pickTanggalPulang() async {
+    final initial =
+        _tanggalPulang ?? _tanggalPergi.add(const Duration(days: 3));
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+      locale: const Locale('id', 'ID'),
+      builder: (ctx, child) => Theme(
+        data: Theme.of(ctx).copyWith(
+          colorScheme: const ColorScheme.light(primary: primaryRed),
+        ),
+        child: child!,
+      ),
+    );
+    if (picked == null) return;
+    setState(() => _tanggalPulang = picked);
+  }
 
   void _swapLocations() {
     setState(() {
@@ -607,60 +677,73 @@ class _HomeTabState extends State<_HomeTab> {
                     ),
                     const SizedBox(height: 12),
 
-                    // Date Pergi + toggle row
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFFE0E0E0)),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.calendar_today_rounded,
-                              color: Color(0xFFAAAAAA), size: 18),
-                          const SizedBox(width: 10),
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Pergi',
-                                  style: TextStyle(
-                                      fontSize: 11, color: Color(0xFFAAAAAA))),
-                              SizedBox(height: 2),
-                              Text(
-                                'Sen, 26 Jan 2026',
+                    // ── Tanggal Pergi + toggle ──────────────────────────────
+                    GestureDetector(
+                      onTap: _pickTanggalPergi,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: const Color(0xFFE0E0E0)),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.calendar_today_rounded,
+                                color: Color(0xFFAAAAAA), size: 18),
+                            const SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Pergi',
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        color: Color(0xFFAAAAAA))),
+                                const SizedBox(height: 2),
+                                Text(
+                                  _formatTanggal(_tanggalPergi),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF1A1A1A),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                            const Text('Pulang- pergi?',
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF1A1A1A),
+                                    fontSize: 11, color: Color(0xFFAAAAAA))),
+                            const SizedBox(width: 4),
+                            SizedBox(
+                              width: 44,
+                              height: 28,
+                              child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: Switch(
+                                  value: _roundTrip,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _roundTrip = val;
+                                      // Set default tanggal pulang saat toggle ON
+                                      if (val && _tanggalPulang == null) {
+                                        _tanggalPulang = _tanggalPergi
+                                            .add(const Duration(days: 3));
+                                      }
+                                    });
+                                  },
+                                  activeColor: primaryRed,
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
                                 ),
                               ),
-                            ],
-                          ),
-                          const Spacer(),
-                          const Text('Pulang- pergi?',
-                              style: TextStyle(
-                                  fontSize: 11, color: Color(0xFFAAAAAA))),
-                          const SizedBox(width: 4),
-                          SizedBox(
-                            width: 44,
-                            height: 28,
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: Switch(
-                                value: _roundTrip,
-                                onChanged: (val) =>
-                                    setState(() => _roundTrip = val),
-                                activeColor: primaryRed,
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
 
+                    // ── Tanggal Pulang (muncul jika roundTrip aktif) ────────
                     AnimatedSize(
                       duration: const Duration(milliseconds: 250),
                       curve: Curves.easeInOut,
@@ -668,40 +751,51 @@ class _HomeTabState extends State<_HomeTab> {
                           ? Column(
                               children: [
                                 const SizedBox(height: 10),
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: const Color(0xFFE0E0E0)),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 14, vertical: 10),
-                                  child: const Row(
-                                    children: [
-                                      Icon(Icons.calendar_today_rounded,
-                                          color: Color(0xFFAAAAAA), size: 18),
-                                      SizedBox(width: 10),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Pulang',
+                                GestureDetector(
+                                  onTap: _pickTanggalPulang,
+                                  child: Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: const Color(0xFFE0E0E0)),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 10),
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.calendar_today_rounded,
+                                            color: Color(0xFFAAAAAA), size: 18),
+                                        const SizedBox(width: 10),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text('Pulang',
+                                                style: TextStyle(
+                                                    fontSize: 11,
+                                                    color: Color(0xFFAAAAAA))),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              _tanggalPulang != null
+                                                  ? _formatTanggal(
+                                                      _tanggalPulang!)
+                                                  : 'Pilih tanggal',
                                               style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: Color(0xFFAAAAAA))),
-                                          SizedBox(height: 2),
-                                          Text(
-                                            'Kam, 29 Jan 2026',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                              color: Color(0xFF1A1A1A),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                                color: _tanggalPulang != null
+                                                    ? const Color(0xFF1A1A1A)
+                                                    : const Color(0xFFAAAAAA),
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                          ],
+                                        ),
+                                        const Spacer(),
+                                        const Icon(Icons.chevron_right_rounded,
+                                            color: Color(0xFFAAAAAA), size: 20),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -1758,4 +1852,3 @@ class _KelasButton extends StatelessWidget {
     );
   }
 }
-
