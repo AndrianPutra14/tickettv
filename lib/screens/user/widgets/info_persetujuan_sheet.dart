@@ -22,7 +22,7 @@ class InfoPersetujuanSheet extends StatelessWidget {
         children: [
           // ── Header ──────────────────────────────────────────────────────
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+            padding: const EdgeInsets.fromLTRB(16, 10, 0, 10),
             child: Row(
               children: [
                 const Icon(Icons.info_outline_rounded,
@@ -41,22 +41,18 @@ class InfoPersetujuanSheet extends StatelessWidget {
                 // Close button — Ellipseyell style (sama seperti _CopyFareSummarySheet)
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: SizedBox(
-                    width: 45,
-                    height: 45,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/Ellipseyell.png',
-                          width: 45,
-                          height: 45,
-                          fit: BoxFit.contain,
-                        ),
-                        const Icon(Icons.close,
-                            size: 26, color: Color(0xFF0F0F0F)),
-                      ],
-                    ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/images/Ellipseyell.png',
+                        width: 60,
+                        height: 45,
+                        fit: BoxFit.fill,
+                      ),
+                      const Icon(Icons.close,
+                          size: 26, color: Color(0xFF0F0F0F)),
+                    ],
                   ),
                 ),
               ],
@@ -159,7 +155,7 @@ class InfoPersetujuanSheet extends StatelessWidget {
               height: 48,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);       // tutup InfoPersetujuanSheet
+                  Navigator.pop(context); // tutup InfoPersetujuanSheet
                   Navigator.pushNamed(context, AppRoutes.bookingDetail);
                   onKonfirmasi?.call();
                 },

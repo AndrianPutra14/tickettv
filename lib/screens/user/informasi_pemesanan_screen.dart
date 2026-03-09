@@ -213,65 +213,99 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
           const Divider(height: 8, thickness: 1, color: Color(0xFFDDDDDD)),
 
           // Row 1
-          Row(
-            children: [
-              Expanded(
-                  child: Text(widget.flight.no.replaceAll(RegExp(r'\d'), ''),
-                      style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          height: 1.5))),
-              Expanded(
-                  child: Text(widget.flight.no,
-                      style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          height: 1.5))),
-              Expanded(
-                  child: Text(widget.flight.depAp,
-                      style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          height: 1.5))),
-              Expanded(
-                  child: Text(widget.flight.dep,
-                      style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          height: 1.5))),
-            ],
-          ),
-
-          // Row 2: UI | ECO-B9 | arrAp | arr
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  widget.flight.no.replaceAll(RegExp(r'\d'), ''),
-                  style: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w600, height: 1.5),
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 1,
+            ),
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    // Row 1: airline code | flight no | depAp | dep
+                    Row(
+                      children: [
+                        Expanded(
+                            child: Text(
+                                widget.flight.no.replaceAll(RegExp(r'\d'), ''),
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.5))),
+                        Expanded(
+                            child: Text(widget.flight.no,
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.5))),
+                        Expanded(
+                            child: Text(widget.flight.depAp,
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.5))),
+                        Expanded(
+                            child: Text(widget.flight.dep,
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.5))),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    // Row 2: airline code | ECO-B9 | arrAp | arr
+                    Row(
+                      children: [
+                        Expanded(
+                            child: Text(
+                                widget.flight.no.replaceAll(RegExp(r'\d'), ''),
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.5))),
+                        Expanded(
+                            child: Text(
+                                '${widget.fare.cls}-${widget.fare.code.replaceAll(' ', '')}',
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.5))),
+                        Expanded(
+                            child: Text(widget.flight.arrAp,
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.5))),
+                        Expanded(
+                            child: Text(widget.flight.arr,
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.5))),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              Expanded(
-                child: Text(
-                  '${widget.fare.cls}-${widget.fare.code.replaceAll(' ', '')}',
-                  style: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w600, height: 1.5),
+                Positioned(
+                  right: 0,
+                  top: 3,
+                  bottom: 0,
+                  child: Center(
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        // color: const Color(0xFF4CAF50),
+                        border: Border.all(
+                            color: const Color(0xFF4CAF50), width: 1.5),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      child: const Icon(Icons.check,
+                          color: Color(0xFF4CAF50), size: 16, weight: 700),
+                    ),
+                  ),
                 ),
-              ),
-              Expanded(
-                  child: Text(widget.flight.arrAp,
-                      style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          height: 1.5))),
-              Expanded(
-                  child: Text(widget.flight.arr,
-                      style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          height: 1.5))),
-            ],
+              ],
+            ),
           ),
           const Divider(height: 1, thickness: 1, color: Color(0xFFDDDDDD)),
           const SizedBox(height: 8),
