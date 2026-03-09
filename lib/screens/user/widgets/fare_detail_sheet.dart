@@ -208,16 +208,17 @@ class FareDetailSheet extends StatelessWidget {
                                 top: 3,
                                 bottom: 0,
                                 child: Center(
-                                    // child: Container(
-                                    //   width: 20,
-                                    //   height: 20,
-                                    //   decoration: BoxDecoration(
-                                    //     color: const Color(0xFF4CAF50),
-                                    //     borderRadius: BorderRadius.circular(3),
-                                    //   ),
-                                    //   child: const Icon(Icons.check, color: Colors.white, size: 14),
-                                    // ),
+                                  child: Container(
+                                    width: 20,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF4CAF50),
+                                      borderRadius: BorderRadius.circular(3),
                                     ),
+                                    child: const Icon(Icons.check,
+                                        color: Colors.white, size: 14),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
