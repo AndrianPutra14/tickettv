@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:project1/screens/partner/partner_register_screen.dart';
 
 const Color _kRed = Color(0xFFC42D27);
 const Color _kRedDark = Color(0xFF7B0D07);
@@ -687,10 +688,11 @@ class _UpgradeScreenState extends State<UpgradeScreen>
             ],
           ),
           child: ElevatedButton(
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text('Selamat datang di Premium Partner! 🎉'),
-                  behavior: SnackBarBehavior.floating),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const PartnerRegisterScreen(),
+              ),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.transparent,

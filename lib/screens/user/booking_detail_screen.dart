@@ -728,17 +728,21 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                   style: TextStyle(fontSize: 13, color: Color(0xFF1A1A1A))),
             ),
             const SizedBox(width: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-              decoration: BoxDecoration(
-                color: _kRed,
-                borderRadius: BorderRadius.circular(6),
+            GestureDetector(
+              onTap: () => _showCancelConfirmation(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+                decoration: BoxDecoration(
+                  color: _kRed,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Text('Batal',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700)),
               ),
-              child: const Text('Batal',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700)),
             ),
           ],
         ),
@@ -1241,151 +1245,334 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
   // ── Cancel Confirmation Sheet ─────────────────────────────────────────────
   void _showCancelConfirmation(BuildContext context) {
     const String bookingCode = 'AZRQRP';
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      // backgroundColor: Colors.transparent,
       builder: (_) {
         return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
+          // decoration: const BoxDecoration(
+          //   // color: Colors.white,
+          //   borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+          // ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ── Content area with decorative circles ──
-              ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(20)),
+              // // ── Header ─────────────────────────────────────
+              // Container(
+              //   color: Colors.white.withOpacity(0.9),
+              //   child: Padding(
+              //     padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.end,
+              //       children: [
+              //         GestureDetector(
+              //           onTap: () => Navigator.pop(context),
+              //           child: const Icon(
+              //             Icons.close,
+              //             size: 26,
+              //             color: Color(0xFF0F0F0F),
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+
+              // const Divider(height: 1, color: Color(0xFFE0E0E0)),
+
+              // ── Body ─────────────────────────────────────
+              // Container(
+              //   decoration: BoxDecoration(
+              //     color: Colors.white,
+              //     borderRadius: BorderRadius.vertical(
+              //       top: Radius.circular(30),
+              //     ),
+              //   ),
+              //   height: 250,
+              //   child: Stack(
+              //     children: [
+              // ── Header ─────────────────────────────────────
+              //       Container(
+              //         decoration: BoxDecoration(
+              //           color: const Color.fromARGB(255, 231, 27, 27),
+              //           borderRadius: BorderRadius.vertical(
+              //             top: Radius.circular(28),
+              //           ),
+              //         ),
+              //         // height: 100,
+              //         child: Padding(
+              //           padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
+              //           child: Row(
+              //             mainAxisAlignment: MainAxisAlignment.end,
+              //             children: [
+              //               GestureDetector(
+              //                 onTap: () => Navigator.pop(context),
+              //                 child: const Icon(
+              //                   Icons.close,
+              //                   size: 26,
+              //                   color: Color(0xFF0F0F0F),
+              //                 ),
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         height: 300,
+              //         child: Stack(
+              //           children: [
+              //             // Watermark lingkaran
+              //             Positioned(
+              //               left: -120,
+              //               top: -30,
+              //               child: Container(
+              //                 width: 420,
+              //                 height: 420,
+              //                 decoration: BoxDecoration(
+              //                   shape: BoxShape.circle,
+              //                   color: _kRed.withOpacity(0.10),
+              //                 ),
+              //               ),
+              //             ),
+
+              //             Positioned(
+              //               right: -12,
+              //               top: -55,
+              //               child: Container(
+              //                 width: 120,
+              //                 height: 120,
+              //                 decoration: BoxDecoration(
+              //                     shape: BoxShape.circle,
+              //                     color:
+              //                         const Color.fromARGB(255, 243, 225, 184)),
+              //               ),
+              //             ),
+              //             SingleChildScrollView(
+              //               padding: const EdgeInsets.fromLTRB(20, 60, 20, 12),
+              //               child: Column(
+              //                 crossAxisAlignment: CrossAxisAlignment.center,
+              //                 children: [
+              //                   // Icon warning
+              //                   const Icon(
+              //                     Icons.warning_amber_rounded,
+              //                     size: 55,
+              //                     color: Colors.orange,
+              //                   ),
+
+              //                   const SizedBox(height: 12),
+
+              //                   // Title
+              //                   const Text(
+              //                     'Batalkan Pemesanan',
+              //                     textAlign: TextAlign.center,
+              //                     style: TextStyle(
+              //                       fontSize: 16,
+              //                       fontWeight: FontWeight.w800,
+              //                       color: _kRed,
+              //                     ),
+              //                   ),
+
+              //                   const SizedBox(height: 40),
+
+              //                   // Description
+              //                   RichText(
+              //                     textAlign: TextAlign.center,
+              //                     text: TextSpan(
+              //                       style: const TextStyle(
+              //                         fontSize: 13,
+              //                         color: Color(0xFF444444),
+              //                         height: 1.5,
+              //                       ),
+              //                       children: [
+              //                         const TextSpan(
+              //                           text:
+              //                               'Apakah Anda ingin membatalkan pesanan dengan kode pemesanan ',
+              //                         ),
+              //                         const TextSpan(
+              //                           text: 'AZRQRP',
+              //                           style: TextStyle(
+              //                             fontWeight: FontWeight.w800,
+              //                             color: Color(0xFF1A1A1A),
+              //                           ),
+              //                         ),
+              //                       ],
+              //                     ),
+              //                   ),
+              //                 ],
+              //               ),
+              //             )
+              //           ],
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                ),
+                height: 250,
+                clipBehavior: Clip.antiAlias,
                 child: Stack(
-                  clipBehavior: Clip.hardEdge,
                   children: [
-                    // Decorative circle — top left
-                    Positioned(
-                      top: -60,
-                      left: -60,
-                      child: Container(
-                        width: 180,
-                        height: 180,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _kRed.withOpacity(0.12),
-                        ),
-                      ),
-                    ),
-                    // Decorative circle — top right
-                    Positioned(
-                      top: -30,
-                      right: -50,
-                      child: Container(
-                        width: 140,
-                        height: 140,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color(0xFFFFF0C0).withOpacity(0.7),
-                        ),
-                      ),
-                    ),
-                    // Actual content
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                    // 1. PINDAHKAN BODY/LINGKARAN KE ATAS (Layer Bawah)
+                    SizedBox(
+                      height: 300,
+                      child: Stack(
                         children: [
-                          // Close button
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: GestureDetector(
-                              onTap: () => Navigator.pop(context),
-                              child: Container(
-                                width: 34,
-                                height: 34,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(Icons.close,
-                                    size: 18, color: Colors.black54),
+                          // Watermark merah (0.10 opacity)
+                          Positioned(
+                            left: -120,
+                            top: -30,
+                            child: Container(
+                              width: 420,
+                              height: 420,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _kRed.withOpacity(0.10),
                               ),
                             ),
                           ),
-                          const SizedBox(height: 12),
-                          // Warning icon
-                          Container(
-                            width: 64,
-                            height: 64,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFFF3E0),
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  color: const Color(0xFFFFB74D), width: 1.5),
-                            ),
-                            child: const Icon(Icons.warning_amber_rounded,
-                                size: 36, color: Color(0xFFF57C00)),
-                          ),
-                          const SizedBox(height: 16),
-                          // Title
-                          const Text(
-                            'Batalkan Pemesanan',
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w800,
-                              color: _kRed,
+                          // Watermark kuning
+                          Positioned(
+                            right: -42,
+                            top: -35,
+                            child: Container(
+                              width: 140,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: const Color.fromARGB(255, 243, 225, 184),
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 12),
-                          // Description
-                          RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                              style: const TextStyle(
-                                  fontSize: 13,
-                                  color: Color(0xFF444444),
-                                  height: 1.5),
+                          // Konten Teks
+                          SingleChildScrollView(
+                            padding: const EdgeInsets.fromLTRB(20, 60, 20, 12),
+                            child: Column(
                               children: [
-                                const TextSpan(
-                                    text:
-                                        'Apakah Anda ingin membatalkan pesanan\ndengan kode pemesanan '),
-                                TextSpan(
-                                  text: bookingCode,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      color: Color(0xFF1A1A1A)),
+                                // Icon warning
+                                const Icon(
+                                  Icons.warning_amber_rounded,
+                                  size: 55,
+                                  color: Colors.orange,
+                                ),
+
+                                const SizedBox(height: 12),
+
+                                // Title
+                                const Text(
+                                  'Batalkan Pemesanan',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w800,
+                                    color: _kRed,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 40),
+
+                                // Description
+                                RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: Color(0xFF444444),
+                                      height: 1.5,
+                                    ),
+                                    children: [
+                                      const TextSpan(
+                                        text:
+                                            'Apakah Anda ingin membatalkan pesanan dengan kode pemesanan ',
+                                      ),
+                                      const TextSpan(
+                                        text: 'AZRQRP',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                          color: Color(0xFF1A1A1A),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                          const SizedBox(height: 28),
+                          )
                         ],
+                      ),
+                    ),
+
+                    // 2. PINDAHKAN HEADER KE BAWAH (Layer Atas/Depan)
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 255, 255, 255)
+                            .withOpacity(0.5), // Merah Solid
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(28)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 15, 25, 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: const Icon(Icons.close,
+                                  size: 26,
+                                  color: Colors
+                                      .black), // Ganti putih biar kelihatan di bg merah
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              // ── Konfirmasi button ──
+
+              // ── Button Card ─────────────────────────────────
               Container(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFE0E0E0)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.07),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
                 child: SizedBox(
                   width: double.infinity,
-                  height: 50,
+                  height: 48,
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      // TODO: handle cancel booking logic
+                      // TODO cancel booking logic
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _kRed,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     child: const Text(
                       'Konfirmasi',
                       style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
