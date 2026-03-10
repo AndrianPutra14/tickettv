@@ -949,7 +949,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                     // Icon + Title
                     const Positioned(
                       left: 16,
-                      top: 0,
+                      top: 8,
                       bottom: 0,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -970,8 +970,8 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                     ),
                     // X button (Ellipseyell)
                     Positioned(
-                      right: 8,
-                      top: 10,
+                      right: 0,
+                      top: 16,
                       child: GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: Stack(
@@ -979,22 +979,14 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                           children: [
                             Image.asset(
                               'assets/images/Ellipseyell.png',
-                              width: 80,
+                              width: 60,
                               height: 40,
                               fit: BoxFit.fill,
-                              errorBuilder: (_, __, ___) => Container(
-                                width: 60,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFF5F5F5),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
                             ),
                             const Text(
                               'X',
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 color: Color(0xFF1A1A1A),
                                 height: 1,

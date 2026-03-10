@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 const _kRed = Color(0xFFC42D27);
 const _kBg = Color(0xFFF7F7F7);
@@ -46,6 +48,7 @@ class _MyBookingPageState extends State<MyBookingPage> {
     final initial = isFrom ? _fromDate : _toDate;
     final picked = await showDatePicker(
       context: context,
+      locale: const Locale('id', 'ID'),
       initialDate: initial,
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
@@ -157,6 +160,12 @@ class _MyBookingPageState extends State<MyBookingPage> {
       'Des'
     ];
     return '${days[d.weekday - 1]}, ${d.day} ${months[d.month - 1]} ${d.year}';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeDateFormatting('id_ID', null);
   }
 
   @override
