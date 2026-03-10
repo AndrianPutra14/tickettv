@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:project1/screens/user/widgets/notificaions.dart';
 import 'package:project1/utils/routes.dart';
 import 'mybookng.dart';
 import 'partner.dart';
 import 'upgrade_screen.dart';
+import 'widgets/notificaions.dart';
 
 const Color primaryRed = Color(0xFFC42D27);
 
@@ -172,18 +172,6 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
   final _ctrl = TextEditingController();
   late List<String> _recent;
 
-  final Map<String, String> _airportCode = {
-    'Jakarta': 'CGK',
-    'Denpasar': 'DPS',
-    'Surabaya': 'SUB',
-    'Kulonprogo': 'YIA',
-    'Semarang': 'SRG',
-    'Bandung': 'BDO',
-    'Medan': 'KNO',
-    'Palembang': 'PLM',
-    'Padang': 'PDG',
-  };
-
   final List<String> _popular = [
     'Jakarta',
     'Denpasar',
@@ -220,12 +208,7 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
     super.dispose();
   }
 
-  void _select(String city) {
-    final code = _airportCode[city];
-    final value = code != null ? '$city ($code)' : city;
-    Navigator.pop(context, value);
-  }
-
+  void _select(String city) => Navigator.pop(context, city);
   void _removeRecent(String city) => setState(() => _recent.remove(city));
 
   @override
@@ -415,14 +398,13 @@ class _HomeTabState extends State<_HomeTab>
   int _anak = 0;
   int _bayi = 0;
 
+  DateTime _departDate = DateTime.now().add(const Duration(days: 1));
+  DateTime _returnDate = DateTime.now().add(const Duration(days: 4));
+
   // Auto-scroll card
   late PageController _cardPageCtrl;
   int _currentCardPage = 0;
   Timer? _cardTimer;
-
-  // ── Tanggal state ──────────────────────────────────────────────────────────
-  DateTime _tanggalPergi = DateTime.now();
-  DateTime? _tanggalPulang;
 
   List<String> _recentFrom = ['Jakarta'];
   List<String> _recentTo = ['Denpasar'];
@@ -449,10 +431,9 @@ class _HomeTabState extends State<_HomeTab>
     super.dispose();
   }
 
-  String _formatTanggal(DateTime d) {
-    const hari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-    const bulan = [
-      '',
+  String _formatDate(DateTime d) {
+    const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+    const months = [
       'Jan',
       'Feb',
       'Mar',
@@ -466,51 +447,44 @@ class _HomeTabState extends State<_HomeTab>
       'Nov',
       'Des'
     ];
-    return '${hari[d.weekday % 7]}, ${d.day} ${bulan[d.month]} ${d.year}';
+    return '${days[d.weekday % 7]}, ${d.day} ${months[d.month - 1]} ${d.year}';
   }
 
-  Future<void> _pickTanggalPergi() async {
+  Future<void> _pickDepartDate() async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: _tanggalPergi,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-      locale: const Locale('id', 'ID'),
+      initialDate: _departDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (ctx, child) => Theme(
-        data: Theme.of(ctx).copyWith(
-          colorScheme: const ColorScheme.light(primary: primaryRed),
-        ),
-        child: child!,
-      ),
+          data: Theme.of(ctx).copyWith(
+              colorScheme: const ColorScheme.light(primary: primaryRed)),
+          child: child!),
     );
-    if (picked == null) return;
-    setState(() {
-      _tanggalPergi = picked;
-      if (_tanggalPulang != null && _tanggalPulang!.isBefore(picked)) {
-        _tanggalPulang = picked.add(const Duration(days: 3));
-      }
-    });
+    if (picked != null) {
+      setState(() {
+        _departDate = picked;
+        if (_returnDate.isBefore(picked)) {
+          _returnDate = picked.add(const Duration(days: 3));
+        }
+      });
+    }
   }
 
-  // ── Buka date picker tanggal pulang ────────────────────────────────────────
-  Future<void> _pickTanggalPulang() async {
-    final initial =
-        _tanggalPulang ?? _tanggalPergi.add(const Duration(days: 3));
+  Future<void> _pickReturnDate() async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: initial,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-      locale: const Locale('id', 'ID'),
+      initialDate: _returnDate.isAfter(_departDate)
+          ? _returnDate
+          : _departDate.add(const Duration(days: 1)),
+      firstDate: _departDate.add(const Duration(days: 1)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (ctx, child) => Theme(
-        data: Theme.of(ctx).copyWith(
-          colorScheme: const ColorScheme.light(primary: primaryRed),
-        ),
-        child: child!,
-      ),
+          data: Theme.of(ctx).copyWith(
+              colorScheme: const ColorScheme.light(primary: primaryRed)),
+          child: child!),
     );
-    if (picked == null) return;
-    setState(() => _tanggalPulang = picked);
+    if (picked != null) setState(() => _returnDate = picked);
   }
 
   void _swapLocations() {
@@ -564,11 +538,9 @@ class _HomeTabState extends State<_HomeTab>
       recentSelections: _recentFrom,
     );
     if (result != null) {
-      // ✅ simpan hanya nama kota (hapus " (CGK)" dst)
-      final cityOnly = result.split(' (').first;
       setState(() {
-        if (!_recentFrom.contains(cityOnly)) {
-          _recentFrom = [cityOnly, ..._recentFrom];
+        if (!_recentFrom.contains(result)) {
+          _recentFrom = [result, ..._recentFrom];
         }
         _from = result;
       });
@@ -582,11 +554,9 @@ class _HomeTabState extends State<_HomeTab>
       recentSelections: _recentTo,
     );
     if (result != null) {
-      // ✅ simpan hanya nama kota
-      final cityOnly = result.split(' (').first;
       setState(() {
-        if (!_recentTo.contains(cityOnly)) {
-          _recentTo = [cityOnly, ..._recentTo];
+        if (!_recentTo.contains(result)) {
+          _recentTo = [result, ..._recentTo];
         }
         _to = result;
       });
@@ -644,54 +614,24 @@ class _HomeTabState extends State<_HomeTab>
                     ),
                     const SizedBox(width: 12),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const NotificationPage(),
-                          ),
-                        );
-                      },
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.15),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.notifications_outlined,
-                              color: Colors.white,
-                              size: 22,
-                            ),
-                          ),
-                          // ── Badge unread ──
-                          Positioned(
-                            top: -2,
-                            right: -2,
-                            child: Container(
-                              width: 18,
-                              height: 18,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFFFCC00),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  '3', // ganti dengan jumlah notif belum dibaca
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xFF1A1A1A),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationPage(),
+                        ),
+                      ),
+                      child: Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.notifications_outlined,
+                          color: Colors.white,
+                          size: 22,
+                        ),
                       ),
                     ),
                   ],
@@ -767,7 +707,7 @@ class _HomeTabState extends State<_HomeTab>
 
                     // Date Pergi + toggle row
                     GestureDetector(
-                      onTap: _pickTanggalPergi,
+                      onTap: _pickDepartDate,
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: const Color(0xFFE0E0E0)),
@@ -789,7 +729,7 @@ class _HomeTabState extends State<_HomeTab>
                                         color: Color(0xFFAAAAAA))),
                                 const SizedBox(height: 2),
                                 Text(
-                                  _formatTanggal(_tanggalPergi),
+                                  _formatDate(_departDate),
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
@@ -831,8 +771,9 @@ class _HomeTabState extends State<_HomeTab>
                               children: [
                                 const SizedBox(height: 10),
                                 GestureDetector(
-                                  onTap: _pickTanggalPergi,
+                                  onTap: _pickReturnDate,
                                   child: Container(
+                                    width: double.infinity,
                                     decoration: BoxDecoration(
                                       border: Border.all(
                                           color: const Color(0xFFE0E0E0)),
@@ -849,13 +790,13 @@ class _HomeTabState extends State<_HomeTab>
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            const Text('Pergi',
+                                            const Text('Pulang',
                                                 style: TextStyle(
                                                     fontSize: 11,
                                                     color: Color(0xFFAAAAAA))),
                                             const SizedBox(height: 2),
                                             Text(
-                                              _formatTanggal(_tanggalPergi),
+                                              _formatDate(_returnDate),
                                               style: const TextStyle(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
@@ -1479,7 +1420,7 @@ class _PassengerSheetState extends State<_PassengerSheet> {
                           ),
                         ),
                         Positioned(
-                          right: 0,
+                          right: 12,
                           top: 7,
                           child: GestureDetector(
                             onTap: () => Navigator.pop(context),
@@ -1489,7 +1430,7 @@ class _PassengerSheetState extends State<_PassengerSheet> {
                                 Image.asset(
                                   'assets/images/Ellipseyell.png',
                                   width: 60,
-                                  height: 45,
+                                  height: 40,
                                   fit: BoxFit.fill,
                                 ),
                                 const Text(
@@ -1820,7 +1761,7 @@ class _FilterSheetState extends State<_FilterSheet> {
                           ),
                         ),
                         Positioned(
-                          right: 0,
+                          right: 12,
                           top: 7,
                           child: GestureDetector(
                             onTap: () => Navigator.pop(context),
@@ -1829,8 +1770,8 @@ class _FilterSheetState extends State<_FilterSheet> {
                               children: [
                                 Image.asset(
                                   'assets/images/Ellipseyell.png',
-                                  width: 60,
-                                  height: 45,
+                                  width: 80,
+                                  height: 40,
                                   fit: BoxFit.fill,
                                 ),
                                 const Text(

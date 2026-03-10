@@ -41,8 +41,7 @@ class _FilterSheetState extends State<FilterSheet> {
                 fontSize: 15, fontWeight: FontWeight.w700, color: kRed)),
       );
 
-  Widget _sectionHeader(
-      String title, VoidCallback onClearAll, VoidCallback onSelectAll) {
+  Widget _sectionHeader(String title, VoidCallback onClearAll, VoidCallback onSelectAll) {
     return Row(
       children: [
         Text(title,
@@ -78,13 +77,11 @@ class _FilterSheetState extends State<FilterSheet> {
                 style: const TextStyle(fontSize: 14, color: Color(0xFF1A1A1A))),
           ),
           SizedBox(
-            width: 24,
-            height: 24,
+            width: 24, height: 24,
             child: Checkbox(
               value: value,
               activeColor: kRed,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
               onChanged: (v) => onChanged(v ?? false),
             ),
           ),
@@ -93,8 +90,7 @@ class _FilterSheetState extends State<FilterSheet> {
     );
   }
 
-  Widget _timeCheckRow(
-      String time, String label, bool value, ValueChanged<bool> onChanged) {
+  Widget _timeCheckRow(String time, String label, bool value, ValueChanged<bool> onChanged) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
@@ -109,13 +105,11 @@ class _FilterSheetState extends State<FilterSheet> {
                 style: const TextStyle(fontSize: 13, color: Color(0xFF1A1A1A))),
           ),
           SizedBox(
-            width: 24,
-            height: 24,
+            width: 24, height: 24,
             child: Checkbox(
               value: value,
               activeColor: kRed,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
               onChanged: (v) => onChanged(v ?? false),
             ),
           ),
@@ -124,22 +118,18 @@ class _FilterSheetState extends State<FilterSheet> {
     );
   }
 
-  Widget _airlineRow(
-      String name, String assetPath, bool value, ValueChanged<bool> onChanged) {
+  Widget _airlineRow(String name, String assetPath, bool value, ValueChanged<bool> onChanged) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
           Container(
-            width: 32,
-            height: 32,
-            decoration: const BoxDecoration(
-                color: Color(0xFFF0F0F0), shape: BoxShape.circle),
+            width: 32, height: 32,
+            decoration: const BoxDecoration(color: Color(0xFFF0F0F0), shape: BoxShape.circle),
             child: ClipOval(
               child: Padding(
                 padding: const EdgeInsets.all(4),
-                child: Image.asset(assetPath,
-                    fit: BoxFit.contain,
+                child: Image.asset(assetPath, fit: BoxFit.contain,
                     errorBuilder: (_, __, ___) =>
                         const Icon(Icons.flight, size: 18, color: kRed)),
               ),
@@ -151,13 +141,11 @@ class _FilterSheetState extends State<FilterSheet> {
                 style: const TextStyle(fontSize: 14, color: Color(0xFF1A1A1A))),
           ),
           SizedBox(
-            width: 24,
-            height: 24,
+            width: 24, height: 24,
             child: Checkbox(
               value: value,
               activeColor: kRed,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
               onChanged: (v) => onChanged(v ?? false),
             ),
           ),
@@ -188,7 +176,7 @@ class _FilterSheetState extends State<FilterSheet> {
                   children: [
                     // ── Ellipse Header ──────────────────────────────────────
                     SizedBox(
-                      height: 70,
+                      height: 65,
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
@@ -207,15 +195,12 @@ class _FilterSheetState extends State<FilterSheet> {
                             ),
                           ),
                           const Positioned(
-                            left: 12,
-                            top: 4,
-                            bottom: 0,
+                            left: 12, top: 4, bottom: 0,
                             child: Center(
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.tune_rounded,
-                                      color: Colors.black, size: 20),
+                                  Icon(Icons.tune_rounded, color: Colors.black, size: 20),
                                   SizedBox(width: 8),
                                   Text('Urutkan dan Filter',
                                       style: TextStyle(
@@ -227,15 +212,14 @@ class _FilterSheetState extends State<FilterSheet> {
                             ),
                           ),
                           Positioned(
-                            right: 0,
-                            top: 14,
+                            right: 12, top: 19,
                             child: GestureDetector(
                               onTap: () => Navigator.pop(context),
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: [
                                   Image.asset('assets/images/Ellipseyell.png',
-                                      width: 60, height: 45, fit: BoxFit.fill),
+                                      width: 80, height: 40, fit: BoxFit.fill),
                                   const Text('X',
                                       style: TextStyle(
                                           fontSize: 20,
@@ -258,148 +242,92 @@ class _FilterSheetState extends State<FilterSheet> {
                         children: [
                           _sectionTitle('Urutkan'),
                           Wrap(
-                            spacing: 10,
-                            runSpacing: 10,
+                            spacing: 10, runSpacing: 10,
                             children: List.generate(_sortLabels.length, (i) {
                               final sel = _sortIndex == i;
                               return GestureDetector(
                                 onTap: () => setState(() => _sortIndex = i),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 10),
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                                   decoration: BoxDecoration(
                                     color: sel ? kRed : Colors.white,
                                     borderRadius: BorderRadius.circular(30),
                                     border: Border.all(
-                                        color: sel
-                                            ? kRed
-                                            : const Color(0xFFC42D27),
-                                        width: 1.2),
+                                        color: sel ? kRed : const Color(0xFFC42D27), width: 1.2),
                                   ),
                                   child: Text(_sortLabels[i],
                                       style: TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w600,
-                                          color: sel
-                                              ? Colors.white
-                                              : const Color(0xFF1A1A1A))),
+                                          color: sel ? Colors.white : const Color(0xFF1A1A1A))),
                                 ),
                               );
                             }),
                           ),
+
                           const SizedBox(height: 20),
                           const Divider(color: Color(0xFFF0F0F0)),
                           const SizedBox(height: 4),
                           _sectionHeader(
                             'Transit',
-                            () => setState(() {
-                              _transitLangsung = false;
-                              _transit1 = false;
-                            }),
-                            () => setState(() {
-                              _transitLangsung = true;
-                              _transit1 = true;
-                            }),
+                            () => setState(() { _transitLangsung = false; _transit1 = false; }),
+                            () => setState(() { _transitLangsung = true; _transit1 = true; }),
                           ),
-                          _checkRow('Langsung', _transitLangsung,
-                              (v) => setState(() => _transitLangsung = v)),
-                          _checkRow('1 Transit', _transit1,
-                              (v) => setState(() => _transit1 = v)),
+                          _checkRow('Langsung', _transitLangsung, (v) => setState(() => _transitLangsung = v)),
+                          _checkRow('1 Transit', _transit1, (v) => setState(() => _transit1 = v)),
+
                           const SizedBox(height: 12),
                           const Divider(color: Color(0xFFF0F0F0)),
                           const SizedBox(height: 4),
                           const Row(
                             children: [
-                              Text('Waktu',
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w700,
-                                      color: kRed)),
+                              Text('Waktu', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: kRed)),
                               Spacer(),
-                              Text('Hapus Semua',
-                                  style: TextStyle(
-                                      fontSize: 12, color: Color(0xFF888888))),
+                              Text('Hapus Semua', style: TextStyle(fontSize: 12, color: Color(0xFF888888))),
                               SizedBox(width: 6),
-                              Icon(Icons.menu,
-                                  size: 18, color: Color(0xFF888888)),
+                              Icon(Icons.menu, size: 18, color: Color(0xFF888888)),
                               SizedBox(width: 4),
                               Icon(Icons.check_box, size: 18, color: kRed),
                             ],
                           ),
                           const SizedBox(height: 10),
                           const Text('Waktu Keberangkatan',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: kRed)),
-                          _timeCheckRow('06.00 - 12.00', 'Pagi', _depPagi,
-                              (v) => setState(() => _depPagi = v)),
-                          _timeCheckRow('12.00 - 18.00', 'Sore', _depSore,
-                              (v) => setState(() => _depSore = v)),
-                          _timeCheckRow('18.00 - 24.00', 'Malam', _depMalam,
-                              (v) => setState(() => _depMalam = v)),
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: kRed)),
+                          _timeCheckRow('06.00 - 12.00', 'Pagi', _depPagi, (v) => setState(() => _depPagi = v)),
+                          _timeCheckRow('12.00 - 18.00', 'Sore', _depSore, (v) => setState(() => _depSore = v)),
+                          _timeCheckRow('18.00 - 24.00', 'Malam', _depMalam, (v) => setState(() => _depMalam = v)),
                           const SizedBox(height: 10),
                           const Text('Waktu Kedatangan',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: kRed)),
-                          _timeCheckRow('06.00 - 12.00', 'Pagi', _arrPagi,
-                              (v) => setState(() => _arrPagi = v)),
-                          _timeCheckRow('12.00 - 18.00', 'Sore', _arrSore,
-                              (v) => setState(() => _arrSore = v)),
-                          _timeCheckRow('18.00 - 24.00', 'Malam', _arrMalam,
-                              (v) => setState(() => _arrMalam = v)),
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: kRed)),
+                          _timeCheckRow('06.00 - 12.00', 'Pagi', _arrPagi, (v) => setState(() => _arrPagi = v)),
+                          _timeCheckRow('12.00 - 18.00', 'Sore', _arrSore, (v) => setState(() => _arrSore = v)),
+                          _timeCheckRow('18.00 - 24.00', 'Malam', _arrMalam, (v) => setState(() => _arrMalam = v)),
+
                           const SizedBox(height: 12),
                           const Divider(color: Color(0xFFF0F0F0)),
                           const SizedBox(height: 4),
                           _sectionHeader(
                             'Maskapai',
-                            () => setState(() {
-                              _airLion = false;
-                              _airBatik = false;
-                              _airGaruda = false;
-                              _airCitilink = false;
-                            }),
-                            () => setState(() {
-                              _airLion = true;
-                              _airBatik = true;
-                              _airGaruda = true;
-                              _airCitilink = true;
-                            }),
+                            () => setState(() { _airLion = false; _airBatik = false; _airGaruda = false; _airCitilink = false; }),
+                            () => setState(() { _airLion = true; _airBatik = true; _airGaruda = true; _airCitilink = true; }),
                           ),
-                          _airlineRow('Lion Air', 'assets/images/lionair.png',
-                              _airLion, (v) => setState(() => _airLion = v)),
-                          _airlineRow('Batik Air', 'assets/images/batikair.png',
-                              _airBatik, (v) => setState(() => _airBatik = v)),
-                          _airlineRow(
-                              'Garuda Indonesia',
-                              'assets/images/garuda.png',
-                              _airGaruda,
-                              (v) => setState(() => _airGaruda = v)),
-                          _airlineRow(
-                              'Citilink',
-                              'assets/images/citilink.png',
-                              _airCitilink,
-                              (v) => setState(() => _airCitilink = v)),
+                          _airlineRow('Lion Air', 'assets/images/lionair.png', _airLion, (v) => setState(() => _airLion = v)),
+                          _airlineRow('Batik Air', 'assets/images/batikair.png', _airBatik, (v) => setState(() => _airBatik = v)),
+                          _airlineRow('Garuda Indonesia', 'assets/images/garuda.png', _airGaruda, (v) => setState(() => _airGaruda = v)),
+                          _airlineRow('Citilink', 'assets/images/citilink.png', _airCitilink, (v) => setState(() => _airCitilink = v)),
+
                           const SizedBox(height: 24),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
                               onPressed: () => Navigator.pop(context),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: kRed,
-                                elevation: 0,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 14),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
+                                backgroundColor: kRed, elevation: 0,
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               ),
                               child: const Text('Terapkan Filter',
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white)),
+                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white)),
                             ),
                           ),
                         ],
@@ -412,13 +340,10 @@ class _FilterSheetState extends State<FilterSheet> {
 
             // ── Handle bar floating ─────────────────────────────────────────
             const Positioned(
-              top: 8,
-              left: 0,
-              right: 0,
+              top: 8, left: 0, right: 0,
               child: Center(
                 child: SizedBox(
-                  width: 44,
-                  height: 5,
+                  width: 44, height: 5,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: Color(0xFFCCCCCC),

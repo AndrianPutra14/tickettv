@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'virtual_account_sheet.dart';
+import 'auto_transfer_sheet.dart';
 
 const Color _kRed = Color(0xFFC42D27);
 
@@ -113,7 +115,10 @@ class _PaymentMethodContent extends StatelessWidget {
                         _PaymentOption(
                           icon: Icons.phone_android_rounded,
                           label: 'Auto Transfer',
-                          onTap: () => Navigator.pop(context),
+                          onTap: () {
+                            Navigator.pop(context);
+                            AutoTransferSheet.show(context);
+                          },
                         ),
                       ],
                     ),
@@ -126,7 +131,10 @@ class _PaymentMethodContent extends StatelessWidget {
                         _PaymentOption(
                           icon: Icons.account_balance_rounded,
                           label: 'Virtual Account',
-                          onTap: () => Navigator.pop(context),
+                          onTap: () {
+                            Navigator.pop(context);
+                            VirtualAccountSheet.show(context);
+                          },
                         ),
                         Transform.translate(
                           offset: const Offset(-6, 0),

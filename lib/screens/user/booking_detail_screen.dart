@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:project1/screens/user/widgets/atur_kursi.dart';
 import 'widgets/kwitansi_sheet.dart';
 import 'payments/payment_method_sheet.dart';
+import 'widgets/atur_kursi.dart';
 
 const Color _kRed = Color(0xFFC42D27);
 const Color _kRedBg = Color(0xFFFFE6E5);
@@ -113,7 +113,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                       const SizedBox(height: 20),
                       _buildKontakCard(),
                       const SizedBox(height: 20),
-                      _buildKursiCard(),
+                      _buildKursiCard(context),
                       const SizedBox(height: 20),
                       _buildCatatanCard(),
                       const SizedBox(height: 20),
@@ -598,7 +598,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
   }
 
   // ── Kursi Card ────────────────────────────────────────────────────────────
-  Widget _buildKursiCard() {
+  Widget _buildKursiCard(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -614,32 +614,30 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                     fontWeight: FontWeight.w700,
                     color: Color(0xFF1A1A1A))),
             const Spacer(),
-            InkWell(
-              borderRadius: BorderRadius.circular(5),
-              onTap: () {
+            TextButton(
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AturKursiScreen(),
+                    builder: (_) => const AturKursiScreen(),
                   ),
                 );
               },
-              child: Container(
+              style: TextButton.styleFrom(
+                backgroundColor: _kRed,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                decoration: BoxDecoration(
-                  color: _kRed,
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: const Text(
-                  'Atur Kursi',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
               ),
+              child: const Text('Atur Kursi',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700)),
             ),
           ],
         ),
@@ -728,17 +726,21 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                   style: TextStyle(fontSize: 13, color: Color(0xFF1A1A1A))),
             ),
             const SizedBox(width: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
-              decoration: BoxDecoration(
-                color: _kRed,
-                borderRadius: BorderRadius.circular(6),
+            GestureDetector(
+              onTap: () => _showCancelConfirmation(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+                decoration: BoxDecoration(
+                  color: _kRed,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Text('Batal',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700)),
               ),
-              child: const Text('Batal',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700)),
             ),
           ],
         ),
@@ -949,7 +951,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                     // Icon + Title
                     const Positioned(
                       left: 16,
-                      top: 8,
+                      top: 0,
                       bottom: 0,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -970,8 +972,8 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                     ),
                     // X button (Ellipseyell)
                     Positioned(
-                      right: 0,
-                      top: 16,
+                      right: 8,
+                      top: 10,
                       child: GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: Stack(
@@ -979,14 +981,22 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                           children: [
                             Image.asset(
                               'assets/images/Ellipseyell.png',
-                              width: 60,
+                              width: 80,
                               height: 40,
                               fit: BoxFit.fill,
+                              errorBuilder: (_, __, ___) => Container(
+                                width: 60,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF5F5F5),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
                             ),
                             const Text(
                               'X',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 20,
                                 fontWeight: FontWeight.w700,
                                 color: Color(0xFF1A1A1A),
                                 height: 1,

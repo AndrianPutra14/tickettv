@@ -85,37 +85,27 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: SizedBox(
-                    width: 65,
-                    height: 55,
+                    width: 46,
+                    height: 45,
                     child: Stack(
+                      alignment: Alignment.center,
                       children: [
-                        Positioned(
-                          right: 0,
-                          top: 7,
-                          child: GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/images/Ellipseyell.png',
-                                  width: 60,
-                                  height: 45,
-                                  fit: BoxFit.fill,
-                                ),
-                                const Text(
-                                  'X',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xFF1A1A1A),
-                                    height: 1,
-                                  ),
-                                ),
-                              ],
+                        Image.asset(
+                          'assets/images/Ellipseyell.png',
+                          width: 55,
+                          height: 55,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => Container(
+                            width: 36,
+                            height: 36,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFF5F5F5),
+                              shape: BoxShape.circle,
                             ),
                           ),
                         ),
+                        const Icon(Icons.close,
+                            size: 26, color: Color(0xFF0F0F0F)),
                       ],
                     ),
                   ),
@@ -166,8 +156,8 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
                       const SizedBox(height: 14),
                       const Text(
                         'Silahkan masukkan email. Jika lebih dari satu email, pisahkan dengan tanda koma',
-                        style:
-                            TextStyle(fontSize: 12, color: Color(0xFF888888)),
+                        style: TextStyle(
+                            fontSize: 12, color: Color(0xFF888888)),
                       ),
                       const SizedBox(height: 10),
                       TextField(
