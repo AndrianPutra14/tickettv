@@ -1,10 +1,13 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:project1/screens/user/flight_results_page.dart';
 import 'package:project1/screens/user/widgets/atur_kursi.dart';
 // import 'user/widgets/atur_kursi.dart';
 import 'widgets/flight_models.dart';
 import 'widgets/asuransi_sheet.dart' as sheet;
 import 'widgets/info_persetujuan_sheet.dart';
+import 'widgets/component/copy_fare_summary.dart';
 
 class InformasiPemesananScreen extends StatefulWidget {
   final FareModel fare;
@@ -51,7 +54,7 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
 
   String _selectedTitle = 'Tn';
   String _selectedNegara = 'Indonesia';
-
+  String? fileName;
   double get _totalPrice => widget.fare.price * 1000;
 
   String _fmtRp(double value) {
@@ -313,7 +316,14 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
           Align(
             alignment: Alignment.centerRight,
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FlightResultsPage(),
+                  ),
+                );
+              },
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
@@ -470,7 +480,18 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
           Align(
             alignment: Alignment.centerRight,
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) => CopyFareSummarySheet(
+                    fare: widget.fare,
+                    flight: widget.flight,
+                    totalPrice: _totalPrice,
+                  ),
+                );
+              },
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 22, vertical: 7),
@@ -479,14 +500,17 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(color: kRed, width: 1.5),
                 ),
-                child: const Text('Copy',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700)),
+                child: const Text(
+                  'Copy',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ),
-          ),
+          )
         ],
       ),
     );
@@ -863,6 +887,30 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
     );
   }
 
+  Future<void> _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      final file = result.files.single;
+
+      // 🔹 CEK LIMIT FILE 1300 KB
+      if (file.size > 1300 * 1024) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Ukuran file maksimal 1300 KB"),
+          ),
+        );
+        return; // hentikan proses jika file terlalu besar
+      }
+
+      // 🔹 Jika file sesuai ukuran
+      setState(() {
+        fileName = file.name;
+        _keteranganFileController.text = fileName!;
+      });
+    }
+  }
+
   // ── Informasi Tambahan (Opsional) ─────────────────────────────────────────
   Widget _buildInformasiTambahanSection() {
     return Container(
@@ -900,9 +948,9 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
                       color: Color(0xFFC2C1C1),
                       borderRadius: BorderRadius.all(Radius.circular(30)),
                     ),
-                    child: const Text(
-                      "Unggah Dokumen",
-                      style: TextStyle(
+                    child: Text(
+                      fileName ?? "Unggah Dokumen",
+                      style: const TextStyle(
                         fontSize: 14,
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -911,7 +959,9 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    _pickFile();
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
@@ -949,7 +999,7 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
                     ),
                   ),
                   TextSpan(
-                    text: ' : Ukuran maksimal file 1300 kB',
+                    text: ' : Ukuran maksimal file 1300 KB',
                     style: TextStyle(
                       fontSize: 12,
                       color: Color(0xFF3D3C3C),
