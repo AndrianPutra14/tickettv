@@ -1,7 +1,7 @@
-﻿import 'package:flutter/material.dart';
-import 'model/flight_models.dart';
-import 'widgets/flight_card.dart';
-import 'widgets/filter_sheet.dart';
+import 'package:flutter/material.dart';
+import 'model/partner_flight_models.dart';
+import 'widgets/partner_flight_card.dart';
+import 'widgets/partner_filter_sheet.dart';
 
 // â”€â”€â”€ Demo data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 final _flights = <FlightModel>[

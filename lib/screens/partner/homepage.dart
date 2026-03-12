@@ -1,16 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:project1/screens/user/widgets/notificaions.dart';
+import 'package:project1/screens/partner/widgets/notifications.dart';
 import 'package:project1/utils/routes.dart';
-import 'mybookng.dart';
-import 'partner.dart';
-import 'upgrade_screen.dart';
 
 const Color primaryRed = Color(0xFFC42D27);
-const Color _kRed = Color(0xFFC42D27);
-const Color _kRedBg = Color(0xFFFFE6E5);
-const Color _kRedBtn = Color.fromARGB(255, 238, 125, 121);
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -39,13 +33,20 @@ class _HomePageState extends State<HomePage> {
         index: _selectedIndex,
         children: const [
           _HomeTab(),
-          MyBookingPage(),
-          PartnerPage(),
+          _MyBookingTab(),
+          _ReportTab(),
+          _HelpdeskTab(),
+          _SettingTab(),
         ],
       ),
-      bottomNavigationBar: _BottomNavBar(
-        selectedIndex: _selectedIndex,
-        onTap: _onItemTapped,
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          canvasColor: primaryRed,
+        ),
+        child: _BottomNavBar(
+          selectedIndex: _selectedIndex,
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
@@ -56,62 +57,61 @@ class _HomePageState extends State<HomePage> {
 class _BottomNavBar extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onTap;
-  const _BottomNavBar({required this.selectedIndex, required this.onTap});
+
+  const _BottomNavBar({
+    required this.selectedIndex,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
+    return Material(
+      color: primaryRed,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(15),
+          topRight: Radius.circular(15),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 16,
-            offset: const Offset(0, -4),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: BottomNavigationBar(
+        currentIndex: selectedIndex,
+        onTap: onTap,
+        backgroundColor: Colors.transparent,
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
+        selectedLabelStyle: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w400,
+        ),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Beranda',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list_alt_outlined),
+            label: 'Pesananku',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.description_outlined),
+            label: 'Laporan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.help_outline),
+            label: 'Helpdesk',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings_outlined),
+            label: 'Setting',
           ),
         ],
-      ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: selectedIndex,
-          onTap: onTap,
-          backgroundColor: Colors.white,
-          selectedItemColor: primaryRed,
-          unselectedItemColor: const Color(0xFFAAAAAA),
-          selectedLabelStyle:
-              const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
-          unselectedLabelStyle:
-              const TextStyle(fontSize: 11, fontWeight: FontWeight.w400),
-          type: BottomNavigationBarType.fixed,
-          elevation: 0,
-          items: [
-            BottomNavigationBarItem(
-              icon: _NavIcon(
-                  icon: Icons.home_rounded, isSelected: selectedIndex == 0),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: _NavIcon(
-                  icon: Icons.confirmation_number_outlined,
-                  isSelected: selectedIndex == 1),
-              label: 'My Booking',
-            ),
-            BottomNavigationBarItem(
-              icon: _NavIcon(
-                  icon: Icons.person_outline_rounded,
-                  isSelected: selectedIndex == 2),
-              label: 'Partner',
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -175,18 +175,6 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
   final _ctrl = TextEditingController();
   late List<String> _recent;
 
-  final Map<String, String> _airportCode = {
-    'Jakarta': 'CGK',
-    'Denpasar': 'DPS',
-    'Surabaya': 'SUB',
-    'Kulonprogo': 'YIA',
-    'Semarang': 'SRG',
-    'Bandung': 'BDO',
-    'Medan': 'KNO',
-    'Palembang': 'PLM',
-    'Padang': 'PDG',
-  };
-
   final List<String> _popular = [
     'Jakarta',
     'Denpasar',
@@ -223,17 +211,11 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
     super.dispose();
   }
 
-  void _select(String city) {
-    final code = _airportCode[city];
-    final value = code != null ? '$city ($code)' : city;
-    Navigator.pop(context, value);
-  }
-
+  void _select(String city) => Navigator.pop(context, city);
   void _removeRecent(String city) => setState(() => _recent.remove(city));
 
   @override
   Widget build(BuildContext context) {
-    final sw = MediaQuery.of(context).size.width;
     return DraggableScrollableSheet(
       initialChildSize: 0.85,
       minChildSize: 0.5,
@@ -248,79 +230,56 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Header ──
-            SizedBox(
-              height: 64,
-              child: Stack(
-                clipBehavior: Clip.none,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+              child: Row(
                 children: [
-                  Positioned(
-                    left: -(sw * 0.18),
-                    top: 15,
-                    bottom: 0,
-                    child: Image.asset(
-                      'assets/images/Ellipseblue.png',
-                      width: sw * 0.76,
-                      fit: BoxFit.fill,
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: primaryRed,
+                      borderRadius: BorderRadius.circular(24),
                     ),
-                  ),
-                  Positioned(
-                    left: 12,
-                    top: 15,
-                    bottom: 0,
-                    child: Center(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            widget.title == 'Kedatangan'
-                                ? Icons.flight_land_rounded
-                                : Icons.flight_takeoff_rounded,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          widget.title == 'Kedatangan'
+                              ? Icons.flight_land_rounded
+                              : Icons.flight_takeoff_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          widget.title,
+                          style: const TextStyle(
                             color: Colors.white,
-                            size: 18,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
                           ),
-                          const SizedBox(width: 6),
-                          Text(
-                            widget.title,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  Positioned(
-                    right: 0,
-                    top: 20,
-                    child: GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/images/Ellipseyell.png',
-                            width: 60,
-                            height: 45,
-                            fit: BoxFit.fill,
-                          ),
-                          const Text(
-                            'X',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF1A1A1A),
-                              height: 1,
-                            ),
-                          ),
-                        ],
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      width: 34,
+                      height: 34,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        shape: BoxShape.circle,
                       ),
+                      child: const Icon(Icons.close, size: 18),
                     ),
                   ),
                 ],
               ),
             ),
+
             // ── Body ──
             Expanded(
               child: ListView(
@@ -398,7 +357,7 @@ class _LocationSearchSheetState extends State<_LocationSearchSheet> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              border: Border.all(color: _kRed),
+              border: Border.all(color: const Color(0xFFE0E0E0)),
               borderRadius: BorderRadius.circular(24),
               color: Colors.white,
             ),
@@ -442,14 +401,13 @@ class _HomeTabState extends State<_HomeTab>
   int _anak = 0;
   int _bayi = 0;
 
+  DateTime _departDate = DateTime.now().add(const Duration(days: 1));
+  DateTime _returnDate = DateTime.now().add(const Duration(days: 4));
+
   // Auto-scroll card
   late PageController _cardPageCtrl;
   int _currentCardPage = 0;
   Timer? _cardTimer;
-
-  // ── Tanggal state ──────────────────────────────────────────────────────────
-  DateTime _tanggalPergi = DateTime.now();
-  DateTime? _tanggalPulang;
 
   List<String> _recentFrom = ['Jakarta'];
   List<String> _recentTo = ['Denpasar'];
@@ -476,10 +434,9 @@ class _HomeTabState extends State<_HomeTab>
     super.dispose();
   }
 
-  String _formatTanggal(DateTime d) {
-    const hari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-    const bulan = [
-      '',
+  String _formatDate(DateTime d) {
+    const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+    const months = [
       'Jan',
       'Feb',
       'Mar',
@@ -493,51 +450,44 @@ class _HomeTabState extends State<_HomeTab>
       'Nov',
       'Des'
     ];
-    return '${hari[d.weekday % 7]}, ${d.day} ${bulan[d.month]} ${d.year}';
+    return '${days[d.weekday % 7]}, ${d.day} ${months[d.month - 1]} ${d.year}';
   }
 
-  Future<void> _pickTanggalPergi() async {
+  Future<void> _pickDepartDate() async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: _tanggalPergi,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-      locale: const Locale('id', 'ID'),
+      initialDate: _departDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (ctx, child) => Theme(
-        data: Theme.of(ctx).copyWith(
-          colorScheme: const ColorScheme.light(primary: primaryRed),
-        ),
-        child: child!,
-      ),
+          data: Theme.of(ctx).copyWith(
+              colorScheme: const ColorScheme.light(primary: primaryRed)),
+          child: child!),
     );
-    if (picked == null) return;
-    setState(() {
-      _tanggalPergi = picked;
-      if (_tanggalPulang != null && _tanggalPulang!.isBefore(picked)) {
-        _tanggalPulang = picked.add(const Duration(days: 3));
-      }
-    });
+    if (picked != null) {
+      setState(() {
+        _departDate = picked;
+        if (_returnDate.isBefore(picked)) {
+          _returnDate = picked.add(const Duration(days: 3));
+        }
+      });
+    }
   }
 
-  // ── Buka date picker tanggal pulang ────────────────────────────────────────
-  Future<void> _pickTanggalPulang() async {
-    final initial =
-        _tanggalPulang ?? _tanggalPergi.add(const Duration(days: 3));
+  Future<void> _pickReturnDate() async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: initial,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-      locale: const Locale('id', 'ID'),
+      initialDate: _returnDate.isAfter(_departDate)
+          ? _returnDate
+          : _departDate.add(const Duration(days: 1)),
+      firstDate: _departDate.add(const Duration(days: 1)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (ctx, child) => Theme(
-        data: Theme.of(ctx).copyWith(
-          colorScheme: const ColorScheme.light(primary: primaryRed),
-        ),
-        child: child!,
-      ),
+          data: Theme.of(ctx).copyWith(
+              colorScheme: const ColorScheme.light(primary: primaryRed)),
+          child: child!),
     );
-    if (picked == null) return;
-    setState(() => _tanggalPulang = picked);
+    if (picked != null) setState(() => _returnDate = picked);
   }
 
   void _swapLocations() {
@@ -591,11 +541,9 @@ class _HomeTabState extends State<_HomeTab>
       recentSelections: _recentFrom,
     );
     if (result != null) {
-      // ✅ simpan hanya nama kota (hapus " (CGK)" dst)
-      final cityOnly = result.split(' (').first;
       setState(() {
-        if (!_recentFrom.contains(cityOnly)) {
-          _recentFrom = [cityOnly, ..._recentFrom];
+        if (!_recentFrom.contains(result)) {
+          _recentFrom = [result, ..._recentFrom];
         }
         _from = result;
       });
@@ -609,11 +557,9 @@ class _HomeTabState extends State<_HomeTab>
       recentSelections: _recentTo,
     );
     if (result != null) {
-      // ✅ simpan hanya nama kota
-      final cityOnly = result.split(' (').first;
       setState(() {
-        if (!_recentTo.contains(cityOnly)) {
-          _recentTo = [cityOnly, ..._recentTo];
+        if (!_recentTo.contains(result)) {
+          _recentTo = [result, ..._recentTo];
         }
         _to = result;
       });
@@ -650,7 +596,7 @@ class _HomeTabState extends State<_HomeTab>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Hi, Teman Ezytix!',
+                            'Hi, Septian',
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 14,
@@ -671,14 +617,12 @@ class _HomeTabState extends State<_HomeTab>
                     ),
                     const SizedBox(width: 12),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const NotificationPage(),
-                          ),
-                        );
-                      },
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationsPage(),
+                        ),
+                      ),
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
@@ -794,7 +738,7 @@ class _HomeTabState extends State<_HomeTab>
 
                     // Date Pergi + toggle row
                     GestureDetector(
-                      onTap: _pickTanggalPergi,
+                      onTap: _pickDepartDate,
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: const Color(0xFFE0E0E0)),
@@ -816,7 +760,7 @@ class _HomeTabState extends State<_HomeTab>
                                         color: Color(0xFFAAAAAA))),
                                 const SizedBox(height: 2),
                                 Text(
-                                  _formatTanggal(_tanggalPergi),
+                                  _formatDate(_departDate),
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
@@ -858,8 +802,9 @@ class _HomeTabState extends State<_HomeTab>
                               children: [
                                 const SizedBox(height: 10),
                                 GestureDetector(
-                                  onTap: _pickTanggalPergi,
+                                  onTap: _pickReturnDate,
                                   child: Container(
+                                    width: double.infinity,
                                     decoration: BoxDecoration(
                                       border: Border.all(
                                           color: const Color(0xFFE0E0E0)),
@@ -876,13 +821,13 @@ class _HomeTabState extends State<_HomeTab>
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            const Text('Pergi',
+                                            const Text('Pulang',
                                                 style: TextStyle(
                                                     fontSize: 11,
                                                     color: Color(0xFFAAAAAA))),
                                             const SizedBox(height: 2),
                                             Text(
-                                              _formatTanggal(_tanggalPergi),
+                                              _formatDate(_returnDate),
                                               style: const TextStyle(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
@@ -979,21 +924,14 @@ class _HomeTabState extends State<_HomeTab>
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
                             ),
-                            title: 'Premium',
+                            title: 'Partner Premium',
                             subtitle:
                                 'Upgrade ke Premium Partner &\nDapatkan Deviden dari Setiap\nTiket Terjual',
                             buttonLabel: 'Upgrade',
                             imagePath: 'assets/images/airplane.png',
-                            badgeText: 'GRATIS',
+                            badgeText: 'Hallo!',
                             rotateImage: false,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const UpgradeScreen(),
-                                ),
-                              );
-                            },
+                            onTap: () {},
                           ),
                         ),
                         Padding(
@@ -1258,7 +1196,7 @@ class _PremiumCardState extends State<_PremiumCard>
                             widget.title,
                             style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 24,
+                                fontSize: 20,
                                 fontWeight: FontWeight.w900),
                           ),
                         ),
@@ -1506,7 +1444,7 @@ class _PassengerSheetState extends State<_PassengerSheet> {
                           ),
                         ),
                         Positioned(
-                          right: 0,
+                          right: 12,
                           top: 7,
                           child: GestureDetector(
                             onTap: () => Navigator.pop(context),
@@ -1516,7 +1454,7 @@ class _PassengerSheetState extends State<_PassengerSheet> {
                                 Image.asset(
                                   'assets/images/Ellipseyell.png',
                                   width: 60,
-                                  height: 45,
+                                  height: 40,
                                   fit: BoxFit.fill,
                                 ),
                                 const Text(
@@ -1723,14 +1661,44 @@ class _MyBookingTab extends StatelessWidget {
   }
 }
 
-class _PartnerTab extends StatelessWidget {
-  const _PartnerTab();
+class _ReportTab extends StatelessWidget {
+  const _ReportTab();
 
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('Partner',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+      child: Text(
+        'Laporan',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+}
+
+class _HelpdeskTab extends StatelessWidget {
+  const _HelpdeskTab();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'Helpdesk',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+}
+
+class _SettingTab extends StatelessWidget {
+  const _SettingTab();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'Setting',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+      ),
     );
   }
 }
@@ -1847,7 +1815,7 @@ class _FilterSheetState extends State<_FilterSheet> {
                           ),
                         ),
                         Positioned(
-                          right: 0,
+                          right: 12,
                           top: 7,
                           child: GestureDetector(
                             onTap: () => Navigator.pop(context),
@@ -1856,8 +1824,8 @@ class _FilterSheetState extends State<_FilterSheet> {
                               children: [
                                 Image.asset(
                                   'assets/images/Ellipseyell.png',
-                                  width: 60,
-                                  height: 45,
+                                  width: 80,
+                                  height: 40,
                                   fit: BoxFit.fill,
                                 ),
                                 const Text(

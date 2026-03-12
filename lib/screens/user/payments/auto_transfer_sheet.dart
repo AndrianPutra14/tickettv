@@ -8,21 +8,43 @@ Widget _bankLogo(String name) {
   switch (name) {
     case 'Bank Central Asia':
       return Container(
-        width: 42, height: 38,
-        decoration: BoxDecoration(color: const Color(0xFFE8F0FB), borderRadius: BorderRadius.circular(8)),
-        child: const Center(child: Text('BCA', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF003DA5), letterSpacing: 0.5))),
+        width: 42,
+        height: 38,
+        decoration: BoxDecoration(
+            color: const Color(0xFFE8F0FB),
+            borderRadius: BorderRadius.circular(8)),
+        child: const Center(
+            child: Text('BCA',
+                style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF003DA5),
+                    letterSpacing: 0.5))),
       );
     case 'Bank Rakyat Indonesia':
       return Container(
-        width: 42, height: 38,
-        decoration: BoxDecoration(color: const Color(0xFF003087), borderRadius: BorderRadius.circular(8)),
-        child: const Center(child: Text('BRI', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: 0.5))),
+        width: 42,
+        height: 38,
+        decoration: BoxDecoration(
+            color: const Color(0xFF003087),
+            borderRadius: BorderRadius.circular(8)),
+        child: const Center(
+            child: Text('BRI',
+                style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: 0.5))),
       );
     default:
       return Container(
-        width: 42, height: 38,
-        decoration: BoxDecoration(color: const Color(0xFFF0F0F0), borderRadius: BorderRadius.circular(8)),
-        child: const Icon(Icons.account_balance_rounded, size: 22, color: Color(0xFF888888)),
+        width: 42,
+        height: 38,
+        decoration: BoxDecoration(
+            color: const Color(0xFFF0F0F0),
+            borderRadius: BorderRadius.circular(8)),
+        child: const Icon(Icons.account_balance_rounded,
+            size: 22, color: Color(0xFF888888)),
       );
   }
 }
@@ -61,12 +83,17 @@ class _AutoTransferScreenState extends State<AutoTransferScreen> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 22),
+                    icon: const Icon(Icons.arrow_back,
+                        color: Colors.white, size: 22),
                     onPressed: () => Navigator.pop(context),
                   ),
                   const Text(
                     'AUTO TRANSFER - ISSUED',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 0.5),
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: 0.5),
                   ),
                 ],
               ),
@@ -91,7 +118,10 @@ class _AutoTransferScreenState extends State<AutoTransferScreen> {
                   children: [
                     const Text(
                       'Pilih Bank Tujuan',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: _kRed),
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: _kRed),
                     ),
                     const SizedBox(height: 20),
                     ...List.generate(_banks.length, (i) {
@@ -100,16 +130,21 @@ class _AutoTransferScreenState extends State<AutoTransferScreen> {
                         onTap: () => setState(() => _selected = i),
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 12),
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 14),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                              color: isSelected ? _kRed : const Color(0xFFDDDDDD),
+                              color:
+                                  isSelected ? _kRed : const Color(0xFFDDDDDD),
                               width: isSelected ? 1.8 : 1,
                             ),
                             boxShadow: [
-                              BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 4, offset: const Offset(0, 2)),
+                              BoxShadow(
+                                  color: Colors.black.withOpacity(0.04),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2)),
                             ],
                           ),
                           child: Row(
@@ -120,13 +155,19 @@ class _AutoTransferScreenState extends State<AutoTransferScreen> {
                                 child: Text(
                                   _banks[i],
                                   style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w600,
-                                    color: isSelected ? _kRed : const Color(0xFF1A1A1A),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: isSelected
+                                        ? _kRed
+                                        : const Color(0xFF1A1A1A),
                                   ),
                                 ),
                               ),
-                              Icon(Icons.chevron_right_rounded, size: 22,
-                                  color: isSelected ? _kRed : const Color(0xFF999999)),
+                              Icon(Icons.chevron_right_rounded,
+                                  size: 22,
+                                  color: isSelected
+                                      ? _kRed
+                                      : const Color(0xFF999999)),
                             ],
                           ),
                         ),
@@ -151,7 +192,8 @@ class _AutoTransferScreenState extends State<AutoTransferScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const TransaksiScreen(bankName: 'Bank Central Asia'),
+                                builder: (_) => const TransaksiScreen(
+                                    bankName: 'Bank Central Asia'),
                               ),
                             );
                           } else {
@@ -163,11 +205,15 @@ class _AutoTransferScreenState extends State<AutoTransferScreen> {
                     disabledBackgroundColor: const Color(0xFFE08080),
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                   child: const Text(
                     'Lanjutkan',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white),
                   ),
                 ),
               ),

@@ -7,7 +7,9 @@ import 'package:project1/screens/user/informasi_pemesanan_screen.dart';
 import 'package:project1/screens/user/booking_detail_screen.dart';
 import 'package:project1/screens/user/mybookng.dart';
 import 'package:project1/screens/user/partner.dart';
-import 'package:project1/screens/user/widgets/flight_models.dart';
+import 'package:project1/screens/user/model/flight_models.dart' as user_model;
+import 'package:project1/screens/partner/model/partner_flight_models.dart'
+    as partner_model;
 
 class AppRoutes {
   // Route names
@@ -38,8 +40,8 @@ class AppRoutes {
           final args = ModalRoute.of(context)!.settings.arguments
               as Map<String, dynamic>;
           return InformasiPemesananScreen(
-            fare: args['fare'] as FareModel,
-            flight: args['flight'] as FlightModel,
+            fare: args['fare'] as user_model.FareModel,
+            flight: args['flight'] as user_model.FlightModel,
           );
         },
         bookingDetail: (context) => const BookingDetailScreen(),

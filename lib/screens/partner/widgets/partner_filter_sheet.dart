@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../model/flight_models.dart';
+import '../model/partner_flight_models.dart';
 
 class FilterSheet extends StatefulWidget {
   const FilterSheet({super.key});

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:project1/screens/user/flight_results_page.dart';
 import 'package:project1/screens/user/widgets/atur_kursi.dart';
 // import 'user/widgets/atur_kursi.dart';
-import 'widgets/flight_models.dart';
+import 'package:project1/screens/user/model/flight_models.dart';
 import 'widgets/asuransi_sheet.dart' as sheet;
 import 'widgets/info_persetujuan_sheet.dart';
 import 'widgets/component/copy_fare_summary.dart';

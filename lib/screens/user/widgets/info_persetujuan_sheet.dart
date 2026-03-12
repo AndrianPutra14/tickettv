@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project1/utils/routes.dart';
+import 'package:project1/screens/user/model/flight_models.dart';
 
 const Color _kRed = Color(0xFFC42D27);
 
