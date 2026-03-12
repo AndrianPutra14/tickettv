@@ -519,7 +519,12 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
               'Validity passport > 6 bulan dari tanggal terakhir penerbangan'),
           const SizedBox(height: 8),
           GestureDetector(
-            onTap: () {},
+            onTap: () => showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (ctx) => const _CatatanSheet(),
+            ),
             child: const Text('Tampilan selengkapnya...',
                 style: TextStyle(
                     color: kRed,
@@ -877,36 +882,85 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
 
           // Unggah Dokumen row
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+            padding: const EdgeInsets.only(left: 6),
+            height: 56,
             decoration: BoxDecoration(
               border: Border.all(color: const Color(0xFFCCCCCC)),
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(30),
             ),
             child: Row(
               children: [
-                const Expanded(
-                    child: Text('Unggah Dokumen',
-                        style:
-                            TextStyle(fontSize: 13, color: Color(0xFF888888)))),
+                Expanded(
+                  child: Container(
+                    height: 44,
+                    alignment: Alignment.centerLeft,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFC2C1C1),
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                    ),
+                    child: const Text(
+                      "Unggah Dokumen",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
                 GestureDetector(
                   onTap: () {},
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF555555),
-                      borderRadius: BorderRadius.circular(5),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
+                      ),
                     ),
-                    child: const Text('Pilih',
-                        style: TextStyle(color: Colors.white, fontSize: 12)),
+                    child: const Text(
+                      "Pilih",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 5),
-          const Text('NOTE : Ukuran maksimal file 1300 kB',
-              style: TextStyle(fontSize: 11, color: Color(0xFF888888))),
+          Center(
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'NOTE',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFFD32F2F), // merah
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: ' : Ukuran maksimal file 1300 kB',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF3D3C3C),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          )
         ],
       ),
     );
@@ -940,7 +994,12 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
               'Validity passport > 6 bulan dari tanggal terakhir penerbangan'),
           const SizedBox(height: 8),
           GestureDetector(
-            onTap: () {},
+            onTap: () => showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (ctx) => const _CatatanSheet(),
+            ),
             child: const Text('Tampilan selengkapnya...',
                 style: TextStyle(
                     color: kRed,
@@ -1244,4 +1303,164 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
       ),
     );
   }
+}
+
+// ─── Catatan Bottom Sheet ─────────────────────────────────────────────────
+class _CatatanSheet extends StatelessWidget {
+  const _CatatanSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    final notes = [
+      const _NoteData(
+        text: 'Informasi fare rules, klik ',
+        linkText: 'disini',
+      ),
+      const _NoteData(
+        text: 'Block seat dapat dilakukan untuk Reservasi dengan jadwal '
+            'penerbangan > 48 jam sebelum DOT dan tidak berlaku untuk '
+            'kelas promo (Q,T,V,S,H,L)',
+      ),
+      const _NoteData(
+        text: 'Permintaan add ',
+        boldText: 'GFF',
+        suffix: ' dapat melalui Helpdesk',
+      ),
+      const _NoteData(
+        text: 'Permintaan Void diperkenankan (tanggal issued dan tanggal '
+            'void adalah sama)',
+      ),
+      const _NoteData(
+        text: 'Permintaan Rebook, Refund dan Reroute dapat melalui Helpdesk',
+      ),
+      const _NoteData(
+        text: 'Rute rute tertentu tidak dapat menggunakan kelas ',
+        boldText: 'V',
+        suffix: ' untuk Return dann Connecting Flight',
+      ),
+      const _NoteData(
+        text: 'Ketentuan untuk penerbangan Return atau Connecting dengan '
+            'kombinasi kelas mengikuti kelas terendah',
+      ),
+    ];
+
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Header ────────────────────────────────────────────────────
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            decoration: const BoxDecoration(
+              color: kRed,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.edit_rounded, color: Colors.white, size: 22),
+                const SizedBox(width: 10),
+                const Text(
+                  'Catatan',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: const Icon(Icons.close, color: Colors.white, size: 24),
+                ),
+              ],
+            ),
+          ),
+
+          // ── Body ──────────────────────────────────────────────────────
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: notes.map((n) => _buildNoteItem(n)).toList(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNoteItem(_NoteData note) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 1),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 7,
+            height: 7,
+            margin: const EdgeInsets.only(top: 10, right: 10),
+            decoration: const BoxDecoration(
+              color: kRed,
+              shape: BoxShape.circle,
+            ),
+          ),
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFF333333),
+                  height: 1.5,
+                ),
+                children: [
+                  TextSpan(text: note.text),
+                  if (note.linkText != null)
+                    TextSpan(
+                      text: note.linkText,
+                      style: const TextStyle(
+                        color: kRed,
+                        fontWeight: FontWeight.w600,
+                        decoration: TextDecoration.underline,
+                        decorationColor: kRed,
+                      ),
+                    ),
+                  if (note.boldText != null)
+                    TextSpan(
+                      text: note.boldText,
+                      style: const TextStyle(
+                        color: kRed,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  if (note.suffix != null) TextSpan(text: note.suffix),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NoteData {
+  final String text;
+  final String? linkText;
+  final String? boldText;
+  final String? suffix;
+
+  const _NoteData({
+    required this.text,
+    this.linkText,
+    this.boldText,
+    this.suffix,
+  });
 }
