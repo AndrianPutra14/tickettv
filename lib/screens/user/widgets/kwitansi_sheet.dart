@@ -36,7 +36,7 @@ class _KwitansiSheetState extends State<KwitansiSheet> {
     // Tutup sheet Kwitansi
     Navigator.pop(context);
 
-    // Teks sukses berdasarkan pilihan
+    // Teks sukses berdasarkan pilihann
     final label = _option == KwitansiOption.unduh
         ? 'Berhasil Mengunduh'
         : 'Berhasil Mengirim Email';
