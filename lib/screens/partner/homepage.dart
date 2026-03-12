@@ -842,7 +842,7 @@ class _HomeTabState extends State<_HomeTab>
                         onPressed: () {
                           Navigator.pushNamed(
                             context,
-                            AppRoutes.flightResults,
+                            AppRoutes.partnerFlightResults,
                             arguments: {
                               'from': _from,
                               'to': _to,

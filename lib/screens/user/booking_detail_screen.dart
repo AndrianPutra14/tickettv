@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:project1/screens/user/widgets/atur_kursi.dart';
 import 'widgets/kwitansi_sheet.dart';
 import 'payments/payment_method_sheet.dart';
+import 'widgets/atur_kursi.dart';
 
 const Color _kRed = Color(0xFFC42D27);
 const Color _kRedBg = Color(0xFFFFE6E5);
@@ -113,7 +113,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                       const SizedBox(height: 20),
                       _buildKontakCard(),
                       const SizedBox(height: 20),
-                      _buildKursiCard(),
+                      _buildKursiCard(context),
                       const SizedBox(height: 20),
                       _buildCatatanCard(),
                       const SizedBox(height: 20),
@@ -598,7 +598,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
   }
 
   // ── Kursi Card ────────────────────────────────────────────────────────────
-  Widget _buildKursiCard() {
+  Widget _buildKursiCard(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -614,32 +614,30 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                     fontWeight: FontWeight.w700,
                     color: Color(0xFF1A1A1A))),
             const Spacer(),
-            InkWell(
-              borderRadius: BorderRadius.circular(5),
-              onTap: () {
+            TextButton(
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AturKursiScreen(),
+                    builder: (_) => const AturKursiScreen(),
                   ),
                 );
               },
-              child: Container(
+              style: TextButton.styleFrom(
+                backgroundColor: _kRed,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                decoration: BoxDecoration(
-                  color: _kRed,
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: const Text(
-                  'Atur Kursi',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
               ),
+              child: const Text('Atur Kursi',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700)),
             ),
           ],
         ),
@@ -953,7 +951,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                     // Icon + Title
                     const Positioned(
                       left: 16,
-                      top: 8,
+                      top: 0,
                       bottom: 0,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -974,8 +972,8 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                     ),
                     // X button (Ellipseyell)
                     Positioned(
-                      right: 0,
-                      top: 16,
+                      right: 8,
+                      top: 10,
                       child: GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: Stack(
@@ -983,14 +981,22 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                           children: [
                             Image.asset(
                               'assets/images/Ellipseyell.png',
-                              width: 60,
+                              width: 80,
                               height: 40,
                               fit: BoxFit.fill,
+                              errorBuilder: (_, __, ___) => Container(
+                                width: 60,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF5F5F5),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
                             ),
                             const Text(
                               'X',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 20,
                                 fontWeight: FontWeight.w700,
                                 color: Color(0xFF1A1A1A),
                                 height: 1,
@@ -1242,167 +1248,154 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     );
   }
 
-  // ── Cancel Confirmation Sheett ─────────────────────────────────────────────
+  // ── Cancel Confirmation Sheet ─────────────────────────────────────────────
   void _showCancelConfirmation(BuildContext context) {
     const String bookingCode = 'AZRQRP';
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (_) {
         return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                ),
-                height: 250,
-                clipBehavior: Clip.antiAlias,
+              // ── Content area with decorative circles ──
+              ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
                 child: Stack(
+                  clipBehavior: Clip.hardEdge,
                   children: [
-                    SizedBox(
-                      height: 300,
-                      child: Stack(
+                    // Decorative circle — top left
+                    Positioned(
+                      top: -60,
+                      left: -60,
+                      child: Container(
+                        width: 180,
+                        height: 180,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _kRed.withOpacity(0.12),
+                        ),
+                      ),
+                    ),
+                    // Decorative circle — top right
+                    Positioned(
+                      top: -30,
+                      right: -50,
+                      child: Container(
+                        width: 140,
+                        height: 140,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: const Color(0xFFFFF0C0).withOpacity(0.7),
+                        ),
+                      ),
+                    ),
+                    // Actual content
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Positioned(
-                            left: -120,
-                            top: -30,
-                            child: Container(
-                              width: 420,
-                              height: 420,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: _kRed.withOpacity(0.10),
+                          // Close button
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: Container(
+                                width: 34,
+                                height: 34,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.close,
+                                    size: 18, color: Colors.black54),
                               ),
                             ),
                           ),
-                          Positioned(
-                            right: -42,
-                            top: -35,
-                            child: Container(
-                              width: 140,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: const Color.fromARGB(255, 243, 225, 184),
-                              ),
+                          const SizedBox(height: 12),
+                          // Warning icon
+                          Container(
+                            width: 64,
+                            height: 64,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFF3E0),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: const Color(0xFFFFB74D), width: 1.5),
+                            ),
+                            child: const Icon(Icons.warning_amber_rounded,
+                                size: 36, color: Color(0xFFF57C00)),
+                          ),
+                          const SizedBox(height: 16),
+                          // Title
+                          const Text(
+                            'Batalkan Pemesanan',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w800,
+                              color: _kRed,
                             ),
                           ),
-                          SingleChildScrollView(
-                            padding: const EdgeInsets.fromLTRB(20, 60, 20, 12),
-                            child: Column(
+                          const SizedBox(height: 12),
+                          // Description
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Color(0xFF444444),
+                                  height: 1.5),
                               children: [
-                                const Icon(
-                                  Icons.warning_amber_rounded,
-                                  size: 55,
-                                  color: Colors.orange,
-                                ),
-                                const SizedBox(height: 12),
-                                const Text(
-                                  'Batalkan Pemesanan',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w800,
-                                    color: _kRed,
-                                  ),
-                                ),
-                                const SizedBox(height: 40),
-                                RichText(
-                                  textAlign: TextAlign.center,
-                                  text: TextSpan(
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      color: Color(0xFF444444),
-                                      height: 1.5,
-                                    ),
-                                    children: [
-                                      const TextSpan(
-                                        text:
-                                            'Apakah Anda ingin membatalkan pesanan dengan kode pemesanan ',
-                                      ),
-                                      const TextSpan(
-                                        text: 'AZRQRP',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w800,
-                                          color: Color(0xFF1A1A1A),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                const TextSpan(
+                                    text:
+                                        'Apakah Anda ingin membatalkan pesanan\ndengan kode pemesanan '),
+                                TextSpan(
+                                  text: bookingCode,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF1A1A1A)),
                                 ),
                               ],
                             ),
-                          )
+                          ),
+                          const SizedBox(height: 28),
                         ],
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color:
-                            Color.fromARGB(255, 255, 255, 255).withOpacity(0.5),
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(28)),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 15, 25, 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              onTap: () => Navigator.pop(context),
-                              child: const Icon(Icons.close,
-                                  size: 26, color: Colors.black),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-
-              // ── Button Card ─────────────────────────────────
+              // ── Konfirmasi button ──
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFE0E0E0)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.07),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                 child: SizedBox(
                   width: double.infinity,
-                  height: 48,
+                  height: 50,
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      // TODO cancel booking logic
+                      // TODO: handle cancel booking logic
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _kRed,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                     child: const Text(
                       'Konfirmasi',
                       style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                      ),
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),
                     ),
                   ),
                 ),

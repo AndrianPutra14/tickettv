@@ -242,7 +242,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         ),
                         SizedBox(height: 20 * scaleH),
 
-                        // Titlee
+                        // Title
                         Text(
                           'WELCOME TO EZYTIX',
                           style: TextStyle(
@@ -265,15 +265,15 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        SizedBox(height: 28 * scaleH),
+                        SizedBox(height: 10 * scaleH),
 
-                        // Button with pulse scale
+                        // ── Tombol Penumpang (B2C) ───────────────────────
                         ScaleTransition(
                           scale: _pulse,
                           child: SizedBox(
                             width: double.infinity,
                             height: 52 * scaleH,
-                            child: ElevatedButton(
+                            child: ElevatedButton.icon(
                               onPressed: () {
                                 Navigator.pushNamedAndRemoveUntil(
                                   context,
@@ -281,6 +281,15 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                   (route) => false,
                                 );
                               },
+                              label: Text(
+                                'Lanjut',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15 * scale,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryRed,
                                 elevation: 4,
@@ -289,15 +298,70 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                   borderRadius: BorderRadius.circular(14),
                                 ),
                               ),
-                              child: Text(
-                                'Mulai Sekarang',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16 * scale,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.3,
-                                ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10 * scaleH),
+
+                        // ── Tombol Partner (B2B) ─────────────────────────
+                        SizedBox(
+                          width: double.infinity,
+                          height: 52 * scaleH,
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                AppRoutes.partnerLogin,
+                                (route) => false,
+                              );
+                            },
+                            icon: Icon(
+                              Icons.store_rounded,
+                              color: primaryRed,
+                              size: 20,
+                            ),
+                            label: Text(
+                              'Partner / Agen',
+                              style: TextStyle(
+                                color: primaryRed,
+                                fontSize: 15 * scale,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.3,
                               ),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: primaryRed, width: 1.5),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 14 * scaleH),
+
+                        // ── Link Daftar Partner ─────────────────────────
+                        GestureDetector(
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.partnerRegister,
+                          ),
+                          child: RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 13 * scale,
+                                color: const Color(0xFF9E9E9E),
+                              ),
+                              children: [
+                                const TextSpan(text: 'Belum jadi partner?  '),
+                                TextSpan(
+                                  text: 'Daftar Gratis',
+                                  style: TextStyle(
+                                    color: primaryRed,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 13 * scale,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

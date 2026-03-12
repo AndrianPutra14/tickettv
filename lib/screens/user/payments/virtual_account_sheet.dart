@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const Color _kRed = Color(0xFFC42D27);
 
-// ─── Bank Logo Widgetss ────────────────────────────────────────────────────────
+// ─── Bank Logo Widgets ────────────────────────────────────────────────────────
 Widget _bankLogo(String name) {
   switch (name) {
     case 'Bank Permata':

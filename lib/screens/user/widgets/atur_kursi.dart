@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// ── Seat statee ────────────────────────────────────────────────────
+// ── Seat state ────────────────────────────────────────────────────
 enum SeatStatus { occupied, available, selected }
 
 class Seat {

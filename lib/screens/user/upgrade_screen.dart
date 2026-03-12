@@ -1,13 +1,13 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:project1/screens/partner/partner_register_screen.dart';
+import 'package:project1/utils/routes.dart';
 
 const Color _kRed = Color(0xFFC42D27);
 const Color _kRedDark = Color(0xFF7B0D07);
 const Color _kGold = Color(0xFFFFB800);
 const Color _kGoldLight = Color(0xFFFFD54F);
 
-// ── Particle dataa ─────────────────────────────────────────────────────────────
+// ── Particle data ─────────────────────────────────────────────────────────────
 class _Particle {
   double x, y, vx, vy, radius, opacity;
   Color color;
@@ -688,11 +688,9 @@ class _UpgradeScreenState extends State<UpgradeScreen>
             ],
           ),
           child: ElevatedButton(
-            onPressed: () => Navigator.push(
+            onPressed: () => Navigator.pushNamed(
               context,
-              MaterialPageRoute(
-                builder: (_) => const PartnerRegisterScreen(),
-              ),
+              AppRoutes.partnerRegister,
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.transparent,

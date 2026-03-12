@@ -136,7 +136,7 @@ class _NotificationPageState extends State<NotificationPage> {
       backgroundColor: const Color(0xFFF5F5F5),
       body: Column(
         children: [
-          // ── Headerr ──────────────────────────────────────────────────────
+          // ── Header ──────────────────────────────────────────────────────
           Container(
             width: double.infinity,
             decoration: const BoxDecoration(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:project1/utils/routes.dart';
 import 'partner_login_screen.dart';
 
 const Color _kRed = Color(0xFFC42D27);
@@ -96,9 +97,12 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  Navigator.pop(context); // tutup dialog
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AppRoutes.partnerHome,
+                    (route) => false, // hapus semua stack sebelumnya
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _kRed,

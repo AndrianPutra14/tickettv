@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'partner_register_screen.dart';
-import 'package:project1/screens/partner/homepage.dart';
+import 'package:project1/utils/routes.dart';
 
 const Color _kRed = Color(0xFFC42D27);
 
@@ -46,13 +46,8 @@ class _PartnerLoginScreenState extends State<PartnerLoginScreen> {
     ),
   );
 
-  // Navigasi ke Homepage
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(
-      builder: (context) => const HomePage(),
-    ),
-  );
+  // Navigasi ke Homepage Partner
+  Navigator.pushReplacementNamed(context, AppRoutes.partnerHome);
 }
 
   @override

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'flight_models.dart';
+import '../model/flight_models.dart';
 import 'fare_detail_sheet.dart';
 
 class FlightCard extends StatefulWidget {
@@ -11,7 +11,7 @@ class FlightCard extends StatefulWidget {
 }
 
 class _FlightCardState extends State<FlightCard> {
-  int _selectedIndex = -1; // -1 = tidak ada yang terpilihh
+  int _selectedIndex = -1; // -1 = tidak ada yang terpilih
 
   @override
   Widget build(BuildContext context) {

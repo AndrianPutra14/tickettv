@@ -55,7 +55,7 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
     final bottomPad = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
-      // Layer 1: Background PUTIHH
+      // Layer 1: Background PUTIH
       backgroundColor: Colors.white,
 
       appBar: PreferredSize(
