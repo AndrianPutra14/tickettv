@@ -7,7 +7,7 @@ const Color _kRedDark = Color(0xFF7B0D07);
 const Color _kGold = Color(0xFFFFB800);
 const Color _kGoldLight = Color(0xFFFFD54F);
 
-// ── Particle data ─────────────────────────────────────────────────────────────
+// ── Particle dataa ─────────────────────────────────────────────────────────────
 class _Particle {
   double x, y, vx, vy, radius, opacity;
   Color color;

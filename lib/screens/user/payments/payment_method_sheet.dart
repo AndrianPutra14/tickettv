@@ -31,7 +31,7 @@ class _PaymentMethodContent extends StatelessWidget {
               color: Colors.white,
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            // height: 450,
+            // heightt: 450,
             clipBehavior: Clip.antiAlias,
             child: Stack(
               children: [

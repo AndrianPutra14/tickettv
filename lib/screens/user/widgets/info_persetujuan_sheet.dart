@@ -3,7 +3,7 @@ import 'package:project1/utils/routes.dart';
 
 const Color _kRed = Color(0xFFC42D27);
 
-/// Bottom sheet "Info Persetujuan Penerbangan"
+/// Bottom sheet "Info Persetujuan Penerbangann"
 /// — style mengikuti _CopyFareSummarySheet di fare_detail_sheet.dart
 class InfoPersetujuanSheet extends StatelessWidget {
   final VoidCallback? onKonfirmasi;

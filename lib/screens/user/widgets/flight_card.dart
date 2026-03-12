@@ -11,7 +11,7 @@ class FlightCard extends StatefulWidget {
 }
 
 class _FlightCardState extends State<FlightCard> {
-  int _selectedIndex = -1; // -1 = tidak ada yang terpilih
+  int _selectedIndex = -1; // -1 = tidak ada yang terpilihh
 
   @override
   Widget build(BuildContext context) {

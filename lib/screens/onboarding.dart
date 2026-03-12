@@ -242,7 +242,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         ),
                         SizedBox(height: 20 * scaleH),
 
-                        // Title
+                        // Titlee
                         Text(
                           'WELCOME TO EZYTIX',
                           style: TextStyle(

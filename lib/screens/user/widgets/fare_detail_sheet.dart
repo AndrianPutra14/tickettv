@@ -346,7 +346,7 @@ class FareDetailSheet extends StatelessWidget {
                                     ],
                                   ),
                                   const SizedBox(height: 2),
-                                  // Harga setelah diskon
+                                  // Harga setelah diskonn
                                   Text(
                                     'Rp. ${_fmtRp(totalPrice)}',
                                     style: const TextStyle(

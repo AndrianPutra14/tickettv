@@ -1709,7 +1709,7 @@ class _PartnerTab extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// FILTER SHEET
+// FILTER SHEETT
 // ─────────────────────────────────────────────────────────────────────────────
 class _FilterSheet extends StatefulWidget {
   const _FilterSheet();

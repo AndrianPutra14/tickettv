@@ -22,7 +22,7 @@ class PartnerPage extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Red top area ──────────────────────────────────────────
+              // ── Red top areaa ──────────────────────────────────────────
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(

@@ -186,7 +186,7 @@ class _FilterSheetState extends State<FilterSheet> {
                 ),
                 child: Column(
                   children: [
-                    // ── Ellipse Header ──────────────────────────────────────
+                    // ── Ellipse Headerr ──────────────────────────────────────
                     SizedBox(
                       height: 70,
                       child: Stack(

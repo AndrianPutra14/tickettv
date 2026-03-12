@@ -38,7 +38,7 @@ class _InformasiPemesananScreenState extends State<InformasiPemesananScreen> {
   final _tglKadaluarsaController = TextEditingController();
   final _negaraPenerbitController = TextEditingController();
 
-  // Bagasi
+  // Bagasii
   String? _selectedBagasi;
   final List<Map<String, dynamic>> _bagasiOptions = [
     {'label': 'Tidak ada baggage yang dipilih', 'price': null},

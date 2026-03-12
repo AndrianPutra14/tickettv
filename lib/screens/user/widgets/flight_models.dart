@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// ─── Shared Colors ─────────────────────────────────────────────────────────────
+// ─── Shared Colorss ─────────────────────────────────────────────────────────────
 const kRed    = Color(0xFFC42D27);
 const kBgPage = Color(0xFFF5EDED);
 

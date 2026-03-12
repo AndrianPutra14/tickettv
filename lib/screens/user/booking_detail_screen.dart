@@ -1242,7 +1242,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     );
   }
 
-  // ── Cancel Confirmation Sheet ─────────────────────────────────────────────
+  // ── Cancel Confirmation Sheett ─────────────────────────────────────────────
   void _showCancelConfirmation(BuildContext context) {
     const String bookingCode = 'AZRQRP';
 
