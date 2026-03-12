@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:project1/screens/partner/widgets/notifications.dart';
 import 'package:project1/utils/routes.dart';
-import 'mybookng.dart';
-import 'partner.dart';
-import 'upgrade_screen.dart';
-import 'widgets/notificaions.dart';
 
 const Color primaryRed = Color(0xFFC42D27);
 
@@ -36,13 +33,20 @@ class _HomePageState extends State<HomePage> {
         index: _selectedIndex,
         children: const [
           _HomeTab(),
-          MyBookingPage(),
-          PartnerPage(),
+          _MyBookingTab(),
+          _ReportTab(),
+          _HelpdeskTab(),
+          _SettingTab(),
         ],
       ),
-      bottomNavigationBar: _BottomNavBar(
-        selectedIndex: _selectedIndex,
-        onTap: _onItemTapped,
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          canvasColor: primaryRed,
+        ),
+        child: _BottomNavBar(
+          selectedIndex: _selectedIndex,
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
@@ -53,62 +57,61 @@ class _HomePageState extends State<HomePage> {
 class _BottomNavBar extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onTap;
-  const _BottomNavBar({required this.selectedIndex, required this.onTap});
+
+  const _BottomNavBar({
+    required this.selectedIndex,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
+    return Material(
+      color: primaryRed,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(15),
+          topRight: Radius.circular(15),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 16,
-            offset: const Offset(0, -4),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: BottomNavigationBar(
+        currentIndex: selectedIndex,
+        onTap: onTap,
+        backgroundColor: Colors.transparent,
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
+        selectedLabelStyle: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w400,
+        ),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Beranda',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list_alt_outlined),
+            label: 'Pesananku',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.description_outlined),
+            label: 'Laporan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.help_outline),
+            label: 'Helpdesk',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings_outlined),
+            label: 'Setting',
           ),
         ],
-      ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: selectedIndex,
-          onTap: onTap,
-          backgroundColor: Colors.white,
-          selectedItemColor: primaryRed,
-          unselectedItemColor: const Color(0xFFAAAAAA),
-          selectedLabelStyle:
-              const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
-          unselectedLabelStyle:
-              const TextStyle(fontSize: 11, fontWeight: FontWeight.w400),
-          type: BottomNavigationBarType.fixed,
-          elevation: 0,
-          items: [
-            BottomNavigationBarItem(
-              icon: _NavIcon(
-                  icon: Icons.home_rounded, isSelected: selectedIndex == 0),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: _NavIcon(
-                  icon: Icons.confirmation_number_outlined,
-                  isSelected: selectedIndex == 1),
-              label: 'My Booking',
-            ),
-            BottomNavigationBarItem(
-              icon: _NavIcon(
-                  icon: Icons.person_outline_rounded,
-                  isSelected: selectedIndex == 2),
-              label: 'Partner',
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -593,7 +596,7 @@ class _HomeTabState extends State<_HomeTab>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Hi, Teman Ezytix!',
+                            'Hi, Septian',
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 14,
@@ -617,7 +620,7 @@ class _HomeTabState extends State<_HomeTab>
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const NotificationPage(),
+                          builder: (_) => const NotificationsPage(),
                         ),
                       ),
                       child: Container(
@@ -893,21 +896,14 @@ class _HomeTabState extends State<_HomeTab>
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
                             ),
-                            title: 'Premium',
+                            title: 'Partner Premium',
                             subtitle:
                                 'Upgrade ke Premium Partner &\nDapatkan Deviden dari Setiap\nTiket Terjual',
                             buttonLabel: 'Upgrade',
                             imagePath: 'assets/images/airplane.png',
-                            badgeText: 'GRATIS',
+                            badgeText: 'Hallo!',
                             rotateImage: false,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const UpgradeScreen(),
-                                ),
-                              );
-                            },
+                            onTap: () {},
                           ),
                         ),
                         Padding(
@@ -1172,7 +1168,7 @@ class _PremiumCardState extends State<_PremiumCard>
                             widget.title,
                             style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 24,
+                                fontSize: 20,
                                 fontWeight: FontWeight.w900),
                           ),
                         ),
@@ -1637,14 +1633,44 @@ class _MyBookingTab extends StatelessWidget {
   }
 }
 
-class _PartnerTab extends StatelessWidget {
-  const _PartnerTab();
+class _ReportTab extends StatelessWidget {
+  const _ReportTab();
 
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('Partner',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+      child: Text(
+        'Laporan',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+}
+
+class _HelpdeskTab extends StatelessWidget {
+  const _HelpdeskTab();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'Helpdesk',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+}
+
+class _SettingTab extends StatelessWidget {
+  const _SettingTab();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'Setting',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+      ),
     );
   }
 }
@@ -2106,4 +2132,3 @@ class _KelasButton extends StatelessWidget {
     );
   }
 }
-

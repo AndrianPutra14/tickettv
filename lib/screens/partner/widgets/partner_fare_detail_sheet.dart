@@ -1,6 +1,6 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../model/flight_models.dart';
+import '../model/partner_flight_models.dart';
 import 'package:project1/utils/routes.dart';
 
 class FareDetailSheet extends StatelessWidget {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'partner_register_screen.dart';
+import 'package:project1/screens/partner/homepage.dart';
 
 const Color _kRed = Color(0xFFC42D27);
 
@@ -27,19 +28,32 @@ class _PartnerLoginScreenState extends State<PartnerLoginScreen> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(seconds: 2));
-    if (!mounted) return;
-    setState(() => _isLoading = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Login berhasil! Selamat datang kembali 👋'),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: _kRed,
-      ),
-    );
-  }
+  if (!_formKey.currentState!.validate()) return;
+
+  setState(() => _isLoading = true);
+
+  await Future.delayed(const Duration(seconds: 2));
+
+  if (!mounted) return;
+
+  setState(() => _isLoading = false);
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text('Login berhasil! Selamat datang kembali 👋'),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: _kRed,
+    ),
+  );
+
+  // Navigasi ke Homepage
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const HomePage(),
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {

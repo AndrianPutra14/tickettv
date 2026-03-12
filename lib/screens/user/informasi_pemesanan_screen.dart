@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'widgets/flight_models.dart';
+import 'model/flight_models.dart';
 import 'widgets/asuransi_sheet.dart' as sheet;
 import 'widgets/info_persetujuan_sheet.dart';
 
