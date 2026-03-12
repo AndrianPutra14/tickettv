@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:project1/screens/partner/Auth/partner_register_screen.dart';
+import 'package:project1/screens/partner/partner_register_screen.dart';
 
 const Color _kRed = Color(0xFFC42D27);
 const Color _kRedDark = Color(0xFF7B0D07);

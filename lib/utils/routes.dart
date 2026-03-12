@@ -7,7 +7,7 @@ import 'package:project1/screens/user/informasi_pemesanan_screen.dart';
 import 'package:project1/screens/user/booking_detail_screen.dart';
 import 'package:project1/screens/user/mybookng.dart';
 import 'package:project1/screens/user/partner.dart';
-import 'package:project1/screens/user/model/flight_models.dart';
+import 'package:project1/screens/user/widgets/flight_models.dart';
 
 class AppRoutes {
   // Route names

@@ -1,7 +1,11 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../model/flight_models.dart';
+import 'flight_models.dart';
 import 'package:project1/utils/routes.dart';
+
+const Color _kRed = Color(0xFFC42D27);
+const Color _kRedBg = Color(0xFFFFE6E5);
+const Color _kRedBtn = Color.fromARGB(255, 238, 125, 121); // 50% transparency
 
 class FareDetailSheet extends StatelessWidget {
   final FareModel fare;
@@ -130,7 +134,9 @@ class FareDetailSheet extends StatelessWidget {
                         const Divider(height: 1, color: Color(0xFFC1C1C1)),
                         // Baris data
                         Padding(
-                          padding: const EdgeInsets.only(top: 1, ),
+                          padding: const EdgeInsets.only(
+                            top: 1,
+                          ),
                           child: Stack(
                             children: [
                               Column(
@@ -138,20 +144,65 @@ class FareDetailSheet extends StatelessWidget {
                                   // Row 1: airline code | flight no | depAp | dep
                                   Row(
                                     children: [
-                                      Expanded(child: Text(flight.no.replaceAll(RegExp(r'\d'), ''), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
-                                      Expanded(child: Text(flight.no, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
-                                      Expanded(child: Text(flight.depAp, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
-                                      Expanded(child: Text(flight.dep, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
+                                      Expanded(
+                                          child: Text(
+                                              flight.no.replaceAll(
+                                                  RegExp(r'\d'), ''),
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.5))),
+                                      Expanded(
+                                          child: Text(flight.no,
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.5))),
+                                      Expanded(
+                                          child: Text(flight.depAp,
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.5))),
+                                      Expanded(
+                                          child: Text(flight.dep,
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.5))),
                                     ],
                                   ),
                                   const SizedBox(height: 2),
                                   // Row 2: airline code | ECO-B9 | arrAp | arr
                                   Row(
                                     children: [
-                                      Expanded(child: Text(flight.no.replaceAll(RegExp(r'\d'), ''), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
-                                      Expanded(child: Text('${fare.cls}-${fare.code.replaceAll(' ', '')}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
-                                      Expanded(child: Text(flight.arrAp, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
-                                      Expanded(child: Text(flight.arr, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, height: 1.5))),
+                                      Expanded(
+                                          child: Text(
+                                              flight.no.replaceAll(
+                                                  RegExp(r'\d'), ''),
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.5))),
+                                      Expanded(
+                                          child: Text(
+                                              '${fare.cls}-${fare.code.replaceAll(' ', '')}',
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.5))),
+                                      Expanded(
+                                          child: Text(flight.arrAp,
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.5))),
+                                      Expanded(
+                                          child: Text(flight.arr,
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.5))),
                                     ],
                                   ),
                                 ],
@@ -168,7 +219,8 @@ class FareDetailSheet extends StatelessWidget {
                                       color: const Color(0xFF4CAF50),
                                       borderRadius: BorderRadius.circular(3),
                                     ),
-                                    child: const Icon(Icons.check, color: Colors.white, size: 14),
+                                    child: const Icon(Icons.check,
+                                        color: Colors.white, size: 14),
                                   ),
                                 ),
                               ),
@@ -184,8 +236,8 @@ class FareDetailSheet extends StatelessWidget {
                   // Grey card header — sama level dengan grey card tanggal,
                   // sehingga hanya terkena padding dari SingleChildScrollView
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
                     decoration: BoxDecoration(
                       color: const Color(0xFFEFEDED),
                       borderRadius: BorderRadius.circular(8),
@@ -193,9 +245,11 @@ class FareDetailSheet extends StatelessWidget {
                     child: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.only(left: 6,),
+                          padding: const EdgeInsets.only(
+                            left: 6,
+                          ),
                           decoration: BoxDecoration(
-                            color:const Color(0xFFC42D27),
+                            color: const Color(0xFFC42D27),
                             borderRadius: BorderRadius.circular(2),
                           ),
                           child: const Text(
@@ -234,19 +288,21 @@ class FareDetailSheet extends StatelessWidget {
                         Builder(builder: (context) {
                           // Harga asli sebelum diskon
                           final originalPrice = totalPrice * 1.25;
-                          final discountPct   = 20; // persen diskon
+                          final discountPct = 20; // persen diskon
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // Label "Dewasa - x1"
                               RichText(
                                 text: const TextSpan(
-                                  style: TextStyle(fontSize: 14, color: Color(0xFF3D3C3C)),
+                                  style: TextStyle(
+                                      fontSize: 14, color: Color(0xFF3D3C3C)),
                                   children: [
                                     TextSpan(text: 'Dewasa  '),
                                     TextSpan(
                                       text: '- x1',
-                                      style: TextStyle(fontWeight: FontWeight.w800),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),
@@ -265,7 +321,8 @@ class FareDetailSheet extends StatelessWidget {
                                             horizontal: 5, vertical: 2),
                                         decoration: BoxDecoration(
                                           color: kRed,
-                                          borderRadius: BorderRadius.circular(4),
+                                          borderRadius:
+                                              BorderRadius.circular(4),
                                         ),
                                         child: Text(
                                           '$discountPct%',
@@ -281,7 +338,8 @@ class FareDetailSheet extends StatelessWidget {
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: Color(0xFF999999),
-                                          decoration: TextDecoration.lineThrough,
+                                          decoration:
+                                              TextDecoration.lineThrough,
                                           decorationColor: Color(0xFF999999),
                                         ),
                                       ),
@@ -332,8 +390,8 @@ class FareDetailSheet extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       SizedBox(
-                        width: 110,  // ← atur lebar button Copy di sini
-                        height: 44,  // ← atur tinggi button di sini
+                        width: 110, // ← atur lebar button Copy di sini
+                        height: 44, // ← atur tinggi button di sini
                         child: ElevatedButton(
                           onPressed: () => showModalBottomSheet(
                             context: context,
@@ -362,8 +420,8 @@ class FareDetailSheet extends StatelessWidget {
                       ),
                       const SizedBox(width: 12),
                       SizedBox(
-                        width: 110,  // ← atur lebar button Lanjut di sini
-                        height: 44,  // ← atur tinggi button di sini
+                        width: 110, // ← atur lebar button Lanjut di sini
+                        height: 44, // ← atur tinggi button di sini
                         child: ElevatedButton(
                           onPressed: () {
                             // Tutup fare detail sheet, lalu navigasi via named route
@@ -582,141 +640,143 @@ class _CopyFareSummarySheet extends StatelessWidget {
     final summaryText = _buildSummaryText();
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Header ───────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 18, 16, 14),
-            child: Row(
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            height: 450,
+            clipBehavior: Clip.antiAlias,
+            child: Stack(
               children: [
-                const Icon(Icons.copy_outlined,
-                    size: 24, color: Color(0xFF1A1A1A)),
-                const SizedBox(width: 10),
-                const Expanded(
-                  child: Text(
-                    'Copy Fare Summary',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF1A1A1A),
-                    ),
+                SizedBox(
+                  height: 450,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: -120,
+                        top: -30,
+                        child: Container(
+                          width: 420,
+                          height: 420,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _kRed.withOpacity(0.10),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: -42,
+                        top: -35,
+                        child: Container(
+                          width: 140,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color.fromARGB(255, 243, 225, 184),
+                          ),
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(20, 100, 20, 12),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            summaryText,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              height: 1.8,
+                              color: Color(0xFF2A2A2A),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: SizedBox(
-                    width: 45,
-                    height: 45,
-                    child: Stack(
-                      alignment: Alignment.center,
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 255, 255, 255).withOpacity(0.5),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(12)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 15, 25, 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Image.asset(
-                          'assets/images/Ellipseyell.png',
-                          width: 45,
-                          height: 45,
-                          fit: BoxFit.contain,
+                        const Icon(Icons.copy_outlined,
+                            size: 24, color: Color(0xFF1A1A1A)),
+                        const SizedBox(width: 10),
+                        const Expanded(
+                          child: Text(
+                            'Copy Fare Summary',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFF1A1A1A),
+                            ),
+                          ),
                         ),
-                        const Icon(Icons.close,
-                            size: 26, color: Color(0xFF0F0F0F)),
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: const Icon(Icons.close,
+                              size: 26, color: Colors.black),
+                        ),
                       ],
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          const Divider(height: 1, color: Color(0xFFE0E0E0)),
-
-
-          // ── Body dengan watermark lingkaran besar ─────────────────────
-          SizedBox(
-            height: 450,
-            child: Stack(
-              children: [
-                // Lingkaran watermark merah
+                // ── Button Card ─────────────────────────────────
                 Positioned(
-                  left: -120,
-                  top: -30,
-                    child: Container(
-                      width: 450,
-                    height: 450,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 13),
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: kRed.withOpacity(0.12),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE0E0E0)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.07),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-                // Teks summary
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      summaryText,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        height: 1.8,
-                        color: Color(0xFF2A2A2A),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _kRed,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          'Copy',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ],
-            ),
-          ),
-
-          // ── Card Copy button ───────────────────────────────────────────
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE0E0E0)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.07),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                onPressed: () async {
-                  await Clipboard.setData(ClipboardData(text: summaryText));
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Teks berhasil disalin!'),
-                        duration: Duration(seconds: 2),
-                        backgroundColor: kRed,
-                      ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: kRed,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
-                child: const Text(
-                  'Copy',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
             ),
           ),
         ],
@@ -724,6 +784,7 @@ class _CopyFareSummarySheet extends StatelessWidget {
     );
   }
 }
+
 // ─── Catatan Bottom Sheet ─────────────────────────────────────────────────
 class _CatatanSheet extends StatelessWidget {
   const _CatatanSheet();
@@ -807,9 +868,7 @@ class _CatatanSheet extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: notes
-                    .map((n) => _buildNoteItem(n))
-                    .toList(),
+                children: notes.map((n) => _buildNoteItem(n)).toList(),
               ),
             ),
           ),

@@ -1,5 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'model/flight_models.dart';
+import 'widgets/flight_models.dart';
 import 'widgets/flight_card.dart';
 import 'widgets/filter_sheet.dart';
 

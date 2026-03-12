@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../model/flight_models.dart';
+import 'flight_models.dart';
 import 'fare_detail_sheet.dart';
 
 class FlightCard extends StatefulWidget {
